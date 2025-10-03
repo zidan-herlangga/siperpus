@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Perpustakaan Sekolah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .book-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-book-open text-3xl"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold">Perpustakaan Sekolah</h1>
+                        <p class="text-blue-100">Tempatnya mencari ilmu dan pengetahuan</p>
+                    </div>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="index.html" class="nav-link text-white font-medium">Beranda</a>
+                    <a href="books.html" class="nav-link text-white font-medium">Koleksi Buku</a>
+                    <a href="register.html" class="nav-link text-white font-medium">Daftar Siswa</a>
+                    <a href="login.html" class="nav-link text-white font-medium">Login</a>
+                </nav>
+                <button class="md:hidden text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-5xl font-bold mb-6">Selamat Datang di Perpustakaan Digital</h2>
+            <p class="text-xl mb-8 text-blue-100 max-w-2xl mx-auto">
+                Temukan berbagai koleksi buku menarik untuk mendukung proses belajar mengajar di sekolah kami.
+            </p>
+            <div class="flex justify-center space-x-4">
+                <a href="books.html" class="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                    <i class="fas fa-search mr-2"></i>Jelajahi Koleksi
+                </a>
+                <a href="register.html" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition duration-300">
+                    <i class="fas fa-user-plus mr-2"></i>Daftar Sekarang
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h3 class="text-3xl font-bold text-center text-gray-800 mb-12">Mengapa Memilih Perpustakaan Kami?</h3>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-book text-purple-600 text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-3">Koleksi Lengkap</h4>
+                    <p class="text-gray-600">Ribuan buku dari berbagai kategori dan penerbit terkemuka</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-clock text-green-600 text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-3">Akses 24/7</h4>
+                    <p class="text-gray-600">Sistem online yang dapat diakses kapan saja dan di mana saja</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-bell text-blue-600 text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-3">Notifikasi Otomatis</h4>
+                    <p class="text-gray-600">Pengingat pengembalian buku dan informasi terbaru</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics -->
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-4xl font-bold text-purple-600 mb-2" id="bookCount">5000+</div>
+                    <p class="text-gray-600">Judul Buku</p>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-green-600 mb-2" id="studentCount">1200+</div>
+                    <p class="text-gray-600">Siswa Terdaftar</p>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-blue-600 mb-2" id="borrowCount">350+</div>
+                    <p class="text-gray-600">Peminjaman/Bulan</p>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-orange-600 mb-2" id="categoryCount">50+</div>
+                    <p class="text-gray-600">Kategori Buku</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Perpustakaan Sekolah</h4>
+                    <p class="text-gray-400">Membangun generasi cerdas melalui literasi dan pengetahuan.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Tautan Cepat</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition">Beranda</a></li>
+                        <li><a href="books.html" class="text-gray-400 hover:text-white transition">Koleksi Buku</a></li>
+                        <li><a href="register.html" class="text-gray-400 hover:text-white transition">Pendaftaran</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Kontak</h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>Jl. Pendidikan No. 123</p>
+                        <p><i class="fas fa-phone mr-2"></i>(021) 1234-5678</p>
+                        <p><i class="fas fa-envelope mr-2"></i>info@perpussekolah.sch.id</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Jam Operasional</h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p>Senin - Jumat: 07:00 - 16:00</p>
+                        <p>Sabtu: 08:00 - 14:00</p>
+                        <p>Minggu: Tutup</p>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Perpustakaan Sekolah. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Animated counter
+        function animateCounter(element, target, duration = 2000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    element.textContent = target + '+';
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(start) + '+';
+                }
+            }, 16);
+        }
+
+        // Start animation when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            animateCounter(document.getElementById('bookCount'), 5000);
+            animateCounter(document.getElementById('studentCount'), 1200);
+            animateCounter(document.getElementById('borrowCount'), 350);
+            animateCounter(document.getElementById('categoryCount'), 50);
+        });
+    </script>
+</body>
+</html>
