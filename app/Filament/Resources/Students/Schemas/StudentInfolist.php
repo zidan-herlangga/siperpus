@@ -11,22 +11,30 @@ class StudentInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('name'),
-                TextEntry::make('nis'),
-                TextEntry::make('class'),
+                TextEntry::make('name')
+                    ->label('Nama Siswa'),
+                TextEntry::make('nis')
+                    ->label('NIS'),
+                TextEntry::make('class')
+                    ->label('Kelas'),
                 TextEntry::make('contact')
+                    ->label('No. Telp')
                     ->placeholder('-'),
                 TextEntry::make('email')
-                    ->label('Email address'),
+                    ->label('Email'),
                 TextEntry::make('email_verified_at')
+                    ->label('Email Terverifikasi Pada')
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('status')
+                    ->label('Status')
                     ->badge(),
                 TextEntry::make('created_at')
+                    ->label('Dibuat Pada')
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
+                    ->label('Terakhir Diperbarui')
                     ->dateTime()
                     ->placeholder('-'),
             ]);

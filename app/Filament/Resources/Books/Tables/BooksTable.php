@@ -16,26 +16,37 @@ class BooksTable
         return $table
             ->columns([
                 TextColumn::make('title')
+                    ->label('Judul Buku')
                     ->searchable(),
                 TextColumn::make('author')
+                    ->label('Pengarang')
                     ->searchable(),
                 TextColumn::make('publisher')
+                    ->label('Penerbit')
                     ->searchable(),
-                TextColumn::make('year'),
+                TextColumn::make('year')
+                    ->label('Tahun Terbit')
+                    ->searchable(),
                 TextColumn::make('isbn')
+                    ->label('ISBN')
                     ->searchable(),
                 TextColumn::make('category')
+                    ->label('Kategori')
                     ->searchable(),
                 TextColumn::make('shelf_code')
+                    ->label('Kode Rak')
                     ->searchable(),
                 TextColumn::make('stock')
+                    ->label('Stok')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label('Dibuat Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Terakhir Diperbarui')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

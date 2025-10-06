@@ -20,6 +20,7 @@ class BookResource extends Resource
 {
     protected static ?string $model = Book::class;
 
+    protected static ?string $label = 'Buku';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-book-open';
 
     public static function form(Schema $schema): Schema

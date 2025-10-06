@@ -19,12 +19,19 @@ class Student extends Authenticatable implements MustVerifyEmail
         'contact',
         'email',
         'status',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password', // <-- TAMBAHKAN
+        'remember_token',
     ];
 
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
+            'password' => 'hashed',
         ];
     }
     

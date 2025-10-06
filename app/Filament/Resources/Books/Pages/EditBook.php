@@ -14,8 +14,11 @@ class EditBook extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            ViewAction::make(),
-            DeleteAction::make(),
+            ViewAction::make()
+                ->label('Edit Buku')
+                ->url($this->getResource()::getUrl('view', ['record' => $this->record])),
+            DeleteAction::make()
+                ->label('Hapus Buku'),
         ];
     }
 }

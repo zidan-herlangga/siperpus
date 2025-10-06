@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('contact')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->enum('status', ['Aktif', 'Nonaktif'])->default('Aktif');
+            $table->enum('status', ['Aktif', 'Nonaktif'])->default('Nonaktif');
             $table->rememberToken();
             $table->timestamps();
         });

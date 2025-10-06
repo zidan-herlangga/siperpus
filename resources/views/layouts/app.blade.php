@@ -4,168 +4,238 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Perpustakaan Sekolah')</title>
+    
+    <link rel="icon" href="{{ asset('assets/image/favicon.png') }}" type="image/png">
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        .gradient-bg {
-            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
-            background: #006739;
-        }
-        /* .nav-link {
-            position: relative;
-            transition: color 0.3s ease;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #667eea;
-            transition: width 0.3s ease;
-        }
-        .nav-link:hover::after {
-            width: 100%;
-        } */
-        .book-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .book-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        .search-box:focus-within {
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        .form-input:focus {
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        .fade-in {
-            animation: fadeIn 0.6s ease-in;
-        }
+        .gradient-bg { background: #006739; }
+        .book-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .book-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .search-box:focus-within { box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .form-input:focus { box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .fade-in { animation: fadeIn 0.6s ease-in; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        #verificationModal.hidden { display: none; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
-    <!-- Header -->
     <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-3">
-                    <div>
-                        <a href="/">
-                            <img src="{{ asset('assets/image/logo-light-smkg2.png') }}" alt="Logo SMK Karya Guna 2 Bekasi">
-                            {{-- <p class="text-blue-100 text-sm hidden sm:block">Tempatnya mencari ilmu dan pengetahuan</p> --}}
-                        </a>
-                    </div>
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+            <a href="/">
+                <img src="{{ asset('assets/image/logo-light-smkg2.png') }}" alt="Logo SMK Karya Guna 2 Bekasi">
+            </a>
+            
+            <nav class="hidden md:flex items-center space-x-6">                
+                @auth('student')
+                    {{-- Tampil jika siswa SUDAH LOGIN --}}
+                    <a href="{{ route('student.dashboard') }}" class="nav-link text-white font-medium py-2 hover:text-yellow-500 transition duration-300 {{ request()->routeIs('student.dashboard') ? 'text-yellow-500' : '' }}">
+                        Dashboard
+                    </a>
+                    {{-- Link ini selalu tampil --}}
+                    <a href="{{ route('books.index') }}" class="nav-link text-white font-medium py-2 hover:text-yellow-500 transition duration-300 {{ request()->routeIs('books.index') ? 'text-yellow-500' : '' }}">
+                        Katalog Buku
+                    </a>
+                    <form action="{{ route('student.logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-white hover:text-yellow-500 transition duration-300">
+                            Logout
+                        </button>
+                    </form>
+                @else
+                    {{-- Tampil jika siswa BELUM LOGIN --}}
+                    <a href="{{ route('student.register.form') }}" class="nav-link text-white font-medium py-2 hover:text-yellow-500 transition duration-300 {{ request()->routeIs('student.register.form') ? 'text-yellow-500' : '' }}">
+                        Daftar Siswa
+                    </a>
+                    <a href="{{ route('student.login.form') }}" class="nav-link text-white font-medium py-2 hover:text-yellow-500 transition duration-300 {{ request()->routeIs('student.login.form') ? 'text-yellow-500' : '' }}">
+                        Login Siswa
+                    </a>
+                @endauth
+            </nav>
+
+            <button id="mobileMenuButton" class="md:hidden text-2xl">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div id="mobileMenu" class="hidden md:hidden mt-4 space-y-3 border-t border-gray-300 border-opacity-50 pt-4">
+            @auth('student')
+                <div class="text-white pl-4 py-2">
+                    Halo, <span class="font-bold">{{ Auth::guard('student')->user()->name }}</span>
                 </div>
                 
-                <!-- Desktop Navigation -->
-                <nav class="hidden md:flex space-x-6">
-                    <a href="{{ route('books.index') }}" class="nav-link text-white font-medium py-2 hover:text-yellow-500 transision duration-300">Katalog Buku</a>
-                    <a href="{{ route('student.register.form') }}" class="nav-link text-white font-medium py-2 hover:text-yellow-500 transision duration-300">Daftar Siswa</a>
-                    <a href="/admin-perpus" class="bg-yellow-500 text-white hover:text-yellow-500 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
-                        <i class="fas fa-sign-in-alt mr-2"></i>Login Admin
-                    </a>
-                </nav>
-
-                <!-- Mobile Menu Button -->
-                <button id="mobileMenuButton" class="md:hidden text-2xl">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-
-            <!-- Mobile Navigation -->
-            <div id="mobileMenu" class="hidden md:hidden mt-4 space-y-3 border-t border-white-500 pt-4">
-                <a href="{{ route('books.index') }}" class="block text-white font-medium py-2 border-l-4 border-white pl-4 {{ request()->routeIs('books.index') ? 'bg-green-700' : '' }}">Katalog Buku</a>
-                <a href="{{ route('student.register.form') }}" class="block text-white font-medium py-2 border-l-4 border-white pl-4 {{ request()->routeIs('student.register.*') ? 'bg-green-700' : '' }}">Daftar Siswa</a>
-                <a href="/admin" class="block bg-yellow-500 text-white hover:bg-white hover:text-yellow-500 px-4 py-2 rounded-lg font-semibold text-center mt-2">
-                    <i class="fas fa-sign-in-alt mr-2"></i>Login Admin
-                </a>
-            </div>
+                {{-- Tampil jika siswa SUDAH LOGIN --}}
+                <a href="{{ route('student.dashboard') }}" class="block text-white font-medium py-2 border-l-4 border-transparent pl-4 hover:border-white {{ request()->routeIs('student.dashboard') ? 'bg-green-700 !border-white' : '' }}">Dashboard</a>
+                
+                <a href="{{ route('books.index') }}" class="block text-white font-medium py-2 border-l-4 border-transparent pl-4 hover:border-white {{ request()->routeIs('books.*') ? 'bg-green-700 !border-white' : '' }}">Katalog Buku</a>
+                <form action="{{ route('student.logout') }}" method="POST" class="px-4">
+                    @csrf
+                    <button type="submit" class="w-full bg-yellow-500 text-white py-2 rounded-lg font-semibold text-center mt-2">
+                        Logout
+                    </button>
+                </form>
+            @else
+                {{-- Tampil jika siswa BELUM LOGIN --}}
+                <a href="{{ route('student.register.form') }}" class="block text-white font-medium py-2 border-l-4 border-transparent pl-4 hover:border-white {{ request()->routeIs('student.register.form') ? 'bg-green-700 !border-white' : '' }}">Daftar Siswa</a>
+                <a href="{{ route('student.login.form') }}" class="block text-white font-medium py-2 border-l-4 border-transparent pl-4 hover:border-white {{ request()->routeIs('student.login.form') ? 'bg-green-700 !border-white' : '' }}">Login Siswa</a>
+            @endauth
         </div>
-    </header>
+    </div>
+</header>
 
     <main class="flex-grow">
         @yield('content')
     </main>
 
-    <!-- Footer -->
     <footer class="gradient-bg text-white py-12">
         <div class="container mx-auto px-4">
             <div class="grid md:grid-cols-4 gap-8">
+                {{-- Kolom 1: Logo dan Deskripsi --}}
                 <div>
-                    <img src="{{ asset('assets/image/logo-light-smkg2.png') }}" alt="Logo SMK Karya Guna 2 Bekasi">
-                    <p class="text-white">Membangun generasi cerdas melalui literasi dan pengetahuan.</p>
+                    <img src="{{ asset('assets/image/logo-light-smkg2.png') }}" alt="Logo SMK Karya Guna 2 Bekasi" class="mb-4">
+                    <p class="text-gray-300">Membangun generasi cerdas melalui literasi dan pengetahuan.</p>
                 </div>
+
+                {{-- Kolom 2: Tautan Cepat --}}
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Tautan Cepat</h4>
+                    <h4 class="text-lg font-semibold mb-4 border-b-2 border-yellow-500 pb-2 inline-block">Tautan Cepat</h4>
                     <ul class="space-y-2">
-                        <li><a href="{{ route('books.index') }}" class="text-white transition">Katalog Buku</a></li>
-                        <li><a href="{{ route('student.register.form') }}" class="text-white transition">Pendaftaran Siswa</a></li>
+                        <li><a href="{{ route('books.index') }}" class="text-gray-300 hover:text-white transition">Katalog Buku</a></li>
+                        @guest('student')
+                            <li><a href="{{ route('student.register.form') }}" class="text-gray-300 hover:text-white transition">Pendaftaran Siswa</a></li>
+                            <li><a href="{{ route('student.login.form') }}" class="text-gray-300 hover:text-white transition">Login Siswa</a></li>
+                        @endguest
+                        @auth('student')
+                            <li><a href="{{ route('student.dashboard') }}" class="text-gray-300 hover:text-white transition">Dashboard Saya</a></li>
+                        @endauth
                     </ul>
                 </div>
+
+                {{-- Kolom 3: Jam Operasional dengan Status Dinamis --}}
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Kontak</h4>
-                    <div class="space-y-2 text-white">
-                        <p><i class="fas fa-map-marker-alt mr-2"></i>Jl. Karang Satria No.503, RT.010/RW.016, Duren Jaya, Kec. Bekasi Tim., Kota Bks, Jawa Barat 17111</p>
-                        <p><i class="fas fa-phone mr-2"></i>(021) 8800523</p>
-                        <p><i class="fas fa-envelope mr-2"></i>info@smkkaryaguna2bekasi.sch.id</p>
+                    <h4 class="text-lg font-semibold mb-4 border-b-2 border-yellow-500 pb-2 inline-block">Jam Operasional</h4>
+                    <div class="space-y-2 text-gray-300">
+                        <p>Senin - Jumat: 07:00 - 16:00</p>
+                        <p>Sabtu - Miggu: Tutup</p>
+                    </div>
+                    {{-- Indikator Buka/Tutup Dinamis --}}
+                    @php
+                        $now = now()->setTimezone('Asia/Jakarta');
+                        $dayOfWeek = $now->dayOfWeek; // Senin = 1, Minggu = 0
+                        $time = $now->format('H:i');
+                        $isOpen = false;
+                        if ($dayOfWeek >= 1 && $dayOfWeek <= 5 && $time >= '07:00' && $time < '16:00') {
+                            $isOpen = true; // Hari kerja
+                        } elseif ($dayOfWeek == 6 && $time >= '08:00' && $time < '14:00') {
+                            $isOpen = true; // Sabtu
+                        }
+                    @endphp
+                    <div class="mt-4">
+                        @if($isOpen)
+                            <span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                <i class="fas fa-check-circle mr-1"></i> Sedang Buka
+                            </span>
+                        @else
+                            <span class="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                <i class="fas fa-times-circle mr-1"></i> Sedang Tutup
+                            </span>
+                        @endif
                     </div>
                 </div>
+
+                {{-- Kolom 4: Kontak --}}
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Jam Operasional</h4>
-                    <div class="space-y-2 text-white">
-                        <p>Senin - Jumat: 07:00 - 16:00</p>
-                        <p>Sabtu: 08:00 - 14:00</p>
-                        <p>Minggu: Tutup</p>
+                    <h4 class="text-lg font-semibold mb-4 border-b-2 border-yellow-500 pb-2 inline-block">Kontak</h4>
+                    <div class="space-y-2 text-gray-300">
+                        <p><i class="fas fa-map-marker-alt fa-fw mr-2"></i>
+                        <a href="https://maps.app.goo.gl/ruoLZxPsTb8hB4Ep7">Jl. Karang Satria No.503, RT.010/RW.016, Duren Jaya, Kec. Bekasi Tim., Kota Bks, Jawa Barat 17111</a></p>
+                        <p><i class="fas fa-phone fa-fw mr-2"></i>
+                        <a href="tel:(021) 8800523">(021) 8800523</a></p>
+                        <p><i class="fas fa-envelope fa-fw mr-2"></i>
+                        <a href="mailto:info@smkkaryaguna2bekasi.sch.id">info@smkkaryaguna2bekasi.sch.id</a></p>
                     </div>
                 </div>
             </div>
-            <div class="flex space-between border-t border-white-700 mt-8 pt-8 text-center text-white">
-                <p>&copy; {{ date('Y') }} Perpustakaan Sekolah. All rights reserved.</p>
+
+            {{-- Copyright --}}
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; {{ date('Y') }} Perpustakaan SMK Karya Guna 2 Bekasi. Hak Cipta Dilindungi.</p>
             </div>
         </div>
     </footer>
+    
+    @if (session('email_verified'))
+    <div id="verificationModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-12 text-center max-w-md mx-auto transform transition-all duration-300 scale-95 opacity-0 modal-content">
+            <div class="w-20 h-20 bg-green-100 rounded-full mx-auto flex items-center justify-center mb-6">
+                <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Verifikasi Berhasil!</h2>
+            <p class="text-gray-600 mb-8">
+                Terima kasih! Akun Anda telah berhasil diverifikasi. Sekarang Anda dapat mengakses semua layanan perpustakaan.
+            </p>
+            <button id="closeModalBtn" class="w-full bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition duration-300 ease-in-out">
+                Mulai Menjelajah Buku
+            </button>
+        </div>
+    </div>
+    @endif
 
     <script>
-        // Mobile menu toggle
-        document.getElementById('mobileMenuButton').addEventListener('click', function() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
-            const icon = this.querySelector('i');
-            if (menu.classList.contains('hidden')) {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            } else {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            }
-        });
-
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Add fade-in animation to main content
         document.addEventListener('DOMContentLoaded', function() {
+            // --- ALL JAVASCRIPT LOGIC IS NOW IN ONE PLACE ---
+
+            // 1. Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                    const icon = this.querySelector('i');
+                    if (mobileMenu.classList.contains('hidden')) {
+                        icon.classList.replace('fa-times', 'fa-bars');
+                    } else {
+                        icon.classList.replace('fa-bars', 'fa-times');
+                    }
+                });
+            }
+
+            // 2. Add fade-in animation to main content
             const mainContent = document.querySelector('main');
             if (mainContent) {
                 mainContent.classList.add('fade-in');
+            }
+
+            // 3. Verification Modal Logic
+            const modal = document.getElementById('verificationModal');
+            if (modal) {
+                const modalContent = modal.querySelector('.modal-content');
+                const closeModalBtn = document.getElementById('closeModalBtn');
+
+                function showModal() {
+                    modal.classList.remove('hidden');
+                    void modalContent.offsetWidth; 
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                    modalContent.classList.add('scale-100', 'opacity-100');
+                }
+
+                function hideModal() {
+                    modalContent.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => modal.classList.add('hidden'), 300);
+                }
+
+                showModal(); // Show modal on page load if it exists
+
+                closeModalBtn.addEventListener('click', hideModal);
+                modal.addEventListener('click', function(event) {
+                    if (event.target === modal) hideModal();
+                });
             }
         });
     </script>

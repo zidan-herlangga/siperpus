@@ -19,12 +19,16 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+use App\Filament\Widgets\BorrowedBooks;
+use App\Filament\Widgets\LibraryStatsOverview;
+
 class AdminPerpusPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
             ->default()
+            ->sidebarFullyCollapsibleOnDesktop()
             ->id('admin-perpus')
             ->path('admin-perpus')
             ->brandName('Dashboard Admin')
@@ -40,8 +44,10 @@ class AdminPerpusPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                BorrowedBooks::class,
+                LibraryStatsOverview::class,
+                // AccountWidget::class,
+                // FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

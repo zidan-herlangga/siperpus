@@ -14,8 +14,11 @@ class EditBorrowing extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            ViewAction::make(),
-            DeleteAction::make(),
+            ViewAction::make()
+                ->label('Lihat Peminjaman')
+                ->url($this->getResource()::getUrl('view', ['record' => $this->record])),
+            DeleteAction::make()
+                ->label('Hapus Peminjaman'),
         ];
     }
 }

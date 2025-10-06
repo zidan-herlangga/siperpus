@@ -12,24 +12,32 @@ class BorrowingInfolist
         return $schema
             ->components([
                 TextEntry::make('student.name')
-                    ->label('Student'),
+                    ->label('Nama Siswa'),
                 TextEntry::make('book.title')
-                    ->label('Book'),
+                    ->label('Judul Buku'),
                 TextEntry::make('borrow_date')
+                    ->label('Tanggal Pinjam')
                     ->date(),
                 TextEntry::make('due_date')
+                    ->label('Jatuh Tempo')
                     ->date(),
                 TextEntry::make('return_date')
+                    ->label('Tanggal Kembali')
                     ->date()
                     ->placeholder('-'),
                 TextEntry::make('fine')
+                    ->label('Denda')
+                    ->money('IDR')
                     ->numeric(),
                 TextEntry::make('status')
+                    ->label('Status')
                     ->badge(),
                 TextEntry::make('created_at')
+                    ->label('Dibuat Pada')
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
+                    ->label('Diperbarui Pada')
                     ->dateTime()
                     ->placeholder('-'),
             ]);

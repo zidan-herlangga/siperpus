@@ -7,6 +7,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class StudentRegistrationController extends Controller
 {
@@ -17,14 +18,13 @@ class StudentRegistrationController extends Controller
 
     public function store(Request $request)
     {
-        ini_set('max_execution_time', 3600);
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'nis' => ['required', 'string', 'max:255', 'unique:students'],
             'class' => ['required', 'string', 'max:255'],
-            'contact' => ['nullable', 'string', 'max:20'],
+            'contact' => ['required', 'string', 'max:20'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:students'],
-            // 'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         $student = Student::create([
@@ -33,11 +33,11 @@ class StudentRegistrationController extends Controller
             'class' => $request->class,
             'contact' => $request->contact,
             'email' => $request->email,
+            'password' => $request->password,
         ]);
 
-        // Kirim email verifikasi
+        Auth::guard('student')->login($student);
         event(new Registered($student));
-
         return redirect()->route('student.register.form')->with('status', 'Pendaftaran berhasil! Silakan cek email Anda untuk verifikasi.');
     }
 }

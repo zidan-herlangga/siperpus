@@ -14,19 +14,28 @@ class StudentForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Nama Siswa')
                     ->required(),
                 TextInput::make('nis')
+                    ->label('NIS')
                     ->required(),
                 TextInput::make('class')
+                    ->label('Kelas')
                     ->required(),
                 TextInput::make('contact')
+                    ->label('No. Telp')
+                    ->tel()
                     ->default(null),
                 TextInput::make('email')
-                    ->label('Email address')
+                    ->label('Email')
                     ->email()
                     ->required(),
-                DateTimePicker::make('email_verified_at'),
+                DateTimePicker::make('email_verified_at')
+                    ->label('Email Terverifikasi Pada')
+                    ->placeholder('-')
+                    ->default(null),
                 Select::make('status')
+                    ->label('Status')
                     ->options(['Aktif' => 'Aktif', 'Nonaktif' => 'Nonaktif'])
                     ->default('Aktif')
                     ->required(),

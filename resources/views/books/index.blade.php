@@ -141,7 +141,7 @@
 
     <!-- Pagination -->
     @if($books->hasPages())
-    <div class="mt-8">
+    <div class="mt-8 flex justify-center">
         {{ $books->links('vendor.pagination.tailwind') }}
     </div>
     @endif

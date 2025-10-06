@@ -12,20 +12,28 @@ class BookForm
         return $schema
             ->components([
                 TextInput::make('title')
+                    ->label('Judul Buku')
                     ->required(),
                 TextInput::make('author')
+                    ->label('Pengarang')
                     ->required(),
                 TextInput::make('publisher')
+                    ->label('Penerbit')
                     ->required(),
                 TextInput::make('year')
+                    ->label('Tahun Terbit')
                     ->required(),
                 TextInput::make('isbn')
+                    ->label('ISBN')
                     ->default(null),
                 TextInput::make('category')
+                    ->label('Kategori')
                     ->required(),
                 TextInput::make('shelf_code')
+                    ->label('Kode Rak')
                     ->required(),
                 TextInput::make('stock')
+                    ->label('Stok')
                     ->required()
                     ->numeric()
                     ->default(0),

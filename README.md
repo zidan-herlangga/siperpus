@@ -1,66 +1,158 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📚 Sistem Informasi Perpustakaan Sekolah
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge&logo=laravel)
+![Filament](https://img.shields.io/badge/Filament-4-F59E0B?style=for-the-badge&logo=php)
+![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php)
 
-## About Laravel
+Aplikasi **Sistem Informasi Perpustakaan Sekolah** dibangun menggunakan **Laravel 11** dan **Filament Admin Panel 4**.  
+Proyek ini bertujuan membantu sekolah dalam mengelola data buku, siswa, dan peminjaman secara efisien dan modern.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🎛️ Panel Admin (Filament)
 
-## Learning Laravel
+-   **Dashboard Interaktif:** Statistik total buku, siswa, peminjaman, dan keterlambatan.
+-   **Manajemen Buku:** CRUD data buku (judul, penulis, penerbit, kategori, stok, dll).
+-   **Manajemen Siswa:** CRUD data siswa.
+-   **Manajemen Peminjaman:** Form dinamis dengan perhitungan otomatis denda dan status.
+-   **Tampilan Modern:** Menggunakan komponen Filament dengan struktur kode berbasis Schema Class (FormSchema, TableSchema).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 👩‍💻 Halaman Pengguna (Siswa)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+-   **Beranda Dinamis:** Statistik perpustakaan langsung dari database.
+-   **Katalog Buku:** Menampilkan seluruh koleksi buku dengan fitur pencarian dan filter kategori.
+-   **Detail Buku SEO-Friendly:** URL seperti `/books/atomic-habits`.
+-   **Registrasi & Verifikasi Email:** Siswa mendaftar dan menerima email konfirmasi.
+-   **Login Aman:** Otentikasi menggunakan email & password.
+-   **Dashboard Siswa:** Menampilkan buku yang sedang dipinjam dan riwayatnya.
+-   **Fitur Pinjam Buku:** Pinjam langsung dari halaman detail buku.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### ⚙️ Fitur Otomatis & Latar Belakang
 
-## Laravel Sponsors
+-   **Notifikasi Email Otomatis:**
+    -   Pengingat H-1 sebelum tanggal jatuh tempo.
+    -   Notifikasi keterlambatan beserta denda (Rp5.000/hari) setiap pukul 08.00 pagi.
+-   **Jam Operasional Situs:**
+    -   Akses publik ditutup otomatis di hari Sabtu & Minggu via Middleware.
+-   **Struktur Modular:**
+    -   Resource, Model, dan Notification terpisah untuk maintainability tinggi.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🧩 Teknologi yang Digunakan
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+| Komponen        | Versi | Keterangan         |
+| --------------- | ----- | ------------------ |
+| Laravel         | 11.x  | Framework utama    |
+| Filament        | 4.x   | Admin Panel        |
+| PHP             | 8.2+  | Bahasa backend     |
+| MySQL / MariaDB | -     | Database           |
+| Composer        | -     | Dependency Manager |
+| SMTP Gmail      | -     | Email Notifikasi   |
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## ⚙️ Panduan Instalasi (Tanpa NPM)
 
-## Code of Conduct
+### 1️⃣ Clone Repository
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+git clone https://github.com/zidan-herlangga/siperpus.git
+cd siperpus
+```
 
-## Security Vulnerabilities
+### 2️⃣ Install Dependensi
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+composer install
+```
 
-## License
+### 3️⃣ Salin File Environment
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+cp .env.example .env
+```
+
+### 4️⃣ Generate Application Key
+
+```bash
+php artisan key:generate
+```
+
+### 5️⃣ Konfigurasi .env
+
+Pastikan file .env berisi konfigurasi berikut:
+
+```bash
+APP_NAME=Siperpus
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_TIMEZONE=Asia/Jakarta
+APP_URL=http://localhost:8000
+APP_LOCALE=id
+APP_FALLBACK_LOCALE=en
+
+ASSET_URL=
+DEBUGBAR_ENABLED=false # default
+
+LOG_CHANNEL=stack
+LOG_LEVEL=debug
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=siperpus
+DB_USERNAME=root
+DB_PASSWORD=
+
+BROADCAST_CONNECTION=log
+CACHE_STORE=file
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+
+MEMCACHED_HOST=127.0.0.1
+
+# Google Authentication
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=
+MAIL_FROM_NAME="${APP_NAME}"
+
+VITE_APP_NAME="${APP_NAME}"
+```
+
+💡 Tips:
+
+-   Gunakan App Password Gmail, bukan password akun utama.
+-   Pastikan database siperpus sudah dibuat sebelum migrasi.
+
+### 6️⃣ Migrasi & Seeder
+
+```bash
+php artisan migrate --seed
+```
+
+### 7️⃣ Buat Akun Admin Pertama
+
+```bash
+php artisan make:filament-user
+```
+
+## ScreenShot
+
+| Tampilan                                                     | Deskripsi                                                                                                             |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| ![Dashboard Siswa](public/screenshots/dashboard-admin.png)   | **Dashboard Admin (Filament):** Menampilkan statistik total buku, siswa, dan transaksi peminjaman secara _real-time_. |
+| ![Daftar Buku](public/screenshots/catalogpage.png)           | **Manajemen Buku:** CRUD data buku lengkap dengan filter dan pencarian cepat.                                         |
+| ![Form Peminjaman](public/screenshots/modal-pinjam-buku.png) | **Form Peminjaman Buku:** Memilih siswa dan buku secara otomatis, dengan perhitungan tanggal kembali dan denda.       |
+| ![Katalog Buku Siswa](public/screenshots/detail-book.png)    | **Katalog Buku (Siswa):** Tampilan publik daftar buku dengan desain modern dan SEO-friendly.                          |
+| ![Dashboard Siswa](public/screenshots/dashboard-student.png) | **Dashboard Siswa:** Menampilkan buku yang sedang dipinjam dan riwayat peminjaman sebelumnya.                         |

@@ -49,7 +49,7 @@ class Borrowing extends Model
     {
         if ($this->return_date && $this->return_date->isAfter($this->due_date)) {
             $lateDays = $this->due_date->diffInDays($this->return_date);
-            return $lateDays * 5000; // Denda Rp5.000 per hari
+            return $lateDays * 1000; // Denda Rp1.000 per hari
         }
         return 0;
     }

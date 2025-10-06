@@ -25,7 +25,8 @@ class BookController extends Controller
             $query->where('category', $request->category);
         }
 
-        $books = $query->paginate(12);
+        // Pagination aktif
+        $books = $query->orderBy('title')->paginate(12)->withQueryString();
         
         // Get unique categories for filter dropdown
         $categories = Book::select('category')

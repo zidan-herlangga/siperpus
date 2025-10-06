@@ -1,0 +1,5 @@
+Aktifkan ;extention=zip -> extention=zip di file php.ini
+
+composer install
+php artisan migrate
+
