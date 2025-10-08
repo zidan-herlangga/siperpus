@@ -15,17 +15,26 @@ class CheckOperatingDays
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Ambil hari saat ini dalam zona waktu Indonesia
-        // 6 = Sabtu, 0 = Minggu
-        $dayOfWeek = now()->setTimezone('Asia/Jakarta')->dayOfWeek;
+        // Ambil waktu saat ini dalam zona waktu Indonesia
+        $now = now()->setTimezone('Asia/Jakarta');
+        $dayOfWeek = $now->dayOfWeek; // 0 = Minggu, 6 = Sabtu
+        $hour = $now->hour;
 
-        // Jika hari ini adalah Sabtu atau Minggu
+        // Jika hari Sabtu (6) atau Minggu (0)
         if ($dayOfWeek === 6 || $dayOfWeek === 0) {
-            // Tampilkan halaman "tutup" dan hentikan permintaan
-            return response()->view('closed');
+            return response()->view('closed', [
+                'message' => 'Sistem hanya beroperasi pada hari Senin–Jumat.',
+            ]);
         }
 
-        // Jika bukan Sabtu atau Minggu, lanjutkan permintaan ke halaman tujuan
+        // Jika di luar jam operasional (07:00–16:00)
+        if ($hour < 7 || $hour >= 16) {
+            return response()->view('closed', [
+                'message' => 'Sistem hanya dapat diakses antara pukul 07:00 hingga 16:00 WIB.',
+            ]);
+        }
+
+        // Jika masih dalam jam dan hari kerja → lanjut
         return $next($request);
     }
 }

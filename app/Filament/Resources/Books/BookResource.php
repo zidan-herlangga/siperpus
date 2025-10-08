@@ -15,10 +15,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
+
 
 class BookResource extends Resource
 {
     protected static ?string $model = Book::class;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Perpustakaan';
 
     protected static ?string $label = 'Buku';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-book-open';

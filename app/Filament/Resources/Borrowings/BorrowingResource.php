@@ -15,10 +15,13 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
+
 
 class BorrowingResource extends Resource
 {
     protected static ?string $model = Borrowing::class;
+    protected static string|UnitEnum|null $navigationGroup = 'Perpustakaan';
 
     protected static ?string $label = 'Peminjaman';
 

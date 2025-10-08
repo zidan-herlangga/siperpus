@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perpustakaan Tutup</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #047857, #065f46);
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 </head>
+
 <body class="gradient-bg flex items-center justify-center min-h-screen">
     <div class="text-center bg-white p-12 rounded-2xl shadow-2xl max-w-lg mx-auto">
         <div class="w-20 h-20 bg-red-100 rounded-full mx-auto flex items-center justify-center mb-6">
@@ -30,4 +28,5 @@
         </div>
     </div>
 </body>
+
 </html>

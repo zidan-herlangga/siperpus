@@ -16,6 +16,7 @@ class BorrowingForm
                 Select::make('student_id')
                     ->label('Nama Siswa')
                     ->searchable()
+                    ->live()
                     ->relationship('student', 'name')
                     ->required(),
                 Select::make('book_id')
@@ -32,8 +33,7 @@ class BorrowingForm
                     ->required(),
                 DatePicker::make('return_date')
                     ->label('Tanggal Kembali')
-                    ->live()
-                    ->required(),
+                    ->live(),
                 TextInput::make('fine')
                     ->label('Denda')
                     ->required()

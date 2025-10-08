@@ -30,6 +30,27 @@ class Borrowing extends Model
         ];
     }
 
+    // --- LOGIKA OTOMATIS UNTUK STOK BUKU ---
+    protected static function booted(): void
+    {
+        static::updating(function (Borrowing $borrowing) {
+            // Cek apakah kolom 'status' adalah yang sedang diubah
+            if ($borrowing->isDirty('status')) {
+                $originalStatus = $borrowing->getOriginal('status');
+
+                // Jika buku dikembalikan (status berubah dari Dipinjam -> Dikembalikan)
+                if ($originalStatus == 'Dipinjam' && $borrowing->status == 'Dikembalikan') {
+                    $borrowing->book->increment('stock');
+                }
+                // Jika status pengembalian dibatalkan (Dikembalikan -> Dipinjam)
+                elseif ($originalStatus == 'Dikembalikan' && $borrowing->status == 'Dipinjam') {
+                    $borrowing->book->decrement('stock');
+                }
+            }
+        });
+    }
+    // --- AKHIR LOGIKA OTOMATIS ---
+
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
@@ -40,16 +61,11 @@ class Borrowing extends Model
         return $this->belongsTo(Book::class);
     }
 
-    /**
-     * Menghitung denda berdasarkan tanggal kembali dan jatuh tempo.
-     *
-     * @return int
-     */
     public function calculateFine(): int
     {
         if ($this->return_date && $this->return_date->isAfter($this->due_date)) {
             $lateDays = $this->due_date->diffInDays($this->return_date);
-            return $lateDays * 1000; // Denda Rp1.000 per hari
+            return $lateDays * 1000;
         }
         return 0;
     }

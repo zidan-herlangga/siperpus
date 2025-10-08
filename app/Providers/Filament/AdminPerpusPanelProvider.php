@@ -32,6 +32,7 @@ class AdminPerpusPanelProvider extends PanelProvider
             ->id('admin-perpus')
             ->path('admin-perpus')
             ->brandName('Dashboard Admin')
+            ->registrationRouteSlug('register')
             ->login()
             ->colors([
                 'primary' => Color::Green,

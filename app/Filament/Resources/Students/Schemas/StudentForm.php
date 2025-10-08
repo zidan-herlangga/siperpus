@@ -28,6 +28,7 @@ class StudentForm
                     ->default(null),
                 TextInput::make('email')
                     ->label('Email')
+                    ->disabled()
                     ->email()
                     ->required(),
                 DateTimePicker::make('email_verified_at')

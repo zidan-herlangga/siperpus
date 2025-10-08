@@ -15,11 +15,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
 
+
+    protected static string|UnitEnum|null $navigationGroup = 'Perpustakaan';
     protected static ?string $label = 'Siswa';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
@@ -50,7 +53,7 @@ class StudentResource extends Resource
     {
         return [
             'index' => ListStudents::route('/'),
-            'create' => CreateStudent::route('/create'),
+            // 'create' => CreateStudent::route('/create'),
             'view' => ViewStudent::route('/{record}'),
             'edit' => EditStudent::route('/{record}/edit'),
         ];

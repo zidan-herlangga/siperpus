@@ -14,10 +14,10 @@ class BookController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('author', 'like', "%{$search}%")
-                  ->orWhere('category', 'like', "%{$search}%");
+                    ->orWhere('author', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%");
             });
         }
 
@@ -27,12 +27,12 @@ class BookController extends Controller
 
         // Pagination aktif
         $books = $query->orderBy('title')->paginate(12)->withQueryString();
-        
+
         // Get unique categories for filter dropdown
         $categories = Book::select('category')
-                         ->distinct()
-                         ->orderBy('category')
-                         ->pluck('category');
+            ->distinct()
+            ->orderBy('category')
+            ->pluck('category');
 
         return view('books.index', compact('books', 'categories'));
     }

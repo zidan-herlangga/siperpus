@@ -13,8 +13,8 @@ class ListStudents extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()
-                ->label('Tambah Siswa'),
+            // CreateAction::make()
+            //     ->label('Tambah Siswa'),
         ];
     }
 }
