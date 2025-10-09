@@ -14,15 +14,15 @@ function animateCounter(element, target, duration = 2000) {
     }, 16);
 }
 
-function showBorrowModal() {
-    document.getElementById("borrowModal")?.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-}
+// function showBorrowModal() {
+//     document.getElementById("borrowModal")?.classList.remove("hidden");
+//     document.body.style.overflow = "hidden";
+// }
 
-function closeBorrowModal() {
-    document.getElementById("borrowModal")?.classList.add("hidden");
-    document.body.style.overflow = "auto";
-}
+// function closeBorrowModal() {
+//     document.getElementById("borrowModal")?.classList.add("hidden");
+//     document.body.style.overflow = "auto";
+// }
 
 function togglePassword(id, btn) {
     const input = document.getElementById(id);
@@ -38,18 +38,6 @@ function togglePassword(id, btn) {
     }
 }
 
-// ---------- BORROW MODAL EVENTS ----------
-document.getElementById("borrowModal")?.addEventListener("click", function (e) {
-    if (e.target === this) {
-        closeBorrowModal();
-    }
-});
-
-document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") {
-        closeBorrowModal();
-    }
-});
 
 // ---------- DOMContentLoaded ----------
 document.addEventListener("DOMContentLoaded", function () {
@@ -244,4 +232,12 @@ document.addEventListener("DOMContentLoaded", function () {
         card.dataset.delay = index * 100;
         bookCardObserver.observe(card);
     });
+
+    // 12. Guide Book
+    function openBorrowGuideModal() {
+            document.getElementById('borrowGuideModal').classList.remove('hidden');
+    }
+    function closeBorrowGuideModal() {
+        document.getElementById('borrowGuideModal').classList.add('hidden');
+    }
 });

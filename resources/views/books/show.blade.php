@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $book->title . ' - Perpustakaan Sekolah')
+@section('title', $book->title . ' - Peminjaman Buku Online')
 
 @section('content')
     <div class="container mx-auto px-4 py-8 max-w-6xl">
@@ -189,4 +189,29 @@
             </div>
         </div>
     </div>
+    <script>
+        function showBorrowModal() {
+            document.getElementById("borrowModal")?.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeBorrowModal() {
+            document.getElementById("borrowModal")?.classList.add("hidden");
+            document.body.style.overflow = "auto";
+        }
+
+        // ---------- BORROW MODAL EVENTS ----------
+document.getElementById("borrowModal")?.addEventListener("click", function (e) {
+    if (e.target === this) {
+        closeBorrowModal();
+    }
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        closeBorrowModal();
+    }
+});
+
+    </script>
 @endsection

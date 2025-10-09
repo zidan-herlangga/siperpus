@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Katalog Buku - Perpustakaan Sekolah')
+@section('title', 'Katalog Buku - Peminjaman Buku Online')
 
 @section('content')
     <div class="container mx-auto px-4 py-8">
@@ -75,7 +75,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
                     @foreach ($books as $book)
                         <div
-                            class="book-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:border-green-300 transition duration-300">
+                            class="book-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:border-green-300">
                             <div class="p-6">
                                 <!-- Status Badge -->
                                 <div class="flex justify-between items-start mb-3">
@@ -145,11 +145,46 @@
 
         <!-- Pagination -->
         @if ($books->hasPages())
-            <div class="mt-8 flex justify-center p-3 rounded-lg">
+            <div class="mt-8 p-3 rounded-lg">
                 {{-- pagination no dark --}}
-                {{ $books->links('vendor.pagination.simple-tailwind') }}
+                {{ $books->links('vendor.pagination.custom-pagination') }}
 
             </div>
         @endif
     </div>
+
+    <!-- Modal Petunjuk Peminjaman Buku -->
+    <div id="borrowGuideModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-xl">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-xl font-bold text-gray-800">Petunjuk Peminjaman Buku</h3>
+                    <button onclick="closeBorrowGuideModal()" class="text-gray-600 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4 text-gray-700 text-sm leading-relaxed">
+                    <p>Berikut adalah langkah-langkah untuk meminjam buku di perpustakaan kami:</p>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li><strong>Login atau Daftar:</strong> Pastikan kamu sudah masuk ke akun siswa. Jika belum, gunakan tombol Login atau Daftar di modal peminjaman.</li>
+                        <li><strong>Pilih Buku:</strong> Telusuri daftar buku yang tersedia dan klik tombol "Pinjam" pada buku yang kamu inginkan.</li>
+                        <li><strong>Konfirmasi Peminjaman:</strong> Pada modal peminjaman, periksa detail tanggal peminjaman dan jatuh tempo, lalu klik "Konfirmasi Peminjaman".</li>
+                        <li><strong>Ambil Buku:</strong> Setelah konfirmasi, kamu bisa mengambil buku tersebut di perpustakaan sesuai aturan yang berlaku.</li>
+                        <li><strong>Kembalikan Tepat Waktu:</strong> Pastikan mengembalikan buku sebelum tanggal jatuh tempo untuk menghindari denda keterlambatan.</li>
+                    </ol>
+                    <p class="font-semibold">Jika ada pertanyaan, silakan hubungi petugas perpustakaan atau admin.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openBorrowGuideModal() {
+            document.getElementById('borrowGuideModal').classList.remove('hidden');
+        }
+        function closeBorrowGuideModal() {
+            document.getElementById('borrowGuideModal').classList.add('hidden');
+        }
+    </script>
 @endsection

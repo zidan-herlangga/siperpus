@@ -135,13 +135,14 @@ VITE_APP_NAME="${APP_NAME}"
 -   Gunakan App Password Gmail, bukan password akun utama.
 -   Pastikan database siperpus sudah dibuat sebelum migrasi.
 
-### 6️⃣ Migrasi & Seeder
+### 6️⃣ Migrasi & Seed
 
 ```bash
-php artisan migrate --seed
+php artisan migrate 
+php artisan db:seed
 ```
 
-### 7️⃣ Buat Akun Admin Pertama
+### 7️⃣ Buat Akun Admin
 
 ```bash
 php artisan make:filament-user
