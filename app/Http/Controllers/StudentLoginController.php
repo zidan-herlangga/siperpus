@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class StudentLoginController extends Controller
 {
     /**
-     * Menampilkan form login.
+     * Menampilkan halaman form login.
      */
     public function showLoginForm()
     {
@@ -26,24 +25,21 @@ class StudentLoginController extends Controller
             'password' => ['required'],
         ]);
 
-        // Coba lakukan otentikasi dengan kredensial yang diberikan
-        if (Auth::guard('student')->attempt($credentials)) {
+        // Coba otentikasi dengan kredensial yang diberikan dan opsi "Ingat Saya"
+        if (Auth::guard('student')->attempt($credentials, $request->boolean('remember'))) {
             // --- KREDENSIAL BENAR ---
             
+            $request->session()->regenerate();
             $student = Auth::guard('student')->user();
 
             // Periksa apakah email sudah diverifikasi
-            if ($student->hasVerifiedEmail()) {
-                // JIKA SUDAH DIVERIFIKASI: Lanjutkan login
-                $request->session()->regenerate();
-                return redirect()->intended(route('student.dashboard'))->with('status', 'Login berhasil!');
-            } else {
-                // JIKA BELUM DIVERIFIKASI: Batalkan login dan beri pesan error
-                Auth::guard('student')->logout();
-                return back()->withErrors([
-                    'email' => 'Akun Anda belum diverifikasi. Silakan cek email Anda untuk link verifikasi.',
-                ])->onlyInput('email');
+            if (! $student->hasVerifiedEmail()) {
+                // JIKA BELUM DIVERIFIKASI: Arahkan ke halaman notifikasi verifikasi
+                return redirect()->route('verification.notice');
             }
+
+            // JIKA SUDAH DIVERIFIKASI: Lanjutkan ke dashboard
+            return redirect()->intended(route('student.dashboard'))->with('status', 'Login berhasil!');
         }
 
         // --- KREDENSIAL SALAH ---

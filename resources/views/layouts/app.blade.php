@@ -9,11 +9,10 @@
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <link rel="icon" href="{{ asset('assets/image/favicon.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link rel="stylesheet" href="https://oyb1uxkjg.localto.net/assets/css/style.css">
+    {{-- <link rel="stylesheet" href="https://oyb1uxkjg.localto.net/assets/css/style.css"> --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     {{-- Aset disatukan melalui Vite --}}
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         /* Bottom navigation modern look */
@@ -44,28 +43,92 @@
     <header class="gradient-bg text-white shadow-lg sticky top-0 z-40">
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
-                <a href="/">
+                {{-- LOGO --}}
+                <a href=" {{ route('homepage') }} ">
                     <img src="{{ asset('assets/image/logo-light-smkg2.png') }}" alt="Logo SMK Karya Guna 2 Bekasi" class="w-auto h-10 md:h-12">
                 </a>
 
                 {{-- NAVIGASI DESKTOP --}}
                 <nav class="hidden md:flex items-center space-x-8">
                     @auth('student')
-                        <a href="{{ route('student.dashboard') }}" class="font-medium py-2 transition duration-300 {{ request()->routeIs('student.dashboard') ? 'text-yellow-400 border-b-2 border-yellow-400' : 'hover:text-yellow-300' }}">Dashboard</a>
-                        <a href="{{ route('books.index') }}" class="font-medium py-2 transition duration-300 {{ request()->routeIs('books.*') ? 'text-yellow-400 border-b-2 border-yellow-400' : 'hover:text-yellow-300' }}">Katalog Buku</a>
+                        {{-- TAMPIL JIKA SISWA SUDAH LOGIN --}}
+                        <a href="{{ route('student.dashboard') }}"
+                        class="font-medium py-2 transition duration-300 {{ request()->routeIs('student.dashboard') ? 'text-yellow-400 border-b-2 border-yellow-400' : 'hover:text-yellow-300' }}">
+                            Dashboard
+                        </a>
+                        <a href="{{ route('books.index') }}"
+                        class="font-medium py-2 transition duration-300 {{ request()->routeIs('books.*') ? 'text-yellow-400 border-b-2 border-yellow-400' : 'hover:text-yellow-300' }}">
+                            Katalog Buku
+                        </a>
+                        <a href="#" onclick="openBorrowGuideModal()"
+                        class="font-medium py-2 transition duration-300 hover:text-yellow-300">
+                            Petunjuk
+                        </a>
                         <form action="{{ route('student.logout') }}" method="POST">
                             @csrf
-                            <button type="submit" class="bg-yellow-500 text-white px-5 py-2 rounded-full font-semibold hover:bg-white hover:text-green-700 transition duration-300">Logout</button>
+                            <button type="submit"
+                                    class="bg-red-500 text-white px-5 py-2 rounded-full font-semibold hover:bg-red-700 transition duration-300">
+                                Logout
+                            </button>
                         </form>
                     @else
-                        <a href="{{ route('books.index') }}" class="font-medium py-2 transition duration-300 {{ request()->routeIs('books.*') ? 'text-yellow-400 border-b-2 border-yellow-400' : 'hover:text-yellow-300' }}">Katalog Buku</a>
-                        <a href="{{ route('student.register.form') }}" class="font-medium py-2 transition duration-300 {{ request()->routeIs('student.register.form') ? 'text-yellow-400 border-b-2 border-yellow-400' : 'hover:text-yellow-300' }}">Daftar</a>
-                        <a href="{{ route('student.login.form') }}" class="bg-white text-green-700 px-5 py-2 rounded-full font-semibold hover:bg-gray-200 transition duration-300">Login</a>
+                        {{-- TAMPIL JIKA PENGGUNA ADALAH TAMU (BELUM LOGIN) --}}
+                        <a href="{{ route('books.index') }}"
+                        class="font-medium py-2 transition duration-300 {{ request()->routeIs('books.*') ? 'text-yellow-400 border-b-2 border-yellow-400' : 'hover:text-yellow-300' }}">
+                            Katalog Buku
+                        </a>
+                        <a href="#" onclick="openBorrowGuideModal()"
+                        class="font-medium py-2 transition duration-300 hover:text-yellow-300">
+                            Petunjuk
+                        </a>
+                        <a href="{{ route('student.register.form') }}"
+                        class="font-medium py-2 transition duration-300 {{ request()->routeIs('student.register.form') ? 'text-yellow-400 border-b-2 border-yellow-400' : 'hover:text-yellow-300' }}">
+                            Daftar
+                        </a>
+                        <a href="{{ route('student.login.form') }}"
+                        class="bg-yellow-500 text-green-700 px-5 py-2 rounded-full font-semibold hover:bg-yellow-600 transition duration-300">
+                            Login
+                        </a>
                     @endauth
                 </nav>
 
-                {{-- Tombol hamburger (jika diperlukan di masa depan) --}}
-                <div class="md:hidden"></div>
+                {{-- NAVIGASI MOBILE (JUGA DIPERBAIKI) --}}
+                <nav class="mobile-nav fixed bottom-0 left-0 right-0 text-white shadow-lg md:hidden z-50 gradient-bg">
+                    <div class="flex justify-around items-center h-16">
+                        @auth('student')
+                            {{-- TAMPIL JIKA SISWA SUDAH LOGIN --}}
+                            <a href="{{ route('student.dashboard') }}" class="flex flex-col items-center text-xs font-medium transition-all duration-200 {{ request()->routeIs('student.dashboard') ? 'text-yellow-400 scale-110' : 'text-gray-300 hover:text-white' }}">
+                                <i class="fas fa-home text-xl mb-1"></i><span>Dashboard</span>
+                            </a>
+                            <a href="{{ route('books.index') }}" class="flex flex-col items-center text-xs font-medium transition-all duration-200 {{ request()->routeIs('books.*') ? 'text-yellow-400 scale-110' : 'text-gray-300 hover:text-white' }}">
+                                <i class="fas fa-book text-xl mb-1"></i><span>Katalog</span>
+                            </a>
+                            <button onclick="openBorrowGuideModal()" class="flex flex-col items-center text-xs font-medium text-gray-300 hover:text-white">
+                                <i class="fas fa-info-circle text-xl mb-1"></i><span>Petunjuk</span>
+                            </button>
+                            <form action="{{ route('student.logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="text-gray-300 hover:text-white flex flex-col items-center text-xs font-medium">
+                                    <i class="fas fa-sign-out-alt text-xl mb-1"></i><span>Logout</span>
+                                </button>
+                            </form>
+                        @else
+                            {{-- TAMPIL JIKA PENGGUNA ADALAH TAMU (BELUM LOGIN) --}}
+                            <a href="{{ route('homepage') }}" class="flex flex-col items-center text-xs font-medium transition-all duration-200 {{ request()->routeIs('homepage') ? 'text-yellow-400 scale-110' : 'text-gray-300 hover:text-white' }}">
+                                <i class="fas fa-home text-xl mb-1"></i><span>Beranda</span>
+                            </a>
+                            <a href="{{ route('books.index') }}" class="flex flex-col items-center text-xs font-medium transition-all duration-200 {{ request()->routeIs('books.*') ? 'text-yellow-400 scale-110' : 'text-gray-300 hover:text-white' }}">
+                                <i class="fas fa-book text-xl mb-1"></i><span>Katalog</span>
+                            </a>
+                            <a href="{{ route('student.register.form') }}" class="flex flex-col items-center text-xs font-medium text-gray-300 hover:text-white">
+                                <i class="fas fa-user-plus text-xl mb-1"></i><span>Daftar</span>
+                            </a>
+                            <a href="{{ route('student.login.form') }}" class="flex flex-col items-center text-xs font-medium text-gray-300 hover:text-white">
+                                <i class="fas fa-sign-in-alt text-xl mb-1"></i><span>Login</span>
+                            </a>
+                        @endauth
+                    </div>
+                </nav>
             </div>
         </div>
     </header>
@@ -152,40 +215,6 @@
             </div>
         </div>
     </footer>
-
-    {{-- NAVIGASI BAWAH UNTUK MOBILE --}}
-    <nav class="mobile-nav fixed bottom-0 left-0 right-0 text-white shadow-lg md:hidden z-50 gradient-bg">
-        <div class="flex justify-around items-center h-16">
-            @auth('student')
-                <a href="{{ route('student.dashboard') }}" class="flex flex-col items-center text-xs font-medium transition-all duration-200 {{ request()->routeIs('student.dashboard') ? 'text-yellow-400 scale-110' : 'text-gray-300 hover:text-white' }}">
-                    <i class="fas fa-home text-xl mb-1"></i><span>Dashboard</span>
-                </a>
-                <a href="{{ route('books.index') }}" class="flex flex-col items-center text-xs font-medium transition-all duration-200 {{ request()->routeIs('books.*') ? 'text-yellow-400 scale-110' : 'text-gray-300 hover:text-white' }}">
-                    <i class="fas fa-book text-xl mb-1"></i><span>Katalog</span>
-                </a>
-                <button onclick="openBorrowGuideModal()" class="flex flex-col items-center text-xs font-medium text-gray-300 hover:text-white">
-                    <i class="fas fa-info-circle text-xl mb-1"></i><span>Petunjuk</span>
-                </button>
-                <form action="{{ route('student.logout') }}" method="POST" class="flex flex-col items-center text-xs font-medium">
-                    @csrf
-                    <button type="submit" class="text-gray-300 hover:text-white"><i class="fas fa-sign-out-alt text-xl mb-1"></i><span>Logout</span></button>
-                </form>
-            @else
-                <a href="/" class="flex flex-col items-center text-xs font-medium transition-all duration-200 {{ request()->routeIs('homepage') ? 'text-yellow-400 scale-110' : 'text-gray-300 hover:text-white' }}">
-                    <i class="fas fa-home text-xl mb-1"></i><span>Beranda</span>
-                </a>
-                <a href="{{ route('books.index') }}" class="flex flex-col items-center text-xs font-medium transition-all duration-200 {{ request()->routeIs('books.*') ? 'text-yellow-400 scale-110' : 'text-gray-300 hover:text-white' }}">
-                    <i class="fas fa-book text-xl mb-1"></i><span>Katalog</span>
-                </a>
-                <a href="{{ route('student.register.form') }}" class="flex flex-col items-center text-xs font-medium text-gray-300 hover:text-white">
-                    <i class="fas fa-user-plus text-xl mb-1"></i><span>Daftar</span>
-                </a>
-                <a href="{{ route('student.login.form') }}" class="flex flex-col items-center text-xs font-medium text-gray-300 hover:text-white">
-                    <i class="fas fa-sign-in-alt text-xl mb-1"></i><span>Login</span>
-                </a>
-            @endauth
-        </div>
-    </nav>
     
     {{-- MODAL PETUNJUK PEMINJAMAN --}}
     <div id="borrowGuideModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
@@ -205,7 +234,7 @@
     </div>
     
     {{-- MODAL VERIFIKASI (TETAP SAMA) --}}
-    @if (session('email_verified'))
+    {{-- @if (session('email_verified'))
         <div id="verificationModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 transition-opacity duration-300">
             <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-10 text-center max-w-md w-full modal-content">
                 <div class="w-20 h-20 bg-green-100 rounded-full mx-auto flex items-center justify-center mb-6">
@@ -222,7 +251,7 @@
                 </button>
             </div>
         </div>
-    @endif
+    @endif --}}
     
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script>

@@ -71,24 +71,24 @@
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Perpustakaan dalam Angka</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                <div class="bg-white p-8 rounded-xl shadow-md">
                     <i class="fas fa-book-open text-3xl text-green-500 mb-3"></i>
-                    <div class="text-4xl font-bold text-gray-800" id="bookCount" data-target="{{ $bookCount ?? 0 }}">0</div>
+                    <div class="text-4xl font-bold text-gray-800">{{ $bookCount ?? 0 }}</div>
                     <p class="text-gray-600 font-medium mt-1">Judul Buku</p>
                 </div>
-                <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                <div class="bg-white p-8 rounded-xl shadow-md">
                     <i class="fas fa-users text-3xl text-teal-500 mb-3"></i>
-                    <div class="text-4xl font-bold text-gray-800" id="studentCount" data-target="{{ $studentCount ?? 0 }}">0</div>
+                    <div class="text-4xl font-bold text-gray-800">{{ $studentCount ?? 0 }}</div>
                     <p class="text-gray-600 font-medium mt-1">Siswa Terdaftar</p>
                 </div>
-                <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                <div class="bg-white p-8 rounded-xl shadow-md">
                     <i class="fas fa-exchange-alt text-3xl text-emerald-500 mb-3"></i>
-                    <div class="text-4xl font-bold text-gray-800" id="borrowCount" data-target="{{ $borrowCount ?? 0 }}">0</div>
+                    <div class="text-4xl font-bold text-gray-800">{{ $borrowCount ?? 0 }}</div>
                     <p class="text-gray-600 font-medium mt-1">Peminjaman Bulan Ini</p>
                 </div>
-                <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition duration-300">
+                <div class="bg-white p-8 rounded-xl shadow-md">
                     <i class="fas fa-tags text-3xl text-lime-500 mb-3"></i>
-                    <div class="text-4xl font-bold text-gray-800" id="categoryCount" data-target="{{ $categoryCount ?? 0 }}">0</div>
+                    <div class="text-4xl font-bold text-gray-800">{{ $categoryCount ?? 0 }}</div>
                     <p class="text-gray-600 font-medium mt-1">Kategori Buku</p>
                 </div>
             </div>

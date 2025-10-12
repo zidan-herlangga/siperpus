@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard Siswa')
+{{-- {{ dd(Auth::guard('student')->check(), Auth::guard('student')->user()) }} --}}
 
 @section('content')
     <div class="bg-gray-100 py-12">
@@ -160,12 +161,5 @@
             </div>
         </div>
     </div>
-    <script>
-        function openBorrowGuideModal() {
-            document.getElementById('borrowGuideModal').classList.remove('hidden');
-        }
-        function closeBorrowGuideModal() {
-            document.getElementById('borrowGuideModal').classList.add('hidden');
-        }
-    </script>
+    
 @endsection

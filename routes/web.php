@@ -3,7 +3,7 @@
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BorrowingController;
-// use App\Http\Controllers\HomeController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StudentLoginController;
 use App\Http\Controllers\StudentRegistrationController;
 use App\Models\Student;
@@ -17,10 +17,8 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Redirect root ke daftar buku
-Route::get('/', function () {
-    return view('index');
-});
+// Halaman Beranda
+Route::get('/', [HomeController::class, 'index'])->name('homepage');
 
 // ==========================
 // RUTE UNTUK TAMU (GUEST)
@@ -36,22 +34,18 @@ Route::middleware('guest:student')->group(function () {
 Route::post('/logout', [StudentLoginController::class, 'logout'])->middleware('auth:student')->name('student.logout');
 
 // ==========================
-// RUTE PUBLIK & PEMINJAMAN
+// RUTE PUBLIK
 // ==========================
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
 
 // ==========================
-// RUTE YANG DILINDUNGI
+// RUTE YANG DILINDUNGI (MEMERLUKAN LOGIN & VERIFIKASI)
 // ==========================
 Route::middleware(['auth:student', 'verified'])->group(function () {
-    // Dashboard hanya bisa diakses jika sudah login DAN terverifikasi
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
-    
-    // Pinjam buku hanya bisa dilakukan jika sudah login DAN terverifikasi
     Route::post('/borrow/{book}', [BorrowingController::class, 'store'])->name('books.borrow');
 });
-
 
 // ==========================
 // RUTE VERIFIKASI EMAIL
@@ -64,19 +58,15 @@ Route::get('/email/verify', function () {
 // Link dari email (TIDAK PERLU LOGIN)
 Route::get('/email/verify/{id}/{hash}', function (Request $request, $id) {
     $student = Student::find($id);
-
     if (!$student || !hash_equals((string) $request->route('hash'), sha1($student->getEmailForVerification()))) {
         abort(403);
     }
-
     if ($student->hasVerifiedEmail()) {
         return redirect()->route('student.login.form')->with('status', 'Akun Anda sudah terverifikasi. Silakan login.');
     }
-
     if ($student->markEmailAsVerified()) {
         event(new Verified($student));
     }
-
     return redirect()->route('student.login.form')->with('status', 'Verifikasi berhasil! Silakan login.');
 })->middleware(['signed'])->name('verification.verify');
 

@@ -71,11 +71,21 @@
                                 <label for="class" class="block text-sm font-medium text-gray-700 mb-2">Kelas <span class="text-red-500">*</span></label>
                                 <div class="relative">
                                     <select name="class" id="class" required class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 transition appearance-none">
+                                        @php
+                                            $grades = ['X', 'XI', 'XII'];
+                                            $majors = ['AK', 'MP', 'TKJ', 'TKR'];
+                                        @endphp
                                         <option value="">Pilih Kelas</option>
-                                        {{-- Opsi kelas Anda di sini --}}
-                                        <option value="X AK 1" @selected(old('class') == 'X AK 1')>X AK 1</option>
-                                        <option value="X AK 2" @selected(old('class') == 'X AK 2')>X AK 2</option>
-                                        {{-- Tambahkan kelas lainnya --}}
+                                        @foreach ($grades as $grade)
+                                            @foreach ($majors as $major)
+                                                @for ($i = 1; $i <= 6; $i++)
+                                                    @php
+                                                        $classOption = $grade . ' ' . $major . ' ' . $i;
+                                                    @endphp
+                                                    <option value="{{ $classOption }}" {{ old('class') == $classOption ? 'selected' : '' }}>{{ $classOption }}</option>
+                                                @endfor
+                                            @endforeach
+                                        @endforeach
                                     </select>
                                     <i class="fas fa-graduation-cap absolute left-3 top-3.5 text-gray-400"></i>
                                 </div>
