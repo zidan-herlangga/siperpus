@@ -56,32 +56,38 @@ Proyek ini bertujuan membantu sekolah dalam mengelola data buku, siswa, dan pemi
 
 ## ⚙️ Panduan Instalasi (Tanpa NPM)
 
-### 1️⃣ Clone Repository
+### 1. Clone Repository
 
 ```bash
 git clone https://github.com/zidan-herlangga/siperpus.git
 cd siperpus
 ```
 
-### 2️⃣ Install Dependensi
+### 2. Install Dependensi
 
 ```bash
 composer install
 ```
 
-### 3️⃣ Salin File Environment
+### 3. Install NPM
+
+```bash
+npm install
+```
+
+### 4. Salin File Environment
 
 ```bash
 cp .env.example .env
 ```
 
-### 4️⃣ Generate Application Key
+### 5. Generate Application Key
 
 ```bash
 php artisan key:generate
 ```
 
-### 5️⃣ Konfigurasi .env
+### 6. Konfigurasi .env
 
 Pastikan file .env berisi konfigurasi berikut:
 
@@ -135,17 +141,29 @@ VITE_APP_NAME="${APP_NAME}"
 -   Gunakan App Password Gmail, bukan password akun utama.
 -   Pastikan database siperpus sudah dibuat sebelum migrasi.
 
-### 6️⃣ Migrasi & Seed
+### 7. Migrasi & Seed
 
 ```bash
 php artisan migrate 
 php artisan db:seed
 ```
 
-### 7️⃣ Buat Akun Admin
+### 8. Buat Akun Admin
 
 ```bash
 php artisan make:filament-user
+```
+
+### 9. Jalankan Artisan
+
+```bash
+php artisan serve
+```
+
+### 9. Jalankan NPM
+
+```bash
+npm run dev
 ```
 
 ## ScreenShot
