@@ -15,7 +15,7 @@ class StudentSeeder extends Seeder
             'nis' => '1001',
             'class' => 'XII TKJ 1',
             'contact' => '085161334009',
-            'email' => 'zidanherlangga24@ gmail.com', // Ganti dengan email valid untuk tes
+            'email' => 'zidanherlangga24@gmail.com', // Ganti dengan email valid untuk tes
             'email_verified_at' => null,
             'password' => Hash::make('password'), // Password default
             'status' => 'Aktif',

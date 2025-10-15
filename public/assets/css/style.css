@@ -1,3 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+* {
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
 .gradient-bg {
     background: #006739;
 }
@@ -19,17 +26,6 @@
 .fade-in {
     animation: fadeIn 0.6s ease-in;
 }
-
-/* @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-} */
 
 #verificationModal.hidden {
     display: none;
@@ -91,3 +87,95 @@
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
 } */
+
+/* OFFCANVAS MODERN */
+.offcanvas {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 80%;
+    max-width: 320px;
+    height: 100vh;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.75);
+    box-shadow: -8px 0 25px rgba(0, 0, 0, 0.2);
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s ease-in-out;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    border-radius: 20px 0 0 20px;
+}
+
+.offcanvas.active {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.offcanvas a {
+    color: #064e3b;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 1rem;
+    transition: color 0.25s, transform 0.2s;
+}
+
+.offcanvas a:hover {
+    color: #facc15;
+    transform: translateX(4px);
+}
+
+.offcanvas-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 9998;
+}
+
+.offcanvas-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Tombol close */
+#closeOffcanvas {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s;
+}
+
+#closeOffcanvas:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: rotate(90deg);
+}
+
+/* Animasi modal */
+.modal-content {
+    animation: popUp 0.3s ease-out forwards;
+}
+
+@keyframes popUp {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

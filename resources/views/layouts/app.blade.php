@@ -1,99 +1,98 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#065f46">
     <meta name="description" content="Aplikasi Peminjaman Buku Online Perpustakaan SMK Karya Guna 2 Bekasi">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
     <title>@yield('title', 'Perpustakaan Sekolah')</title>
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
+
     <link rel="icon" href="{{ asset('assets/image/favicon.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        .offcanvas {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 80%;
-            max-width: 300px;
-            height: 100%;
-            background: #eaeaea;
-            box-shadow: -2px 0 15px rgba(0,0,0,0.2);
-            transition: right 0.3s ease-in-out;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
-        }
 
-        .offcanvas.active {
-            right: 0;
-        }
+    {{-- <script src="https://cdn.tailwindcss.com/3.4.17" async></script> --}}
 
-        .offcanvas a {
-            color: #065f46;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 1rem;
-            transition: color 0.2s;
-        }
-
-        .offcanvas a:hover {
-            color: #facc15;
-        }
-
-        .offcanvas-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            z-index: 9998;
-        }
-
-        .offcanvas-overlay.active {
-            display: block;
-        }
-
-        /* Animasi modal */
-        .modal-content {
-            animation: popUp 0.3s ease-out forwards;
-        }
-        @keyframes popUp {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-    </style>
 </head>
+
 <body class="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
 
     {{-- HEADER --}}
     <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            
+
             {{-- LOGO --}}
             <a href="{{ route('homepage') }}" class="flex items-center space-x-2">
-                <img src="{{ asset('assets/image/logo-light-smkg2.png') }}" alt="Logo SMK Karya Guna 2 Bekasi" class="w-auto h-10 md:h-12">
+                <img src="{{ asset('assets/image/logo-light-smkg2.png') }}" alt="Logo SMK Karya Guna 2 Bekasi"
+                    class="w-auto h-10 md:h-12">
             </a>
 
             {{-- NAVIGASI DESKTOP --}}
-            <nav class="hidden md:flex items-center space-x-8 font-medium">
+            <nav
+                class="hidden md:flex items-center gap-6 font-medium backdrop-blur-md bg-white/10 px-6 py-3 rounded-full shadow-lg border border-white/20">
                 @auth('student')
-                    <a href="{{ route('student.dashboard') }}" class="{{ request()->routeIs('student.dashboard') ? 'text-yellow-400 border-b-2 border-yellow-400 pb-1' : 'hover:text-yellow-300' }}">Dashboard</a>
-                    <a href="{{ route('books.index') }}" class="{{ request()->routeIs('books.*') ? 'text-yellow-400 border-b-2 border-yellow-400 pb-1' : 'hover:text-yellow-300' }}">Katalog</a>
-                    <a href="#" onclick="openBorrowGuideModal()" class="hover:text-yellow-300">Petunjuk</a>
+                    <a href="{{ route('student.dashboard') }}"
+                        class="relative px-3 py-2 transition-all duration-300
+                {{ request()->routeIs('student.dashboard')
+                    ? 'text-yellow-400 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-yellow-400'
+                    : 'text-white/90 hover:text-yellow-300 hover:after:absolute hover:after:bottom-0 hover:after:left-0 hover:after:h-[2px] hover:after:w-full hover:after:bg-yellow-300 hover:after:transition-all hover:after:duration-300' }}">
+                        Dashboard
+                    </a>
+
+                    <a href="{{ route('books.index') }}"
+                        class="relative px-3 py-2 transition-all duration-300
+                {{ request()->routeIs('books.*')
+                    ? 'text-yellow-400 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-yellow-400'
+                    : 'text-white/90 hover:text-yellow-300 hover:after:absolute hover:after:bottom-0 hover:after:left-0 hover:after:h-[2px] hover:after:w-full hover:after:bg-yellow-300 hover:after:transition-all hover:after:duration-300' }}">
+                        Katalog
+                    </a>
+
+                    <a href="#" onclick="openBorrowGuideModal()"
+                        class="text-white/90 hover:text-yellow-300 transition-colors duration-300">
+                        Petunjuk
+                    </a>
+
                     <form action="{{ route('student.logout') }}" method="POST" class="inline">
                         @csrf
-                        <button type="submit" class="bg-red-500 text-white px-5 py-2 rounded-full hover:bg-red-600 transition">Logout</button>
+                        <button type="submit"
+                            class="ml-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
+                            Logout
+                        </button>
                     </form>
                 @else
-                    <a href="{{ route('books.index') }}" class="{{ request()->routeIs('books.*') ? 'text-yellow-400 border-b-2 border-yellow-400 pb-1' : 'hover:text-yellow-300' }}">Katalog</a>
-                    <a href="#" onclick="openBorrowGuideModal()" class="hover:text-yellow-300">Petunjuk</a>
-                    <a href="{{ route('student.register.form') }}" class="{{ request()->routeIs('student.register.form') ? 'text-yellow-400 border-b-2 border-yellow-400 pb-1' : 'hover:text-yellow-300' }}">Daftar</a>
-                    <a href="{{ route('student.login.form') }}" class="bg-yellow-500 text-green-700 px-5 py-2 rounded-full hover:bg-yellow-600 transition">Login</a>
+                    <a href="{{ route('books.index') }}"
+                        class="relative px-3 py-2 transition-all duration-300
+                {{ request()->routeIs('books.*')
+                    ? 'text-yellow-400 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-yellow-400'
+                    : 'text-white/90 hover:text-yellow-300 hover:after:absolute hover:after:bottom-0 hover:after:left-0 hover:after:h-[2px] hover:after:w-full hover:after:bg-yellow-300 hover:after:transition-all hover:after:duration-300' }}">
+                        Katalog
+                    </a>
+
+                    <a href="#" onclick="openBorrowGuideModal()"
+                        class="text-white/90 hover:text-yellow-300 transition-colors duration-300">
+                        Petunjuk
+                    </a>
+
+                    <a href="{{ route('student.register.form') }}"
+                        class="relative px-3 py-2 transition-all duration-300
+                {{ request()->routeIs('student.register.form')
+                    ? 'text-yellow-400 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-yellow-400'
+                    : 'text-white/90 hover:text-yellow-300 hover:after:absolute hover:after:bottom-0 hover:after:left-0 hover:after:h-[2px] hover:after:w-full hover:after:bg-yellow-300 hover:after:transition-all hover:after:duration-300' }}">
+                        Daftar
+                    </a>
+
+                    <a href="{{ route('student.login.form') }}"
+                        class="ml-3 bg-gradient-to-r from-yellow-500 to-yellow-400 text-gray-900 font-semibold px-6 py-2 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
+                        Login
+                    </a>
                 @endauth
             </nav>
+
 
             {{-- TOMBOL MENU MOBILE --}}
             <button id="menuToggle" class="md:hidden text-white text-2xl focus:outline-none">
@@ -102,11 +101,11 @@
         </div>
     </header>
 
-    {{-- OFFCANVAS MENU MOBILE --}}
+    {{-- OFFCANVAS MODERN --}}
     <div id="offcanvas" class="offcanvas">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-lg font-bold text-green-700">Menu</h2>
-            <button id="closeOffcanvas" class="text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
+            <button id="closeOffcanvas"><i class="fas fa-times text-green-700 text-xl"></i></button>
         </div>
         <div class="flex flex-col flex-grow">
             @auth('student')
@@ -126,6 +125,7 @@
             @endauth
         </div>
     </div>
+
     <div id="offcanvasOverlay" class="offcanvas-overlay"></div>
 
     {{-- MAIN CONTENT --}}
@@ -136,12 +136,14 @@
     {{-- FOOTER --}}
     <footer class="gradient-bg text-white py-12 mt-12 hidden md:block">
         <div class="container mx-auto px-4 text-center">
-            <p class="text-sm text-gray-200">© {{ date('Y') }} Perpustakaan SMK Karya Guna 2 Bekasi. Hak Cipta Dilindungi.</p>
+            <p class="text-sm text-gray-200">© {{ date('Y') }} Perpustakaan SMK Karya Guna 2 Bekasi. Hak Cipta
+                Dilindungi.</p>
         </div>
     </footer>
 
-    {{-- MODAL PETUNJUK PEMINJAMAN --}}
-    <div id="borrowGuideModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+    {{-- MODAL PETUNJUK --}}
+    <div id="borrowGuideModal"
+        class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full modal-content">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold text-gray-800">Petunjuk Peminjaman Buku</h2>
@@ -152,11 +154,13 @@
                 <li><strong>Cari Buku:</strong> Jelajahi katalog untuk menemukan buku yang ingin Anda pinjam.</li>
                 <li><strong>Klik Pinjam:</strong> Pada halaman detail buku, klik tombol "Pinjam Buku".</li>
                 <li><strong>Konfirmasi:</strong> Setujui syarat dan ketentuan pada modal konfirmasi peminjaman.</li>
-                <li><strong>Selesai:</strong> Buku berhasil dipinjam! Cek halaman Dashboard untuk melihat detail peminjaman Anda.</li>
+                <li><strong>Selesai:</strong> Buku berhasil dipinjam! Cek halaman Dashboard untuk melihat detail
+                    peminjaman Anda.</li>
             </ol>
         </div>
     </div>
 
+    <script src="{{ asset('assets/js/main.js') }}"></script>
     <script>
         const menuToggle = document.getElementById('menuToggle');
         const offcanvas = document.getElementById('offcanvas');
@@ -166,6 +170,7 @@
         menuToggle.addEventListener('click', () => {
             offcanvas.classList.add('active');
             offcanvasOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // prevent scroll
         });
 
         closeOffcanvas.addEventListener('click', closeMenu);
@@ -174,8 +179,9 @@
         function closeMenu() {
             offcanvas.classList.remove('active');
             offcanvasOverlay.classList.remove('active');
+            document.body.style.overflow = '';
         }
     </script>
-
 </body>
+
 </html>
