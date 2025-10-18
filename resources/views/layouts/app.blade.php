@@ -16,7 +16,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{-- <script src="https://cdn.tailwindcss.com/3.4.17" async></script> --}}
+    <script src="https://cdn.tailwindcss.com/3.4.17" async></script>
 
 </head>
 

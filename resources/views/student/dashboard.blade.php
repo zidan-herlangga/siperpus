@@ -49,12 +49,11 @@
                                                 </span>
                                             </div>
                                         </div>
-
                                         @if ($isOverdue)
                                             <div
                                                 class="mt-4 bg-red-100 text-red-700 text-xs font-semibold p-3 rounded-lg text-center">
                                                 <i class="fas fa-exclamation-triangle mr-1"></i>
-                                                Terlambat {{ now()->diffInDays($borrowing->due_date) }} hari
+                                                Terlambat {{ abs(floor(now()->diffInDays($borrowing->due_date))) }} hari
                                             </div>
                                         @endif
                                     </div>
@@ -141,6 +140,10 @@
                             <a href="{{ route('books.index') }}"
                                 class="block w-full text-center bg-green-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-green-500 transition duration-300 transform hover:scale-105">
                                 <i class="fas fa-search mr-2"></i>Cari Buku Baru
+                            </a>
+                            <a href="/chatbot"
+                                class="block w-full text-center bg-green-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-green-500 transition duration-300 transform hover:scale-105">
+                                Chatbot
                             </a>
                             <button onclick="openBorrowGuideModal()"
                                 class="block w-full text-center bg-yellow-100 text-yellow-700 font-semibold py-3 px-4 rounded-lg hover:bg-yellow-200 transition duration-300">

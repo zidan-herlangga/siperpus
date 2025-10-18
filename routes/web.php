@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 // Halaman Beranda
 Route::get('/', [HomeController::class, 'index'])->name('homepage');
 
+
+
 // ==========================
 // RUTE UNTUK TAMU (GUEST)
 // ==========================
@@ -45,6 +47,9 @@ Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.s
 Route::middleware(['auth:student', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
     Route::post('/borrow/{book}', [BorrowingController::class, 'store'])->name('books.borrow');
+    
+    // Halaman Chatbot
+    Route::get('/chatbot', fn() => view('chatbot'));
 });
 
 // ==========================

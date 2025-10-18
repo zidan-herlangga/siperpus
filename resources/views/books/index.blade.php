@@ -168,6 +168,33 @@
     </div>
 </div>
 
+    {{-- <div class="chatbot-container">
+        <div class="chatbot-button" id="chatbotToggle">
+            <i>💬</i>
+        </div>
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <h3>Chatbot Perpustakaan</h3>
+                <button class="close-button" id="closeChatbot">×</button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message bot-message">
+                    Halo! 👋 Saya asisten AI perpustakaan. Saya bisa membantu Anda menemukan buku, merekomendasikan bacaan, atau berdiskusi tentang literatur. Apa yang ingin Anda bicarakan hari ini?
+                </div>
+            </div>
+            <div class="suggestions">
+                <button class="suggestion" data-query="Rekomendasi buku psikologi">Psikologi</button>
+                <button class="suggestion" data-query="Buku tentang filsafat">Filsafat</button>
+                <button class="suggestion" data-query="Komik terbaik tahun ini">Komik</button>
+                <button class="suggestion" data-query="Cara menjadi anggota perpustakaan">Keanggotaan</button>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbotInput" placeholder="Ketik pertanyaan Anda...">
+                <button id="sendMessage">Kirim</button>
+            </div>
+        </div>
+    </div> --}}
+
 <script>
 function openBorrowGuideModal() {
     document.getElementById('borrowGuideModal').classList.remove('hidden');
