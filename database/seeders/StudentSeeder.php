@@ -47,8 +47,8 @@ class StudentSeeder extends Seeder
             'name' => 'Naufal Rafly S',
             'nis' => '1004',
             'class' => 'XII TKJ 1',
-            'contact' => 'naufalraflybaru@gmail.com',
-            'email' => '089516150350', // Ganti dengan email valid untuk tes
+            'email' => 'naufalraflybaru@gmail.com',
+            'contact' => '089516150350', // Ganti dengan email valid untuk tes
             'email_verified_at' => null,
             'password' => Hash::make('password'), // Password default
             'status' => 'Aktif',

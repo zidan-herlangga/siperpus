@@ -3,10 +3,10 @@
 @section('title', 'Verifikasi Email Anda') 
 
 @section('content') 
-<div class="min-h-screen bg-gradient-to-r from-green-700 to-emerald-500 flex items-center justify-center py-12 px-4">
+<div class="min-h-screen bg-gradient-to-br from-green-100 via-emerald-50 to-yellow-50 flex items-center justify-center px-4 py-12">
     <div class="max-w-lg w-full">
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div class="gradient-bg text-white p-8 text-center">
+            <div class="bg-gradient-to-r from-green-700 to-emerald-500 text-white p-8 text-center">
                 <h1 class="text-3xl font-bold mb-2">Satu Langkah Lagi!</h1> 
                     <p class="text-green-100">Anda perlu memverifikasi alamat email Anda.</p>
                 </div> 

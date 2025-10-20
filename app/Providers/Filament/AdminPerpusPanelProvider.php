@@ -21,6 +21,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 use App\Filament\Widgets\BorrowedBooks;
 use App\Filament\Widgets\LibraryStatsOverview;
+use App\Filament\Widgets\AllBorrowingsReport;
 
 class AdminPerpusPanelProvider extends PanelProvider
 {
@@ -47,6 +48,7 @@ class AdminPerpusPanelProvider extends PanelProvider
             ->widgets([
                 BorrowedBooks::class,
                 LibraryStatsOverview::class,
+                AllBorrowingsReport::class,
                 // AccountWidget::class,
                 // FilamentInfoWidget::class,
             ])

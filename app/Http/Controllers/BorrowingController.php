@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Borrowing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Providers\AppServiceProvider;
 
 class BorrowingController extends Controller
 {
@@ -14,14 +15,21 @@ class BorrowingController extends Controller
      */
     public function store(Request $request, Book $book)
     {
-        $student = Auth::guard('student')->user();
 
+        // --- VALIDASI BARU: Cek Jam Operasional ---
+        if (! AppServiceProvider::isLibraryOpen()) {
+            return back()->withErrors(['borrow' => 'Peminjaman hanya dapat dilakukan pada jam operasional.']);
+        }
+        
+        $student = Auth::guard('student')->user();
+        
         // --- VALIDASI BARU: Mencegah pinjam buku yang sama ---
         $isAlreadyBorrowed = Borrowing::where('student_id', $student->id)
-                                      ->where('book_id', $book->id)
-                                      ->where('status', 'Dipinjam')
-                                      ->exists();
+            ->where('book_id', $book->id)
+            ->where('status', 'Dipinjam')
+            ->exists();
 
+        
         if ($isAlreadyBorrowed) {
             return back()->withErrors(['borrow' => 'Anda sudah meminjam buku ini dan belum mengembalikannya.']);
         }

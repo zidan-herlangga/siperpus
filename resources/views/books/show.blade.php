@@ -95,7 +95,7 @@
                                 </p>
 
                                 <div class="mt-5">
-                                    @if ($book->stock > 0)
+                                    {{-- @if ($book->stock > 0)
                                         <button onclick="showBorrowModal()"
                                             class="w-full flex items-center justify-center bg-gradient-to-r from-green-600 to-teal-600 text-white font-semibold py-3 rounded-xl hover:from-green-700 hover:to-teal-700 transition duration-300 transform hover:scale-105 shadow-lg">
                                             <i class="fas fa-hand-holding mr-2"></i>Pinjam Buku
@@ -104,6 +104,26 @@
                                         <button disabled
                                             class="w-full bg-gray-400 text-white py-3 px-6 rounded-xl font-semibold cursor-not-allowed flex items-center justify-center">
                                             <i class="fas fa-times-circle mr-2"></i>Stok Habis
+                                        </button>
+                                    @endif --}}
+                                    {{-- Panggil AppServiceProvider di atas agar bisa digunakan --}}
+                                    @php
+                                        use App\Providers\AppServiceProvider;
+                                    @endphp
+
+                                    @if (AppServiceProvider::isLibraryOpen() && $book->stock > 0)
+                                        {{-- Tombol aktif jika PERPUSTAKAAN BUKA dan STOK ADA --}}
+                                        <button onclick="showBorrowModal()"
+                                            class="flex-1 text-white py-3 px-6 rounded-lg font-semibold bg-green-600 hover:bg-green-700 transition duration-300 transform hover:scale-105 shadow-md flex items-center justify-center">
+                                            <i class="fas fa-hand-holding mr-2"></i>Pinjam Buku
+                                        </button>
+                                    @else
+                                        {{-- Tombol nonaktif jika PERPUSTAKAAN TUTUP atau STOK HABIS --}}
+                                        <button disabled title="Peminjaman hanya dapat dilakukan pada jam operasional (Senin-Jumat, 07:00-16:00 WIB)"
+                                            class="flex-1 bg-gray-400 text-white py-3 px-6 rounded-lg font-semibold cursor-not-allowed flex items-center justify-center">
+                                            <i class="fas fa-clock mr-2"></i>
+                                            {{-- Tampilkan pesan yang sesuai --}}
+                                            {{ $book->stock > 0 ? 'Di Luar Jam Operasional' : 'Stok Habis' }}
                                         </button>
                                     @endif
                                 </div>
