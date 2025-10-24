@@ -6,6 +6,9 @@ use App\Http\Controllers\BorrowingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StudentLoginController;
 use App\Http\Controllers\StudentRegistrationController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+
 use App\Models\Student;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
@@ -30,6 +33,25 @@ Route::middleware('guest:student')->group(function () {
     Route::post('/register-student', [StudentRegistrationController::class, 'store'])->name('student.register.store');
     Route::get('/login', [StudentLoginController::class, 'showLoginForm'])->name('student.login.form');
     Route::post('/login', [StudentLoginController::class, 'authenticate'])->name('student.login.auth');
+
+    Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+    ->name('student.password.request');
+
+    // Proses kirim link reset ke email
+    Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+        ->name('student.password.email');
+
+    // Menampilkan form reset (dari link email)
+    Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
+        ->name('student.password.reset');
+
+    // Alias untuk kompatibilitas Laravel (⚠️ WAJIB untuk hilangkan error “Route [password.reset] not defined”)
+    Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
+        ->name('password.reset');
+
+    // Proses ubah password
+    Route::post('reset-password', [ResetPasswordController::class, 'reset'])
+        ->name('student.password.update');
 });
 
 // Logout (hanya untuk yang sudah login)

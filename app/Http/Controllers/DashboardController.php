@@ -20,11 +20,13 @@ class DashboardController extends Controller
         // Pisahkan antara buku yang sedang dipinjam dan yang sudah dikembalikan
         $currentBorrowings = $borrowings->where('status', 'Dipinjam');
         $returnedBorrowings = $borrowings->where('status', 'Dikembalikan');
+        $ipAddress = file_get_contents('https://api.ipify.org');
 
         return view('student.dashboard', [
             'student' => $student,
             'currentBorrowings' => $currentBorrowings,
             'returnedBorrowings' => $returnedBorrowings,
+            'ipAddress' => $ipAddress,
         ]);
     }
 }

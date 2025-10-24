@@ -80,7 +80,14 @@
                                     class="text-green-600 border-gray-300 rounded focus:ring-green-500">
                                 <span class="text-gray-700">Ingat Saya</span>
                             </label>
+
+                            {{-- Forgot Password --}}
+                            
+                            <a href="{{ route('student.password.request') }}" class="text-gray-600 hover:text-gray-700">
+                                Lupa Password?
+                            </a>
                         </div>
+
 
                         {{-- Tombol Login --}}
                         <button type="submit" id="submitButton"

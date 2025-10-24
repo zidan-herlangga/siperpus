@@ -1,0 +1,78 @@
+@extends('layouts.app')
+
+@section('title', 'Reset Password')
+
+@section('content')
+<div class="min-h-screen bg-gray-50 flex items-center justify-center py-8  px-4">
+    <div class="max-w-md w-full">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            {{-- Header --}}
+            <div class="bg-green-600 text-white text-center py-6 px-6 rounded-t-lg">
+                <h1 class="text-3xl font-bold mb-2">Buat Password Baru</h1>
+                <p class="text-green-100">Silakan masukkan password baru Anda di bawah ini.</p>
+            </div>
+
+            {{-- Form --}}
+            <div class="p-8">
+                <form method="POST" action="{{ route('student.password.update') }}">
+                    @csrf
+                    {{-- Token Reset (Tersembunyi) --}}
+                    <input type="hidden" name="token" value="{{ $token }}">
+
+                    <div class="space-y-6">
+                        {{-- Input Email
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Alamat Email <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <input id="email" type="email" name="email" value="{{ $email ?? old('email') }}" required autofocus autocomplete="email"
+                                       class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 transition @error('email') border-red-500 @enderror"
+                                       placeholder="nama@email.com">
+                                <i class="fas fa-envelope absolute left-3 top-3.5 text-gray-400"></i>
+                            </div>
+                            @error('email')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div> --}}
+
+                        {{-- Input Password Baru --}}
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password Baru <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <input id="password" type="password" name="password" required autocomplete="new-password"
+                                       class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 transition @error('password') border-red-500 @enderror"
+                                       placeholder="Minimal 8 karakter">
+                                <i class="fas fa-lock absolute left-3 top-3.5 text-gray-400"></i>
+                                <button type="button" onclick="togglePassword('password', this)" class="absolute right-3 top-3.5 text-gray-400 hover:text-green-500 focus:outline-none">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            @error('password')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Input Konfirmasi Password --}}
+                        <div>
+                            <label for="password-confirm" class="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Password Baru <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <input id="password-confirm" type="password" name="password_confirmation" required autocomplete="new-password"
+                                       class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 transition">
+                                <i class="fas fa-lock absolute left-3 top-3.5 text-gray-400"></i>
+                                <button type="button" onclick="togglePassword('password-confirm', this)" class="absolute right-3 top-3.5 text-gray-400 hover:text-green-500 focus:outline-none">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <button type="submit" class="w-full bg-green-600  text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90 transition duration-300 flex items-center justify-center">
+                            <i class="fas fa-key mr-2"></i>Reset Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

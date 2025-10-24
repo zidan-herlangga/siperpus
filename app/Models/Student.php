@@ -9,7 +9,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\CustomVerifyEmail;
 
-class Student extends Authenticatable implements MustVerifyEmail
+// Reset Password
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
+
+class Student extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
     use HasFactory, Notifiable;
 

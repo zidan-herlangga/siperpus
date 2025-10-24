@@ -137,6 +137,10 @@
                         </h3>
                         <ul class="space-y-2 text-sm text-gray-700">
                             <li class="flex items-center">
+                                <i class="fas fa-location-dot mr-2 text-gray-400 w-4"></i>
+                                {{ $ipAddress }}
+                            </li>
+                            <li class="flex items-center">
                                 <i class="fas fa-id-badge mr-2 text-gray-400 w-4"></i>
                                 {{ $student->nis }}
                             </li>
