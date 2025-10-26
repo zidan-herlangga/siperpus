@@ -3,7 +3,8 @@
 ![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel)
 ![Filament](https://img.shields.io/badge/Filament-4.x-F59E0B?style=for-the-badge&logo=php)
 ![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php)
-![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?style=for-the-badge&logo=mysql)
+<!-- ![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?style=for-the-badge&logo=mysql) -->
+![PostgreSQL](https://img.shields.io/badge/postgresql-4169e1?style=for-the-badge&logo=postgresql&logoColor=white)
 
 > Aplikasi **Sistem Informasi Perpustakaan Sekolah (SiPerpus)** adalah platform berbasis **Laravel 11 + Filament 4** yang dirancang untuk membantu sekolah dalam mengelola koleksi buku, data siswa, serta transaksi peminjaman dan pengembalian secara efisien dan modern.
 
@@ -38,21 +39,23 @@
 - 💬 **Chatbot Pintar (OpenAI)**
   - Fitur tambahan untuk eksplorasi buku dan informasi perpustakaan.
   - Riwayat chat disimpan di cache/localStorage dengan validasi sapaan.
+- 🔐 **Lupa Password**
+  - Dapat mengubah password via link gmail
 
 ---
 
 ## 🧰 Teknologi yang Digunakan
 
-| Komponen        | Versi | Deskripsi |
-|-----------------|-------|-----------|
-| **Laravel**     | 11.x  | Framework utama |
-| **Filament**    | 4.x   | Admin panel modern |
-| **PHP**         | 8.2+  | Bahasa backend |
-| **MySQL**       | 8.x   | Database utama |
-| **Composer**    | -     | Dependency manager |
-| **Vite / NPM**  | -     | Asset builder |
-| **SMTP Gmail**  | -     | Pengiriman notifikasi email |
-| **OpenAI API**  | -     | Chatbot khusus buku |
+| Komponen          | Versi | Deskripsi                   |
+|-------------------|-------|-----------------------------|
+| **Laravel**       | 11.x  | Framework utama             |
+| **Filament**      | 4.x   | Admin panel modern          |
+| **PHP**           | 8.2+  | Bahasa backend              |
+| **Postgre**       | -     | Database utama              |
+| **Composer**      | -     | Dependency manager          |
+| **Vite / NPM**    | -     | Asset builder               |
+| **SMTP Gmail**    | -     | Pengiriman notifikasi email |
+| **OpenAI API**    | -     | Chatbot khusus buku         |
 
 ---
 
@@ -96,10 +99,10 @@ php artisan key:generate
 Pastikan file .env berisi konfigurasi berikut:
 
 ```bash
-APP_NAME="Peminjaman Buku Online"
+APP_NAME="ELibrary SMK Karya Guna 2"
 APP_ENV=local
-APP_KEY=base64:py58lRqa+FAOJeybWszTdyBBWG+ZVAyl3PjGZvgrQCU=
-APP_DEBUG=true
+APP_KEY=
+APP_DEBUG=false
 APP_TIMEZONE=Asia/Jakarta
 APP_URL=http://localhost:8000
 APP_LOCALE=id
@@ -108,17 +111,18 @@ APP_FALLBACK_LOCALE=en
 # OpenAI API Key
 OPENAI_API_KEY=sk-proj-xxxxx
 
-# ASSET_URL=
 DEBUGBAR_ENABLED=false
 
 LOG_CHANNEL=stack
 LOG_LEVEL=debug
 
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=siperpus
-DB_USERNAME=root
+# PostgreSQL Connection
+# Daftar https://supabase.com
+DB_CONNECTION=pgsql
+DB_HOST=
+DB_PORT=5432
+DB_DATABASE=postgres
+DB_USERNAME=
 DB_PASSWORD=
 
 BROADCAST_CONNECTION=log
@@ -133,20 +137,20 @@ SESSION_DOMAIN=null
 
 MEMCACHED_HOST=127.0.0.1
 
-# Google Authentication
+#SMTP Gmail
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
 
-# Contoh Krendensial
+# Auth Google SMTP
 MAIL_USERNAME=email@anda.com
-MAIL_PASSWORD=otlxcrqeislwxxxx # 16 Digit
+MAIL_PASSWORD=xxxxcrqexxxxxxxx # 16 Digit
 MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS="email@anda.com"
 MAIL_FROM_NAME="${APP_NAME}"
 
 VITE_APP_NAME="${APP_NAME}"
-VITE_SERVER_URL=
+# VITE_SERVER_URL=
 ```
 
 💡 Tips:
