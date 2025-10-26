@@ -55,18 +55,25 @@ class AllBorrowingsReport extends BaseWidget
                 Tables\Columns\TextColumn::make('fine')
                     ->label('Denda')
                     ->getStateUsing(function ($record) {
-                        // Hitung denda otomatis
                         $now = now();
-                        if ($now->isAfter($record->due_date) && $record->status === 'Dipinjam') {
+                
+                        // Jika sudah dikembalikan → gunakan denda final dari DB
+                        if ($record->status === 'Dikembalikan') {
+                            return $record->fine;
+                        }
+                
+                        // Jika belum dikembalikan & sudah telat → hitung berjalan
+                        if ($now->isAfter($record->due_date)) {
                             $daysLate = $record->due_date->diffInDays($now);
                             return $daysLate * 1000;
                         }
+                
                         return 0;
                     })
                     ->money('IDR')
                     ->prefix('Rp ')
-                    ->formatStateUsing(fn (int $state): string => number_format($state, 0, ',', '.'))
-                    ->sortable(),
+                    ->formatStateUsing(fn ($state) => number_format($state, 0, ',', '.'))
+                    ->sortable()
             ])
             ->headerActions([
                 // Tombol untuk ekspor ke Excel/CSV

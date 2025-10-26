@@ -27,6 +27,10 @@ class BorrowingInfolist
                     ->placeholder('-'),
                 TextEntry::make('fine')
                     ->label('Denda')
+                    ->state(function ($record) {
+                        $daysLate = now()->diffInDays($record->due_date, false);
+                        return $daysLate > 0 ? $daysLate * 1000 : 0;
+                    })
                     ->money('IDR')
                     ->numeric(),
                 TextEntry::make('status')

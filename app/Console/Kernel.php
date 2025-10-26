@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // Cukup panggil command yang sudah kita buat.
         // Semua logika pengiriman email ada di dalam command tersebut.
-        $schedule->command('app:send-reminder-emails')->dailyAt('08:00');
+        $schedule->command('app:send-reminder')->dailyAt('07:00');
     }
 
     /**

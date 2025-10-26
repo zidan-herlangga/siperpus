@@ -14,6 +14,8 @@ return new class extends Migration
             $table->foreignId('book_id')->constrained('books')->onDelete('cascade');
             $table->date('borrow_date');
             $table->date('due_date');
+            $table->timestamp('due_soon_sent_at')->nullable();
+            $table->timestamp('last_reminder_sent_at')->nullable();
             $table->date('return_date')->nullable();
             $table->decimal('fine', 10, 2)->default(0);
             $table->enum('status', ['Dipinjam', 'Dikembalikan'])->default('Dipinjam');

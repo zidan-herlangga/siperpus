@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             BookSeeder::class,
             StudentSeeder::class,
-            // BorrowingSeeder::class,
+            BorrowingSeeder::class,
         ]);
     }
 }

@@ -27,6 +27,7 @@
 - 🔐 **Login Aman**: Autentikasi menggunakan email & password.
 - 📅 **Dashboard Siswa**: Menampilkan buku yang sedang dipinjam dan riwayat transaksi.
 - 🪄 **Pinjam Langsung**: Siswa dapat meminjam buku langsung dari halaman detail buku.
+- 🔐 **Lupa Password**: Dapat mengubah password via link gmail
 
 ### ⚙️ Fitur Otomatis & Latar Belakang
 - 📧 **Notifikasi Otomatis via Email**
@@ -39,8 +40,6 @@
 - 💬 **Chatbot Pintar (OpenAI)**
   - Fitur tambahan untuk eksplorasi buku dan informasi perpustakaan.
   - Riwayat chat disimpan di cache/localStorage dengan validasi sapaan.
-- 🔐 **Lupa Password**
-  - Dapat mengubah password via link gmail
 
 ---
 
@@ -51,7 +50,7 @@
 | **Laravel**       | 11.x  | Framework utama             |
 | **Filament**      | 4.x   | Admin panel modern          |
 | **PHP**           | 8.2+  | Bahasa backend              |
-| **Postgre**       | -     | Database utama              |
+| **PostgreSQL**    | -     | Database utama              |
 | **Composer**      | -     | Dependency manager          |
 | **Vite / NPM**    | -     | Asset builder               |
 | **SMTP Gmail**    | -     | Pengiriman notifikasi email |
@@ -61,7 +60,7 @@
 
 ## ⚙️ Panduan Instalasi
 
-> Panduan berikut mengasumsikan kamu sudah menginstal **PHP 8.2**, **Composer**, **MySQL**, dan **Node.js (NPM)**.
+> Panduan berikut mengasumsikan kamu sudah menginstal **PHP 8.2**, **Composer**, **PostgreSQL**, dan **Node.js (NPM)**.
 
 ### 1. Clone Repository
 

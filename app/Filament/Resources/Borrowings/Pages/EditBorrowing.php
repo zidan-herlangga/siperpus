@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\Borrowings\Pages;
 
 use App\Filament\Resources\Borrowings\BorrowingResource;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Notifications\Notification;
+use Filament\Actions\Action;
 
 class EditBorrowing extends EditRecord
 {
@@ -14,11 +14,19 @@ class EditBorrowing extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            ViewAction::make()
-                ->label('Lihat Peminjaman')
-                ->url($this->getResource()::getUrl('view', ['record' => $this->record])),
-            DeleteAction::make()
-                ->label('Hapus Peminjaman'),
+            Action::make('recalcFine')
+                ->label('Hitung Ulang Denda')
+                ->requiresConfirmation()
+                ->action(function () {
+                    $record = $this->record; // instance Eloquent
+                    $record->fine = $record->calculateFine();
+                    $record->save();
+
+                    Notification::make()
+                        ->title('Denda berhasil dihitung ulang')
+                        ->success()
+                        ->send();
+                }),
         ];
     }
 }

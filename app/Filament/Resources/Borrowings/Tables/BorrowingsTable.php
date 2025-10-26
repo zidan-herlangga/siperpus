@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources\Borrowings\Tables;
 
+use Filament\Tables\Table;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 
 class BorrowingsTable
 {
@@ -16,60 +16,60 @@ class BorrowingsTable
         return $table
             ->columns([
                 TextColumn::make('student.name')
-        ->label('Nama Siswa')
-        ->searchable(),
+                    ->label('Nama Siswa')
+                    ->searchable()
+                    ->sortable(),
 
-            TextColumn::make('book.title')
-                ->label('Judul Buku')
-                ->searchable(),
+                TextColumn::make('book.title')
+                    ->label('Judul Buku')
+                    ->searchable()
+                    ->sortable(),
 
-            TextColumn::make('borrow_date')
-                ->label('Tanggal Pinjam')
-                ->date('d M Y') // Format tanggal Indonesia
-                ->sortable(),
+                TextColumn::make('borrow_date')
+                    ->label('Tanggal Pinjam')
+                    ->date('d M Y')
+                    ->sortable(),
 
-            TextColumn::make('due_date')
-                ->label('Jatuh Tempo')
-                ->date('d M Y')
-                ->sortable(),
+                TextColumn::make('due_date')
+                    ->label('Jatuh Tempo')
+                    ->date('d M Y')
+                    ->sortable(),
 
-            TextColumn::make('return_date')
-                ->label('Tanggal Kembali')
-                ->date('d M Y')
-                ->sortable()
-                ->placeholder('Belum dikembalikan'), // Teks jika data kosong
+                BadgeColumn::make('status')
+                    ->label('Status')
+                    ->sortable()
+                    ->formatStateUsing(function ($state) {
+                        return match($state) {
+                            'Dipinjam' => 'Dipinjam',
+                            'Dikembalikan' => 'Dikembalikan',
+                            default => $state,
+                        };
+                    })
+                    ->colors([
+                        'warning' => fn ($state) => $state === 'Dipinjam',
+                        'success' => fn ($state) => $state === 'Dikembalikan',
+                    ]),
 
-            TextColumn::make('fine')
-                ->label('Denda')
-                ->money('IDR') // Format mata uang Rupiah
-                ->sortable(),
-
-            TextColumn::make('status')
-                ->label('Status')
-                ->badge() // Tampilan menjadi badge/pil
-                ->color(fn (string $state): string => match ($state) {
-                    'Dipinjam' => 'warning',
-                    'Dikembalikan' => 'success',
-                }),
-
-            TextColumn::make('created_at')
-                ->label('Dibuat Pada')
-                ->dateTime('d M Y H:i')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-
-            TextColumn::make('updated_at')
-                ->label('Diperbarui Pada')
-                ->dateTime('d M Y H:i')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('fine_amount')
+                    ->label('Denda')
+                    ->getStateUsing(fn ($record) => $record->fine_amount)
+                    ->formatStateUsing(fn ($state) => number_format((int)$state, 0, ',', '.'))
+                    ->prefix('Rp ')
+                    ->sortable(),
             ])
             ->filters([
-                //
+                // contoh filter: hanya overdue / only returned
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'Dipinjam' => 'Dipinjam',
+                        'Dikembalikan' => 'Dikembalikan',
+                    ]),
+                Tables\Filters\Filter::make('overdue')
+                    ->label('Hanya Terlambat')
+                    ->query(fn ($query) => $query->where('status', 'Dipinjam')->whereDate('due_date', '<', now()->toDateString())),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                // actions handled by resource pages
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
