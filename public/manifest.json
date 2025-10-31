@@ -1,0 +1,18 @@
+{
+    "name": "E Library SMK Karya Guna 2",
+    "short_name": "LPT",
+    "start_url": "/",
+    "background_color": "#6777ef",
+    "description": "Temukan ribuan koleksi buku dan jelajahi dunia literasi secara digital — cepat, mudah, dan menyenangkan.",
+    "display": "fullscreen",
+
+    "theme_color": "#6777ef",
+    "icons": [
+        {
+            "src": "logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

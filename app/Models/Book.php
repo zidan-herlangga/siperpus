@@ -19,6 +19,7 @@ class Book extends Model
         'year',
         'isbn',
         'category',
+        'synopsis',
         'shelf_code',
         'stock',
     ];
@@ -45,7 +46,7 @@ class Book extends Model
      * supaya Eloquent tidak ambil semua field.
      */
     protected $visible = [
-        'id', 'title', 'slug', 'author', 'publisher', 'year', 'isbn', 'category', 'shelf_code', 'stock',
+        'id', 'title', 'slug', 'author', 'publisher', 'year', 'isbn', 'category', 'synopsis','shelf_code', 'stock',
     ];
 
      public function getRouteKeyName(): string

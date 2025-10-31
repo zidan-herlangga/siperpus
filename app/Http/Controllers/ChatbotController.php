@@ -24,7 +24,7 @@ class ChatbotController extends Controller
 
         try {
             // Panggil API OpenAI (gunakan key kamu sendiri di .env)
-            $apiKey = ('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');
+            $apiKey = env('OPENAI_API_KEY');
             if (!$apiKey) {
                 return response()->json(['reply' => 'API key OpenAI belum diatur.'], 500);
             }

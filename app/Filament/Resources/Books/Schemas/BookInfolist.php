@@ -24,6 +24,9 @@ class BookInfolist
                     ->placeholder('-'),
                 TextEntry::make('category')
                     ->label('Kategori'),
+                TextEntry::make('synopsis')
+                    ->label('Sinopsis')
+                    ->placeholder('-'),
                 TextEntry::make('shelf_code')
                     ->label('Kode Rak'),
                 TextEntry::make('stock')

@@ -34,16 +34,12 @@ class Borrowing extends Model
     protected static function booted(): void
     {
         static::updating(function (Borrowing $borrowing) {
-            // Cek apakah kolom 'status' adalah yang sedang diubah
             if ($borrowing->isDirty('status')) {
                 $originalStatus = $borrowing->getOriginal('status');
 
-                // Jika buku dikembalikan (status berubah dari Dipinjam -> Dikembalikan)
-                if ($originalStatus == 'Dipinjam' && $borrowing->status == 'Dikembalikan') {
+                if ($originalStatus === 'Dipinjam' && $borrowing->status === 'Dikembalikan') {
                     $borrowing->book->increment('stock');
-                }
-                // Jika status pengembalian dibatalkan (Dikembalikan -> Dipinjam)
-                elseif ($originalStatus == 'Dikembalikan' && $borrowing->status == 'Dipinjam') {
+                } elseif ($originalStatus === 'Dikembalikan' && $borrowing->status === 'Dipinjam') {
                     $borrowing->book->decrement('stock');
                 }
             }
@@ -61,12 +57,33 @@ class Borrowing extends Model
         return $this->belongsTo(Book::class);
     }
 
+    // Hitung denda berjalan
     public function calculateFine(): int
     {
-        if ($this->return_date && $this->return_date->isAfter($this->due_date)) {
-            $lateDays = $this->due_date->diffInDays($this->return_date);
-            return $lateDays * 1000;
+        $now = \Carbon\Carbon::now();
+
+        // Jika buku sudah dikembalikan
+        if ($this->return_date) {
+            if ($this->return_date->isAfter($this->due_date)) {
+                // Hitung selisih hari keterlambatan
+                $daysLate = $this->due_date->diffInDays($this->return_date);
+                return $daysLate * 1000;
+            }
+            return 0;
         }
+
+        // Jika belum dikembalikan tapi sudah lewat due_date
+        if ($now->isAfter($this->due_date)) {
+            $daysLate = max(1, $this->due_date->diffInDays($now));
+            return $daysLate * 1000;
+        }
+
         return 0;
+    }
+
+    // Accessor agar bisa dipanggil sebagai $borrowing->fine_amount
+    public function getFineAmountAttribute(): int
+    {
+        return $this->calculateFine();
     }
 }

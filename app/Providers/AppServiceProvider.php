@@ -29,6 +29,6 @@ class AppServiceProvider extends ServiceProvider
         $hour = $now->hour;
 
         // Buka hanya pada hari Senin–Jumat (1-5) antara jam 7 pagi sampai 4 sore (16)
-        return ($dayOfWeek >= 1 && $dayOfWeek <= 5 && $hour >= 8 && $hour < 16);
+        return ($dayOfWeek >= 1 && $dayOfWeek <= 5 && $hour >= 7 && $hour < 16);
     }
 }

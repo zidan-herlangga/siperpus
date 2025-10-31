@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\CustomVerifyEmail;
 
 class Student extends Authenticatable implements MustVerifyEmail
 {
@@ -38,5 +39,10 @@ class Student extends Authenticatable implements MustVerifyEmail
     public function borrowings(): HasMany
     {
         return $this->hasMany(Borrowing::class);
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new CustomVerifyEmail);
     }
 }

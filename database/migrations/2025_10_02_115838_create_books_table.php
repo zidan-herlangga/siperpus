@@ -16,6 +16,7 @@ return new class extends Migration
             $table->year('year');
             $table->string('isbn')->unique()->nullable();
             $table->string('category');
+            $table->text('synopsis')->nullable();
             $table->string('shelf_code');
             $table->unsignedInteger('stock')->default(0);
             $table->timestamps();

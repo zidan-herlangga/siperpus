@@ -16,8 +16,8 @@ class StudentSeeder extends Seeder
             'class' => 'XII TKJ 1',
             'contact' => '085161334009',
             'email' => 'zidanherlangga24@gmail.com', // Ganti dengan email valid untuk tes
-            'email_verified_at' => null,
-            'password' => Hash::make('password'), // Password default
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'), 
             'status' => 'Aktif',
         ]);
 
@@ -27,7 +27,7 @@ class StudentSeeder extends Seeder
             'class' => 'XII TKJ 1',
             'contact' => '085156428541',
             'email' => 'kachishiro78@gmail.com', // Ganti dengan email valid untuk tes
-            'email_verified_at' => null,
+            'email_verified_at' => now(),
             'password' => Hash::make('password'), // Password default
             'status' => 'Aktif',
         ]);
@@ -49,7 +49,7 @@ class StudentSeeder extends Seeder
             'class' => 'XII TKJ 1',
             'email' => 'naufalraflybaru@gmail.com',
             'contact' => '089516150350', // Ganti dengan email valid untuk tes
-            'email_verified_at' => null,
+            'email_verified_at' => now(),
             'password' => Hash::make('password'), // Password default
             'status' => 'Aktif',
         ]);
@@ -60,7 +60,7 @@ class StudentSeeder extends Seeder
             'class' => 'XII TKJ 1',
             'contact' => '085156134050',
             'email' => 'alsyacallysta15@gmail.com', // Ganti dengan email valid untuk tes
-            'email_verified_at' => null,
+            'email_verified_at' => now(),
             'password' => Hash::make('password'), // Password default
             'status' => 'Aktif',
         ]);

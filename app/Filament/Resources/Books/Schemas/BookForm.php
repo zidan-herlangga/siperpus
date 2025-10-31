@@ -29,6 +29,9 @@ class BookForm
                 TextInput::make('category')
                     ->label('Kategori')
                     ->required(),
+                TextInput::make('synopsis')
+                    ->label('Sinopsis')
+                    ->nullable(),
                 TextInput::make('shelf_code')
                     ->label('Kode Rak')
                     ->required(),

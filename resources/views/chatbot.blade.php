@@ -1,197 +1,126 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot Perpustakaan</title>
-    <style>
-        * { box-sizing: border-box; }
+@extends('layouts.app')
 
-        body {
-            background: #f1f8e9;
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+@section('title', 'Chatbot - ' . config('app.name'))
 
-        .chatbot-page {
-            width: 95%;
-            max-width: 900px;
-            height: 90vh;
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border: 2px solid #c8e6c9;
-        }
+@section('content')
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="container mx-auto px-4">
+        {{-- Header --}}
+        <div class="mb-6">
+            <a href="{{ route('student.dashboard') }}" class="inline-flex items-center text-green-600 hover:text-green-700 mb-4">
+                <i class="fas fa-arrow-left mr-2"></i> Kembali ke Dashboard
+            </a>
+            <h1 class="text-2xl font-bold text-gray-800">Chatbot Perpustakaan</h1>
+            <p class="text-gray-600">Tanya tentang buku, peminjaman, dan informasi perpustakaan</p>
+        </div>
 
-        .chatbot-header {
-            background: linear-gradient(90deg, #2e7d32, #43a047);
-            color: white;
-            padding: 16px 20px;
-            font-size: 20px;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        {{-- Chat Container --}}
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden max-w-4xl mx-auto">
+            {{-- Chat Header --}}
+            <div class="bg-green-600 text-white px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <i class="fas fa-robot text-xl mr-3"></i>
+                        <div>
+                            <h2 class="font-semibold text-lg">Asisten Perpustakaan</h2>
+                            <p class="text-green-100 text-sm">Siap membantu Anda</p>
+                        </div>
+                    </div>
+                    <button onclick="clearChat()" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded text-sm transition-colors">
+                        Hapus Chat
+                    </button>
+                </div>
+            </div>
 
-        .chatbot-user {
-            font-size: 16px;
-            background: rgba(255,255,255,0.15);
-            padding: 6px 14px;
-            border-radius: 20px;
-        }
+            {{-- Chat Messages --}}
+            <div id="chatbot-chat" class="h-96 overflow-y-auto p-4 bg-gray-50 space-y-4">
+                {{-- Messages will be loaded here --}}
+            </div>
 
-        .chatbot-chat {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: #f9fdf9;
-        }
+            {{-- Quick Suggestions --}}
+            <div class="border-t border-gray-200 bg-white px-4 py-3">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="sendSuggestion('Apa buku terbaru di perpustakaan?')" class="bg-green-100 text-green-700 hover:bg-green-200 px-3 py-2 rounded text-sm transition-colors">
+                        📚 Buku Terbaru
+                    </button>
+                    <button onclick="sendSuggestion('Bagaimana cara memperpanjang peminjaman buku?')" class="bg-green-100 text-green-700 hover:bg-green-200 px-3 py-2 rounded text-sm transition-colors">
+                        ⏰ Perpanjangan
+                    </button>
+                    <button onclick="sendSuggestion('Siapa penulis buku Bumi Manusia?')" class="bg-green-100 text-green-700 hover:bg-green-200 px-3 py-2 rounded text-sm transition-colors">
+                        ✍️ Penulis Buku
+                    </button>
+                    <button onclick="sendSuggestion('Apakah ada buku novel romantis?')" class="bg-green-100 text-green-700 hover:bg-green-200 px-3 py-2 rounded text-sm transition-colors">
+                        💞 Novel Romantis
+                    </button>
+                </div>
+            </div>
 
-        .chatbot-msg {
-            padding: 12px 16px;
-            border-radius: 16px;
-            max-width: 75%;
-            line-height: 1.5;
-            animation: fadeIn 0.3s ease-in;
-            word-wrap: break-word;
-            font-size: 15px;
-        }
-
-        .chatbot-msg-bot {
-            background: #e8f5e9;
-            color: #1b5e20;
-            align-self: flex-start;
-            border-top-left-radius: 0;
-        }
-
-        .chatbot-msg-user {
-            background: linear-gradient(135deg, #2e7d32, #43a047);
-            color: white;
-            align-self: flex-end;
-            border-top-right-radius: 0;
-        }
-
-        .chatbot-input-area {
-            display: flex;
-            border-top: 1px solid #c8e6c9;
-            background: #f1f8e9;
-            padding: 10px;
-        }
-
-        .chatbot-input {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: white;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .chatbot-btn-send {
-            background: #2e7d32;
-            color: white;
-            border: none;
-            padding: 0 22px;
-            margin-left: 10px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .chatbot-btn-send:hover { background: #1b5e20; }
-
-        .chatbot-suggestions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            padding: 10px 16px;
-            border-top: 1px solid #c8e6c9;
-            background: #f1f8e9;
-        }
-
-        .chatbot-suggest-btn {
-            background: #c8e6c9;
-            color: #1b5e20;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 14px;
-        }
-
-        .chatbot-suggest-btn:hover {
-            background: #2e7d32;
-            color: white;
-        }
-
-        .chatbot-clear {
-            background: transparent;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.6);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .chatbot-clear:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
-</head>
-<body>
-<div class="chatbot-page">
-    <div class="chatbot-header">
-        <a href="{{ route('student.dashboard') }}" style="text-decoration: none; color: white; font-size: 24px; margin-right: 10px;">
-            ←
-        </a>
-
-        Hi! {{ Auth::guard('student')->user()->name, 'Pengguna' }}
-
-        <div>
-            <button class="chatbot-clear" onclick="clearChat()">Hapus Chat</button>
+            {{-- Input Area --}}
+            <div class="border-t border-gray-200 bg-white p-4">
+                <div class="flex gap-2">
+                    <input type="text" id="chatbot-input" 
+                           class="flex-1 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                           placeholder="Ketik pesan Anda..." 
+                           onkeypress="if(event.key==='Enter') sendMessage()">
+                    <button onclick="sendMessage()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-medium transition-colors">
+                        Kirim
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div id="chatbot-chat" class="chatbot-chat"></div>
-
-    <div class="chatbot-suggestions">
-        <button class="chatbot-suggest-btn" onclick="sendSuggestion('Apa buku terbaru di perpustakaan?')">📚 Buku Terbaru</button>
-        <button class="chatbot-suggest-btn" onclick="sendSuggestion('Bagaimana cara memperpanjang peminjaman buku?')">⏰ Perpanjangan</button>
-        <button class="chatbot-suggest-btn" onclick="sendSuggestion('Siapa penulis buku Bumi Manusia?')">✍️ Penulis Buku</button>
-        <button class="chatbot-suggest-btn" onclick="sendSuggestion('Apakah ada buku novel romantis?')">💞 Novel Romantis</button>
-    </div>
-
-    <div class="chatbot-input-area">
-        <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter') sendMessage()">
-        <button class="chatbot-btn-send" onclick="sendMessage()">Kirim</button>
-    </div>
 </div>
+
+<style>
+    .chat-message {
+        max-width: 80%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        line-height: 1.5;
+        word-wrap: break-word;
+    }
+
+    .bot-message {
+        background: #e8f5e9;
+        color: #1b5e20;
+        align-self: flex-start;
+        border-top-left-radius: 4px;
+    }
+
+    .user-message {
+        background: #2e7d32;
+        color: white;
+        align-self: flex-end;
+        border-top-right-radius: 4px;
+    }
+
+    .typing-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .typing-dot {
+        width: 6px;
+        height: 6px;
+        background: #1b5e20;
+        border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes typing {
+        0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+        40% { transform: scale(1); opacity: 1; }
+    }
+</style>
 
 <script>
 const chat = document.getElementById('chatbot-chat');
 
-// 🔹 Muat riwayat chat dari localStorage saat halaman dibuka
+// Load chat history from localStorage
 window.onload = () => {
     const savedChat = localStorage.getItem('chat_history');
     if (savedChat) {
@@ -223,33 +152,50 @@ async function sendMessage() {
         const data = await res.json();
         typing.remove();
 
-        const reply = data.reply ? data.reply.replace(/\n/g, "<br>") : "(Tidak ada respons)";
+        const reply = data.reply ? data.reply.replace(/\n/g, "<br>") : "Maaf, saya tidak bisa menjawab pertanyaan itu saat ini.";
         appendMessage('bot', reply, true);
 
     } catch (err) {
         typing.remove();
-        appendMessage('bot', '(Gagal terhubung ke server)');
+        appendMessage('bot', 'Maaf, terjadi gangguan koneksi. Silakan coba lagi.');
     }
 
     saveChat();
 }
 
 function appendMessage(role, text, isHTML = false) {
-    const msg = document.createElement('div');
-    msg.classList.add('chatbot-msg', role === 'bot' ? 'chatbot-msg-bot' : 'chatbot-msg-user');
-    msg.innerHTML = isHTML ? text : text.replace(/\n/g, '<br>');
-    chat.appendChild(msg);
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = `chat-message ${role === 'bot' ? 'bot-message' : 'user-message'}`;
+    messageContent.innerHTML = isHTML ? text : text.replace(/\n/g, '<br>');
+    
+    messageDiv.appendChild(messageContent);
+    chat.appendChild(messageDiv);
     chat.scrollTop = chat.scrollHeight;
     saveChat();
 }
 
 function appendTyping() {
-    const typing = document.createElement('div');
-    typing.classList.add('chatbot-msg', 'chatbot-msg-bot');
-    typing.innerHTML = 'Bot sedang mengetik<span class="chatbot-typing-dot"></span><span class="chatbot-typing-dot"></span><span class="chatbot-typing-dot"></span>';
-    chat.appendChild(typing);
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'flex justify-start';
+    
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'chat-message bot-message';
+    typingDiv.innerHTML = `
+        <div class="typing-indicator">
+            Bot sedang mengetik
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+        </div>
+    `;
+    
+    messageDiv.appendChild(typingDiv);
+    chat.appendChild(messageDiv);
     chat.scrollTop = chat.scrollHeight;
-    return typing;
+    return typingDiv;
 }
 
 function sendSuggestion(text) {
@@ -257,19 +203,18 @@ function sendSuggestion(text) {
     sendMessage();
 }
 
-// 🔹 Simpan riwayat chat ke localStorage
+// Save chat history to localStorage
 function saveChat() {
     localStorage.setItem('chat_history', chat.innerHTML);
 }
 
-// 🔹 Hapus riwayat chat
+// Clear chat history
 function clearChat() {
     if (confirm("Yakin ingin menghapus seluruh riwayat chat?")) {
         localStorage.removeItem('chat_history');
         chat.innerHTML = '';
-        appendMessage('bot', 'Riwayat chat telah dihapus. Hai 👋, mau tanya tentang buku apa hari ini?');
+        appendMessage('bot', 'Riwayat chat telah dihapus. Hai 👋, ada yang bisa saya bantu?');
     }
 }
 </script>
-</body>
-</html>
+@endsection
