@@ -84,20 +84,23 @@
                                             class="w-full pl-9 pr-3 py-2.5 bg-white border border-gray-300 rounded focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 appearance-none">
                                             @php
                                                 $grades = ['X', 'XI', 'XII'];
-                                                $majors = ['AK', 'MP', 'TKJ', 'TKR'];
+                                                $majors = [
+                                                    'Akuntansi',
+                                                    'Manajemen Perkantoran',
+                                                    'Teknik Komputer Jaringan',
+                                                    'Teknik Kendaraan Ringan'
+                                                ];
                                             @endphp
+
                                             <option value="">Pilih Kelas</option>
-                                            @foreach ($grades as $grade)
-                                                @foreach ($majors as $major)
-                                                    @for ($i = 1; $i <= 6; $i++)
-                                                        @php
-                                                            $classOption = $grade . ' ' . $major . ' ' . $i;
-                                                        @endphp
-                                                        <option value="{{ $classOption }}"
-                                                            {{ old('class') == $classOption ? 'selected' : '' }}>
-                                                            {{ $classOption }}
-                                                        </option>
-                                                    @endfor
+                                            @foreach ($majors as $major)
+                                                @foreach ($grades as $grade)
+                                                    @php
+                                                        $classOption = "$grade $major";
+                                                    @endphp
+                                                    <option value="{{ $classOption }}" {{ old('class') == $classOption ? 'selected' : '' }}>
+                                                        {{ $classOption }}
+                                                    </option>
                                                 @endforeach
                                             @endforeach
                                         </select>

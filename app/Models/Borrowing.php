@@ -37,39 +37,27 @@ class Borrowing extends Model
     {
         static::updating(function (Borrowing $borrowing) {
             $originalStatus = $borrowing->getOriginal('status');
+            $newStatus = $borrowing->status;
 
-            // STOCK handling (tetap seperti sebelumnya)
-            if ($borrowing->isDirty('status')) {
-                if ($originalStatus === 'Dipinjam' && $borrowing->status === 'Dikembalikan') {
-                    // Sebelum increment stock, kita finalisasi denda (di bawah)
-                    $borrowing->book->increment('stock');
-                } elseif ($originalStatus === 'Dikembalikan' && $borrowing->status === 'Dipinjam') {
-                    $borrowing->book->decrement('stock');
-                }
+            // 1. Pending → Dipinjam → Kurangi stok
+            if ($originalStatus === 'Pending' && $newStatus === 'Dipinjam') {
+                $borrowing->book->decrement('stock');
             }
 
-            // FINALISASI DENDA saat berubah dari Dipinjam -> Dikembalikan
-            if (
-                $originalStatus === 'Dipinjam'
-                && $borrowing->status === 'Dikembalikan'
-            ) {
-                // Pastikan return_date tercatat; jika belum diisi, set sekarang
+            // 2. Dipinjam → Dikembalikan → Tambah stok + hitung denda
+            if ($originalStatus === 'Dipinjam' && $newStatus === 'Dikembalikan') {
+                $borrowing->book->increment('stock');
+
                 if (empty($borrowing->return_date)) {
                     $borrowing->return_date = now();
                 }
 
-                // Hitung dan simpan denda final
                 $borrowing->fine = $borrowing->calculateFine();
             }
 
-            // Jika admin membatalkan pengembalian (kembali jadi Dipinjam),
-            // kita tidak otomatis menghapus fine — tapi bisa direset jika ingin:
-            if (
-                $originalStatus === 'Dikembalikan'
-                && $borrowing->status === 'Dipinjam'
-            ) {
-                // opsi: reset fine ke NULL atau 0
-                // $borrowing->fine = null;
+            // 3. Dikembalikan → Dipinjam → Kurangi stok lagi
+            if ($originalStatus === 'Dikembalikan' && $newStatus === 'Dipinjam') {
+                $borrowing->book->decrement('stock');
             }
         });
     }

@@ -30,7 +30,7 @@
     {{-- Features Section --}}
     <section class="py-16 bg-white">
         <div class="container mx-auto px-6">
-            <h2 class="text-2xl font-bold text-center text-gray-800 mb-10">Mengapa Memilih Kami?</h2>
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-10">Kami Punya?</h2>
             <div class="grid md:grid-cols-3 gap-8">
                 @php
                     $features = [
@@ -67,7 +67,7 @@
     {{-- Statistics Section --}}
     <section class="py-16 bg-gray-50">
         <div class="container mx-auto px-6 text-center">
-            <h2 class="text-2xl font-bold text-gray-800 mb-10">Perpustakaan dalam Angka</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-10">Statistik Perpustakaan</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 @php
                     $stats = [

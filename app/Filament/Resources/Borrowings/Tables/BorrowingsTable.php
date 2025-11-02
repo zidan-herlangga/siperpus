@@ -40,19 +40,27 @@ class BorrowingsTable
                     ->sortable()
                     ->formatStateUsing(function ($state) {
                         return match($state) {
+                            'Pending' => 'Pending',
                             'Dipinjam' => 'Dipinjam',
                             'Dikembalikan' => 'Dikembalikan',
                             default => $state,
                         };
                     })
+
                     ->colors([
+                        'gray' => fn ($state) => $state === 'Pending',
                         'warning' => fn ($state) => $state === 'Dipinjam',
                         'success' => fn ($state) => $state === 'Dikembalikan',
                     ]),
 
                 TextColumn::make('fine_amount')
                     ->label('Denda')
-                    ->getStateUsing(fn ($record) => $record->fine_amount)
+                    ->getStateUsing(function ($record) {
+                        if ($record->status === 'Pending') {
+                            return 0; // belum aktif, belum bisa kena denda
+                        }
+                        return $record->fine_amount;
+                    })
                     ->formatStateUsing(fn ($state) => number_format((int)$state, 0, ',', '.'))
                     ->prefix('Rp ')
                     ->sortable(),
@@ -61,6 +69,7 @@ class BorrowingsTable
                 // contoh filter: hanya overdue / only returned
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
+                        'Pending' => 'Pending',
                         'Dipinjam' => 'Dipinjam',
                         'Dikembalikan' => 'Dikembalikan',
                     ]),

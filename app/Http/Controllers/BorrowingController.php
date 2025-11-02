@@ -46,11 +46,11 @@ class BorrowingController extends Controller
             'book_id' => $book->id,
             'borrow_date' => now(),
             'due_date' => now()->addDays(7), // Jatuh tempo 7 hari dari sekarang
-            'status' => 'Dipinjam',
+            'status' => 'Pending', // Status awal peminjaman : Dipinjam
         ]);
 
         // 4. Kurangi stok buku
-        $book->decrement('stock');
+        // $book->decrement('stock');
 
         // 5. Redirect ke dashboard dengan pesan sukses
         return redirect()->route('student.dashboard')->with('status', 'Buku "' . $book->title . '" berhasil dipinjam!');

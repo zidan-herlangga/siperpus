@@ -41,8 +41,11 @@ class BorrowingForm
                     ->default(0.0),
                 Select::make('status')
                     ->label('Status')
-                    ->options(['Dipinjam' => 'Dipinjam', 'Dikembalikan' => 'Dikembalikan'])
-                    ->default('Dipinjam')
+                    ->options([
+                        'Pending' => 'Pending',
+                        'Dipinjam' => 'Dipinjam',
+                        'Dikembalikan' => 'Dikembalikan'])
+                    ->default('Pending')
                     ->required(),
             ]);
     }

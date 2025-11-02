@@ -31,15 +31,22 @@
 
                         {{-- Input Password Baru --}}
                         <div>
-                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password Baru <span class="text-red-500">*</span></label>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                                Password Baru <span class="text-red-500">*</span>
+                            </label>
                             <div class="relative">
-                                <input id="password" type="password" name="password" required autocomplete="new-password"
-                                       class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 @error('password') border-red-500 @enderror"
-                                       placeholder="Minimal 8 karakter">
-                                <i class="fas fa-lock absolute left-3 top-3.5 text-gray-400"></i>
-                                <button type="button" onclick="togglePassword('password', this)" class="absolute right-3 top-3.5 text-gray-400 hover:text-green-500 focus:outline-none">
-                                    <i class="fas fa-eye"></i>
-                                </button>
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input id="password" type="password" name="password" required minlength="8"
+                                    autocomplete="new-password"
+                                    class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 @error('password') border-red-500 @enderror"
+                                    placeholder="Minimal 8 karakter">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <button type="button" aria-label="Tampilkan atau sembunyikan password" onclick="togglePassword('password', this)" class="text-gray-400 hover:text-green-500 focus:outline-none">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
                             </div>
                             @error('password')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -48,14 +55,21 @@
 
                         {{-- Input Konfirmasi Password --}}
                         <div>
-                            <label for="password-confirm" class="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Password Baru <span class="text-red-500">*</span></label>
+                            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">
+                                Konfirmasi Password Baru <span class="text-red-500">*</span>
+                            </label>
                             <div class="relative">
-                                <input id="password-confirm" type="password" name="password_confirmation" required autocomplete="new-password"
-                                       class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500">
-                                <i class="fas fa-lock absolute left-3 top-3.5 text-gray-400"></i>
-                                <button type="button" onclick="togglePassword('password-confirm', this)" class="absolute right-3 top-3.5 text-gray-400 hover:text-green-500 focus:outline-none">
-                                    <i class="fas fa-eye"></i>
-                                </button>
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password"
+                                    class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
+                                    placeholder="Konfirmasi Password">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <button type="button" aria-label="Tampilkan atau sembunyikan password" onclick="togglePassword('password_confirmation', this)" class="text-gray-400 hover:text-green-500 focus:outline-none">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -70,4 +84,15 @@
         </div>
     </div>
 </div>
+
+<script>
+    function togglePassword(id, btn) {
+        const input = document.getElementById(id);
+        const icon = btn.querySelector('i');
+        const isHidden = input.type === 'password';
+        input.type = isHidden ? 'text' : 'password';
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    }
+</script>
 @endsection

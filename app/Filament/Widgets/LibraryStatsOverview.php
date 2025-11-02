@@ -26,13 +26,19 @@ class LibraryStatsOverview extends BaseWidget
                 ->icon('heroicon-o-users')
                 ->color('info'),
 
-            // Kartu 3: Buku Sedang Dipinjam
+            // Kartu 3: Buku yang Pending
+            Stat::make('Buku Sedang Pending', Borrowing::where('status', 'Pending')->count())
+                ->description('Jumlah buku yang pending')
+                ->icon('heroicon-o-arrows-right-left')
+                ->color('gray'),
+            
+            // Kartu 4: Buku Sedang Dipinjam
             Stat::make('Buku Sedang Dipinjam', Borrowing::where('status', 'Dipinjam')->count())
                 ->description('Jumlah buku yang belum dikembalikan')
                 ->icon('heroicon-o-arrows-right-left')
                 ->color('warning'),
 
-            // Kartu 4: Buku Terlambat
+            // Kartu 5: Buku Terlambat
             Stat::make('Buku Terlambat', Borrowing::where('status', 'Dipinjam')->where('due_date', '<', now())->count())
                 ->description('Jumlah buku yang melewati jatuh tempo')
                 ->icon('heroicon-o-exclamation-triangle')

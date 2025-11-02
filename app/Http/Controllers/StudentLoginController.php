@@ -22,7 +22,7 @@ class StudentLoginController extends Controller
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required'],
+            'password' => ['required', 'min:8'],
         ]);
 
         // Coba otentikasi dengan kredensial yang diberikan dan opsi "Ingat Saya"

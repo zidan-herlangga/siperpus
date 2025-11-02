@@ -48,6 +48,7 @@ class AllBorrowingsReport extends BaseWidget
                     ->label('Status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
+                        'Pending' => 'gray',
                         'Dipinjam' => 'warning',
                         'Dikembalikan' => 'success',
                     }),
@@ -56,7 +57,12 @@ class AllBorrowingsReport extends BaseWidget
                     ->label('Denda')
                     ->getStateUsing(function ($record) {
                         $now = now();
-                
+                        
+                        // Jika status masih Pending, belum ada denda
+                        if ($record->status === 'Pending') {
+                            return 0;
+                        }
+                        
                         // Jika sudah dikembalikan → gunakan denda final dari DB
                         if ($record->status === 'Dikembalikan') {
                             return $record->fine;
