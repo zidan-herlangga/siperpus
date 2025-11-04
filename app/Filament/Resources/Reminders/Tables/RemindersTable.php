@@ -2,11 +2,16 @@
 
 namespace App\Filament\Resources\Reminders\Tables;
 
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
+use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Illuminate\Support\Facades\Artisan;
+use App\Models\Reminder;
 
 class RemindersTable
 {
@@ -40,13 +45,34 @@ class RemindersTable
                     ->options([
                         'pre_due' => 'H-1 Jatuh Tempo',
                         'overdue' => 'Terlambat',
-                    ])
+                    ]),
             ])
-            ->recordActions([]) // biasanya reminder tidak perlu diedit
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+            ->headerActions([
+                Action::make('sendReminder')
+                    ->label('Kirim Pengingat')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->color('primary')
+                    ->requiresConfirmation()
+                    ->action(function () {
+                        Artisan::call('app:send-reminder');
+                        $output = Artisan::output();
+
+                        Notification::make()
+                            ->title('Pengingat selesai dikirim')
+                            ->body($output ?: 'Semua email pengingat telah dikirim.')
+                            ->success()
+                            ->send();
+                    }),
+            ])
+            ->bulkActions([
+                DeleteBulkAction::make()
+                    ->label('Hapus yang Dipilih')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Hapus Data Terpilih')
+                    ->modalDescription('Yakin ingin menghapus data reminder yang dipilih? Tindakan ini tidak dapat dibatalkan.')
+                    ->modalSubmitActionLabel('Ya, Hapus'),
             ]);
     }
 }

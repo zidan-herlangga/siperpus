@@ -4,7 +4,7 @@
 ![Filament](https://img.shields.io/badge/Filament-4.x-F59E0B?style=for-the-badge&logo=php)
 ![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php)
 <!-- ![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?style=for-the-badge&logo=mysql) -->
-![PostgreSQL](https://img.shields.io/badge/postgresql-4169e1?style=for-the-badge&logo=postgresql&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/mysql-333333?style=for-the-badge&logo=mysql&logoColor=red)
 
 > Aplikasi **Sistem Informasi Perpustakaan Sekolah (SiPerpus)** adalah platform berbasis **Laravel 11 + Filament 4** yang dirancang untuk membantu sekolah dalam mengelola koleksi buku, data siswa, serta transaksi peminjaman dan pengembalian secara efisien dan modern.
 
@@ -50,7 +50,7 @@
 | **Laravel**       | 11.x  | Framework utama             |
 | **Filament**      | 4.x   | Admin panel modern          |
 | **PHP**           | 8.2+  | Bahasa backend              |
-| **PostgreSQL**    | -     | Database utama              |
+| **MySQL**         | -     | Database utama              |
 | **Composer**      | -     | Dependency manager          |
 | **Vite / NPM**    | -     | Asset builder               |
 | **SMTP Gmail**    | -     | Pengiriman notifikasi email |
@@ -60,7 +60,7 @@
 
 ## ⚙️ Panduan Instalasi
 
-> Panduan berikut mengasumsikan kamu sudah menginstal **PHP 8.2**, **Composer**, **PostgreSQL**, dan **Node.js (NPM)**.
+> Panduan berikut mengasumsikan kamu sudah menginstal **PHP 8.2**, **Composer**, **MySQL**, dan **Node.js (NPM)**.
 
 ### 1. Clone Repository
 
@@ -95,46 +95,19 @@ php artisan key:generate
 
 ### 6. Konfigurasi .env
 
-Pastikan file .env berisi konfigurasi berikut:
+**NOTE**: Tambahkan konfigurasi berikut ke dalam file **.env** :
 
 ```bash
-APP_NAME="ELibrary SMK Karya Guna 2"
-APP_ENV=local
-APP_KEY=
-APP_DEBUG=false
-APP_TIMEZONE=Asia/Jakarta
-APP_URL=http://localhost:8000
-APP_LOCALE=id
-APP_FALLBACK_LOCALE=en
-
 # OpenAI API Key
 OPENAI_API_KEY=sk-proj-xxxxx
 
-DEBUGBAR_ENABLED=false
-
-LOG_CHANNEL=stack
-LOG_LEVEL=debug
-
-# PostgreSQL Connection
-# Daftar https://supabase.com
-DB_CONNECTION=pgsql
-DB_HOST=
-DB_PORT=5432
-DB_DATABASE=postgres
-DB_USERNAME=
+# MySQL Connection
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=
+DB_USERNAME=root 
 DB_PASSWORD=
-
-BROADCAST_CONNECTION=log
-CACHE_STORE=file
-CACHE_DRIVER=file
-FILESYSTEM_DISK=local
-QUEUE_CONNECTION=sync
-
-SESSION_DRIVER=file
-SESSION_LIFETIME=300
-SESSION_DOMAIN=null
-
-MEMCACHED_HOST=127.0.0.1
 
 #SMTP Gmail
 MAIL_MAILER=smtp
@@ -147,15 +120,12 @@ MAIL_PASSWORD=xxxxcrqexxxxxxxx # 16 Digit
 MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS="email@anda.com"
 MAIL_FROM_NAME="${APP_NAME}"
-
-VITE_APP_NAME="${APP_NAME}"
-# VITE_SERVER_URL=
 ```
 
 💡 Tips:
 
 -   Gunakan App Password Gmail, bukan password akun utama.
--   Pastikan database siperpus sudah dibuat sebelum migrasi.
+-   Pastikan database sudah dibuat sebelum migrasi.
 
 ### 7. Migrasi & Seed
 
@@ -164,22 +134,21 @@ php artisan migrate
 php artisan db:seed
 ```
 
-### 8. Buat Akun Admin
+### 8. Buat Akun Admin (opsional)
 
 ```bash
 php artisan make:filament-user
 ```
 
-### 9. Jalankan Artisan
+### 9. Jalankan NPM
+```bash
+npm run build && npm run dev
+```
+
+### 10. Jalankan Artisan
 
 ```bash
 php artisan serve
-```
-
-### 9. Jalankan NPM
-
-```bash
-npm run dev
 ```
 
 ## ScreenShot

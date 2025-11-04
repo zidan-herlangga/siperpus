@@ -28,11 +28,22 @@ class BorrowingInfolist
                 TextEntry::make('fine')
                     ->label('Denda')
                     ->state(function ($record) {
-                        $daysLate = now()->diffInDays($record->due_date, false);
-                        return $daysLate > 0 ? $daysLate * 1000 : 0;
+                        if (!$record->due_date) return 0;
+
+                        // Jika sudah dikembalikan, gunakan nilai tetap dari DB
+                        if ($record->status === 'Dikembalikan') {
+                            return $record->fine ?? 0;
+                        }
+
+                        // Hitung denda hanya jika sudah lewat jatuh tempo
+                        if (now()->gt($record->due_date)) {
+                            $daysLate = $record->due_date->diffInDays(now()); // ← arah dibalik
+                            return $daysLate * 1000;
+                        }
+
+                        return 0;
                     })
-                    ->money('IDR')
-                    ->numeric(),
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                 TextEntry::make('status')
                     ->label('Status')
                     ->badge(),

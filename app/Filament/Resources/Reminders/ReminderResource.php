@@ -9,6 +9,7 @@ use App\Filament\Resources\Reminders\Schemas\ReminderForm;
 use App\Filament\Resources\Reminders\Tables\RemindersTable;
 use App\Models\Reminder;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -18,6 +19,8 @@ class ReminderResource extends Resource
 {
     protected static ?string $label = 'List Pengingat';
     protected static ?string $model = Reminder::class;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Manajemen Peminjaman';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clock';
 

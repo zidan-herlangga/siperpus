@@ -26,6 +26,8 @@ class EditBorrowing extends EditRecord
                         ->title('Denda berhasil dihitung ulang')
                         ->success()
                         ->send();
+                        
+                    $this->redirect(request()->header('Referer'));
                 }),
         ];
     }
