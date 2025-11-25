@@ -13,6 +13,7 @@ class Book extends Model
 
     protected $fillable = [
         'title',
+        'cover_image',
         'slug',
         'author',
         'publisher',
@@ -39,17 +40,28 @@ class Book extends Model
         });
     }
 
-   
+
 
     /**
      * Kolom yang sering diambil bisa diset default select
      * supaya Eloquent tidak ambil semua field.
      */
     protected $visible = [
-        'id', 'title', 'slug', 'author', 'publisher', 'year', 'isbn', 'category', 'synopsis','shelf_code', 'stock',
+        'id',
+        'title',
+        'cover_image',
+        'slug',
+        'author',
+        'publisher',
+        'year',
+        'isbn',
+        'category',
+        'synopsis',
+        'shelf_code',
+        'stock',
     ];
 
-     public function getRouteKeyName(): string
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }
@@ -70,8 +82,8 @@ class Book extends Model
         if (!empty($keyword)) {
             $query->where(function ($q) use ($keyword) {
                 $q->where('title', 'like', "%{$keyword}%")
-                  ->orWhere('author', 'like', "%{$keyword}%")
-                  ->orWhere('category', 'like', "%{$keyword}%");
+                    ->orWhere('author', 'like', "%{$keyword}%")
+                    ->orWhere('category', 'like', "%{$keyword}%");
             });
         }
     }

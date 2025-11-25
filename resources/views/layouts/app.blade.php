@@ -9,7 +9,7 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
     <!-- PWA  -->
-    <meta name="theme-color" content="#6777ef"/>
+    <meta name="theme-color" content="#6777ef" />
     <link rel="apple-touch-icon" href="{{ asset('assets/image/favicon.png') }}">
     <link rel="manifest" href="{{ asset('/manifest.json') }}">
 
@@ -40,76 +40,71 @@
             {{-- NAVIGASI DESKTOP --}}
             <nav class="hidden md:flex items-center gap-6 font-medium">
                 @auth('student')
-                    <a href="{{ route('student.dashboard') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 {{ request()->routeIs('student.dashboard') ? 'bg-white/20 text-yellow-300' : 'text-white/90 hover:bg-white/10' }}">
+                    <a href="{{ route('student.dashboard') }}"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 {{ request()->routeIs('student.dashboard') ? 'bg-white/20 text-yellow-300' : 'text-white/90 hover:bg-white/10' }}">
                         <i class="fas fa-tachometer-alt"></i>
                         Dashboard
                     </a>
 
-                    <a href="{{ route('books.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 {{ request()->routeIs('books.*') ? 'bg-white/20 text-yellow-300' : 'text-white/90 hover:bg-white/10' }}">
+                    <a href="{{ route('books.index') }}"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 {{ request()->routeIs('books.*') ? 'bg-white/20 text-yellow-300' : 'text-white/90 hover:bg-white/10' }}">
                         <i class="fas fa-book"></i>
                         Katalog
                     </a>
 
-                    <a href="#" onclick="openBorrowGuideModal()" class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 text-white/90 hover:bg-white/10">
+                    <a href="#" onclick="openBorrowGuideModal()"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 text-white/90 hover:bg-white/10">
                         <i class="fas fa-info-circle"></i>
                         Petunjuk
                     </a>
 
                     <form action="{{ route('student.logout') }}" method="POST" class="inline">
                         @csrf
-                        <button type="submit" class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition-colors duration-200">
+                        <button type="submit"
+                            class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition-colors duration-200">
                             <i class="fas fa-sign-out-alt"></i>
                             Logout
                         </button>
                     </form>
                 @else
                     <!-- Add this inside <body> -->
-                    <button id="pwa-install-btn" style="display:none; position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 8px; z-index: 1000;">
-                    Install App
+                    <button id="pwa-install-btn"
+                        style="display:none; position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 8px; z-index: 1000;">
+                        Install App
                     </button>
-                    <a href="{{ route('books.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 {{ request()->routeIs('books.*') ? 'bg-white/20 text-yellow-300' : 'text-white/90 hover:bg-white/10' }}">
+                    <a href="{{ route('books.index') }}"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 {{ request()->routeIs('books.*') ? 'bg-white/20 text-yellow-300' : 'text-white/90 hover:bg-white/10' }}">
                         <i class="fas fa-book"></i>
                         Katalog
                     </a>
 
-                    <a href="#" onclick="openBorrowGuideModal()" class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 text-white/90 hover:bg-white/10">
+                    <a href="#" onclick="openBorrowGuideModal()"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 text-white/90 hover:bg-white/10">
                         <i class="fas fa-info-circle"></i>
                         Petunjuk
                     </a>
-                    
+
                     {{-- Dropdown untuk Login/Daftar --}}
                     <div class="relative dropdown group">
                         <button
-                            class="flex items-center gap-2 bg-yellow-500 text-gray-900 font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-yellow-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                        >
+                            class="flex items-center gap-2 bg-yellow-500 text-gray-900 font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-yellow-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300">
                             <i class="fas fa-user"></i>
                             <span>Akun</span>
-                            <i class="fas fa-chevron-down ml-1 text-xs transition-transform duration-200 group-hover:rotate-180"></i>
+                            <i
+                                class="fas fa-chevron-down ml-1 text-xs transition-transform duration-200 group-hover:rotate-180"></i>
                         </button>
 
                         <div
-                            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transform transition-all duration-200 origin-top-right z-50"
-                        >
-                            <a
-                                href="{{ route('student.login.form') }}"
-                                class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-yellow-100 transition-colors duration-150 rounded-t-lg"
-                            >
+                            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transform transition-all duration-200 origin-top-right z-50">
+                            <a href="{{ route('student.login.form') }}"
+                                class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-yellow-100 transition-colors duration-150 rounded-t-lg">
                                 <i class="fas fa-sign-in-alt"></i>
                                 Login
                             </a>
-                            <a
-                                href="{{ route('student.register.form') }}"
-                                class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-yellow-100 transition-colors duration-150 rounded-b-lg"
-                            >
+                            <a href="{{ route('student.register.form') }}"
+                                class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-yellow-100 transition-colors duration-150 rounded-b-lg">
                                 <i class="fas fa-user-plus"></i>
                                 Daftar
-                            </a>
-                            <a
-                                href="/admin-perpus"
-                                class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-yellow-100 transition-colors duration-150 rounded-b-lg"
-                            >
-                                <i class="fas fa-user-plus"></i>
-                                Login Admin
                             </a>
                         </div>
                     </div>
@@ -125,22 +120,26 @@
 
     {{-- OFFCANVAS MODERN --}}
     <div id="offcanvas" class="offcanvas">
-        <div class="flex justify-between items-center mb-6 gradient-bg">
-            {{-- <h2 class="text-lg font-bold text-green-700">Menu</h2> --}}
-            <img src="{{ asset('assets/image/logo-light-smkg2.png') }}" alt="" class="w-auto h-10">
+        <div class="flex justify-between items-center mb-6 bg-black/10 p-2 rounded-lg">
+            <h2 class="text-lg font-bold text-green-700">Menu</h2>
+            {{-- <img src="{{ asset('assets/image/logo-light-smkg2.png') }}" alt="" class="w-auto h-10"> --}}
             <button id="closeOffcanvas"><i class="fas fa-times text-gray-700 text-xl"></i></button>
         </div>
+        <hr>
         <div class="flex flex-col flex-grow space-y-4">
             @auth('student')
-                <a href="{{ route('student.dashboard') }}" class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
+                <a href="{{ route('student.dashboard') }}"
+                    class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
                     <i class="fas fa-tachometer-alt w-5"></i>
                     Dashboard
                 </a>
-                <a href="{{ route('books.index') }}" class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
+                <a href="{{ route('books.index') }}"
+                    class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
                     <i class="fas fa-book w-5"></i>
                     Katalog Buku
                 </a>
-                <a href="#" onclick="openBorrowGuideModal()" class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
+                <a href="#" onclick="openBorrowGuideModal()"
+                    class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
                     <i class="fas fa-info-circle w-5"></i>
                     Petunjuk
                 </a>
@@ -156,19 +155,23 @@
                     <i class="fas fa-home w-5"></i>
                     Beranda
                 </a>
-                <a href="{{ route('books.index') }}" class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
+                <a href="{{ route('books.index') }}"
+                    class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
                     <i class="fas fa-book w-5"></i>
                     Katalog Buku
                 </a>
-                <a href="#" onclick="openBorrowGuideModal()" class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
+                <a href="#" onclick="openBorrowGuideModal()"
+                    class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
                     <i class="fas fa-info-circle w-5"></i>
                     Petunjuk
                 </a>
-                <a href="{{ route('student.register.form') }}" class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
+                <a href="{{ route('student.register.form') }}"
+                    class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
                     <i class="fas fa-user-plus w-5"></i>
                     Daftar
                 </a>
-                <a href="{{ route('student.login.form') }}" class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
+                <a href="{{ route('student.login.form') }}"
+                    class="flex items-center gap-3 py-2 text-gray-700 hover:text-green-700">
                     <i class="fas fa-sign-in-alt w-5"></i>
                     Login
                 </a>
@@ -252,20 +255,20 @@
 
     <script src="{{ asset('/sw.js') }}"></script>
     <script>
-    if ("serviceWorker" in navigator) {
-        // Register a service worker hosted at the root of the
-        // site using the default scope.
-        navigator.serviceWorker.register("/sw.js").then(
-        (registration) => {
-            console.log("Service worker registration succeeded:", registration);
-        },
-        (error) => {
-            console.error(`Service worker registration failed: ${error}`);
-        },
-        );
-    } else {
-        console.error("Service workers are not supported.");
-    }
+        if ("serviceWorker" in navigator) {
+            // Register a service worker hosted at the root of the
+            // site using the default scope.
+            navigator.serviceWorker.register("/sw.js").then(
+                (registration) => {
+                    console.log("Service worker registration succeeded:", registration);
+                },
+                (error) => {
+                    console.error(`Service worker registration failed: ${error}`);
+                },
+            );
+        } else {
+            console.error("Service workers are not supported.");
+        }
     </script>
 </body>
 

@@ -7,50 +7,52 @@ use Illuminate\Support\Facades\Auth;
 
 class StudentLoginController extends Controller
 {
-    /**
-     * Menampilkan halaman form login.
-     */
     public function showLoginForm()
     {
         return view('auth.login_student');
     }
 
-    /**
-     * Memproses otentikasi siswa dengan email & password.
-     */
     public function authenticate(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        // Validasi input
+        $request->validate([
+            'login' => ['required'],
             'password' => ['required', 'min:8'],
         ]);
 
-        // Coba otentikasi dengan kredensial yang diberikan dan opsi "Ingat Saya"
+        $login = $request->input('login');
+        $password = $request->input('password');
+
+        // Cek apakah input berupa email atau nis
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'nis';
+
+        // Buat array kredensial dinamis
+        $credentials = [
+            $field => $login,
+            'password' => $password,
+        ];
+
+        // Coba login
         if (Auth::guard('student')->attempt($credentials, $request->boolean('remember'))) {
-            // --- KREDENSIAL BENAR ---
-            
+
             $request->session()->regenerate();
             $student = Auth::guard('student')->user();
 
-            // Periksa apakah email sudah diverifikasi
-            if (! $student->hasVerifiedEmail()) {
-                // JIKA BELUM DIVERIFIKASI: Arahkan ke halaman notifikasi verifikasi
+            // Cek email verified
+            if (!$student->hasVerifiedEmail()) {
                 return redirect()->route('verification.notice');
             }
 
-            // JIKA SUDAH DIVERIFIKASI: Lanjutkan ke dashboard
-            return redirect()->intended(route('student.dashboard'))->with('status', 'Login berhasil!');
+            return redirect()->intended(route('student.dashboard'))
+                ->with('status', 'Login berhasil!');
         }
 
-        // --- KREDENSIAL SALAH ---
+        // Jika gagal
         return back()->withErrors([
-            'email' => 'Email atau password yang Anda masukkan salah.',
-        ])->onlyInput('email');
+            'login' => 'Email/NIS atau password salah.',
+        ])->onlyInput('login');
     }
-    
-    /**
-     * Memproses logout siswa.
-     */
+
     public function logout(Request $request)
     {
         Auth::guard('student')->logout();

@@ -8,22 +8,15 @@ use App\Http\Controllers\StudentLoginController;
 use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\ChatbotController;
 
 use App\Models\Student;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
-
 // Halaman Beranda
 Route::get('/', [HomeController::class, 'index'])->name('homepage');
-
-
 
 // ==========================
 // RUTE UNTUK TAMU (GUEST)
@@ -35,27 +28,22 @@ Route::middleware('guest:student')->group(function () {
     Route::post('/login', [StudentLoginController::class, 'authenticate'])->name('student.login.auth');
 
     Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
-    ->name('student.password.request');
+        ->name('student.password.request');
 
-    // Proses kirim link reset ke email
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
         ->name('student.password.email');
 
-    // Menampilkan form reset (dari link email)
     Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
         ->name('student.password.reset');
 
-    // Alias untuk kompatibilitas Laravel (⚠️ WAJIB untuk hilangkan error “Route [password.reset] not defined”)
-    Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
-        ->name('password.reset');
-
-    // Proses ubah password
     Route::post('reset-password', [ResetPasswordController::class, 'reset'])
         ->name('student.password.update');
 });
 
-// Logout (hanya untuk yang sudah login)
-Route::post('/logout', [StudentLoginController::class, 'logout'])->middleware('auth:student')->name('student.logout');
+// Logout
+Route::post('/logout', [StudentLoginController::class, 'logout'])
+    ->middleware('auth:student')
+    ->name('student.logout');
 
 // ==========================
 // RUTE PUBLIK
@@ -64,41 +52,47 @@ Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
 
 // ==========================
-// RUTE YANG DILINDUNGI (MEMERLUKAN LOGIN & VERIFIKASI)
+// RUTE YANG DILINDUNGI
 // ==========================
 Route::middleware(['auth:student', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
     Route::post('/borrow/{book}', [BorrowingController::class, 'store'])->name('books.borrow');
-    
-    // Halaman Chatbot
-    Route::get('/chatbot', fn() => view('chatbot'));
+
+    Route::get('/chatbot', fn() => view('chatbot'))->name('student.chatbot');
 });
 
 // ==========================
-// RUTE VERIFIKASI EMAIL
+// VERIFIKASI EMAIL
 // ==========================
-// Halaman notifikasi (untuk user yang mencoba akses dashboard tapi belum verify)
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth:student')->name('verification.notice');
 
-// Link dari email (TIDAK PERLU LOGIN)
 Route::get('/email/verify/{id}/{hash}', function (Request $request, $id) {
     $student = Student::find($id);
+
     if (!$student || !hash_equals((string) $request->route('hash'), sha1($student->getEmailForVerification()))) {
         abort(403);
     }
+
     if ($student->hasVerifiedEmail()) {
-        return redirect()->route('student.login.form')->with('status', 'Akun Anda sudah terverifikasi. Silakan login.');
+        return redirect()->route('student.login.form')->with('status', 'Akun Anda sudah terverifikasi.');
     }
+
     if ($student->markEmailAsVerified()) {
         event(new Verified($student));
     }
-    return redirect()->route('student.login.form')->with('status', 'Verifikasi berhasil! Silakan login.');
+
+    return redirect()->route('student.login.form')->with('status', 'Verifikasi berhasil!');
 })->middleware(['signed'])->name('verification.verify');
 
-// Kirim ulang email verifikasi
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user('student')->sendEmailVerificationNotification();
-    return back()->with('message', 'Link verifikasi baru telah berhasil dikirim!');
+    return back()->with('message', 'Link verifikasi baru dikirim!');
 })->middleware(['auth:student', 'throttle:6,1'])->name('verification.send');
+
+// ==========================
+// CHATBOT (POST)
+// ==========================
+Route::get('/chatbot', [ChatbotController::class, 'index']);
+Route::post('/chatbot', [ChatbotController::class, 'chat'])->name('chat.send');

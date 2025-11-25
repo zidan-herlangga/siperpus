@@ -13,6 +13,8 @@ class BookInfolist
             ->components([
                 TextEntry::make('title')
                     ->label('Judul Buku'),
+                TextEntry::make('cover_image')
+                    ->label('Sampul Buku'),
                 TextEntry::make('author')
                     ->label('Pengarang'),
                 TextEntry::make('publisher')

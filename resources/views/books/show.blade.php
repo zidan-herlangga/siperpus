@@ -4,6 +4,7 @@
 
 @section('content')
     <div class="container mx-auto px-4 py-6 max-w-6xl space-y-6">
+
         {{-- Tombol Kembali --}}
         <a href="{{ route('books.index') }}"
             class="inline-flex items-center text-gray-700 hover:text-green-600 transition-colors">
@@ -12,36 +13,59 @@
 
         {{-- Kartu Utama Buku --}}
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+
             {{-- Bagian Header Buku --}}
             <div class="bg-green-600 text-white p-6">
-                <h1 class="text-2xl md:text-3xl font-bold mb-2">{{ $book->title }}</h1>
-                <p class="text-green-100 mb-4">oleh {{ $book->author }}</p>
+                <div class="flex flex-col md:flex-row md:items-start gap-6">
 
-                <div class="flex flex-wrap gap-2">
-                    @if ($book->stock > 0)
-                        <span class="bg-white text-green-800 px-3 py-1 rounded-full text-sm font-medium flex items-center">
-                            <i class="fas fa-check-circle text-green-600 mr-1"></i>Tersedia
-                        </span>
-                    @else
-                        <span class="bg-white text-red-800 px-3 py-1 rounded-full text-sm font-medium flex items-center">
-                            <i class="fas fa-times-circle text-red-600 mr-1"></i>Stok Habis
-                        </span>
-                    @endif
+                    {{-- COVER BUKU --}}
+                    <div
+                        class="w-32 h-48 md:w-40 md:h-60 bg-white rounded-lg overflow-hidden shadow-md border border-white/30">
+                        @if (filter_var($book->cover_image, FILTER_VALIDATE_URL))
+                            <img src="{{ $book->cover_image }}" class="w-full h-full object-cover">
+                        @else
+                            <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }}"
+                                class="w-full h-full object-cover">
+                        @endif
+                    </div>
 
-                    <span class="bg-green-700 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        <i class="fas fa-tag mr-1"></i>{{ $book->category }}
-                    </span>
-                    <span class="bg-green-700 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        <i class="fas fa-map-marker-alt mr-1"></i>Rak {{ $book->shelf_code }}
-                    </span>
+                    {{-- INFO BUKU --}}
+                    <div class="flex-1">
+                        <h1 class="text-2xl md:text-3xl font-bold mb-2">{{ $book->title }}</h1>
+                        <p class="text-green-100 mb-4">oleh {{ $book->author }}</p>
+
+                        <div class="flex flex-wrap gap-2">
+                            @if ($book->stock > 0)
+                                <span
+                                    class="bg-white text-green-800 px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                                    <i class="fas fa-check-circle text-green-600 mr-1"></i>Tersedia
+                                </span>
+                            @else
+                                <span
+                                    class="bg-white text-red-800 px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                                    <i class="fas fa-times-circle text-red-600 mr-1"></i>Stok Habis
+                                </span>
+                            @endif
+
+                            <span class="bg-green-700 text-white px-3 py-1 rounded-full text-sm font-medium">
+                                <i class="fas fa-tag mr-1"></i>{{ $book->category }}
+                            </span>
+                            <span class="bg-green-700 text-white px-3 py-1 rounded-full text-sm font-medium">
+                                <i class="fas fa-map-marker-alt mr-1"></i>Rak {{ $book->shelf_code }}
+                            </span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
             {{-- Bagian Konten --}}
             <div class="p-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
                     {{-- Kolom Kiri --}}
                     <div class="lg:col-span-2 space-y-6">
+
                         {{-- Detail Buku --}}
                         <section>
                             <h2 class="text-xl font-bold text-gray-800 mb-3">Detail Buku</h2>
@@ -61,17 +85,8 @@
                             </dl>
                         </section>
 
-                        {{-- Deskripsi --}}
+                        {{-- Sinopsis --}}
                         <section>
-                            {{-- <h2 class="text-xl font-bold text-gray-800 mb-3">Deskripsi</h2>
-                            <p class="text-gray-600 leading-relaxed">
-                                Buku <strong>"{{ $book->title }}"</strong> karya {{ $book->author }} merupakan koleksi
-                                berharga perpustakaan kami. Diterbitkan oleh {{ $book->publisher }} pada tahun {{ $book->year }},
-                                buku ini termasuk dalam kategori <strong>{{ $book->category }}</strong> dan dapat ditemukan
-                                di rak <strong>{{ $book->shelf_code }}</strong>.
-                            </p> --}}
-
-                            {{-- Sinopsis --}}
                             <h2 class="text-xl font-bold text-gray-800 mb-3">Sinopsis</h2>
                             <p class="text-gray-600 leading-relaxed whitespace-pre-line">
                                 {{ $book->synopsis ?? 'Sinopsis untuk buku ini belum tersedia.' }}
@@ -82,6 +97,7 @@
                     {{-- Kolom Kanan --}}
                     <div class="lg:col-span-1">
                         <div class="space-y-4">
+
                             {{-- Kartu Info Stok --}}
                             <div class="bg-green-50 border border-green-200 rounded-lg p-4">
                                 <h3 class="text-lg font-bold text-gray-800 mb-2">Stok Tersedia</h3>
@@ -101,7 +117,8 @@
                                             <i class="fas fa-hand-holding mr-2"></i>Pinjam Buku
                                         </button>
                                     @else
-                                        <button disabled title="Peminjaman hanya dapat dilakukan pada jam operasional (Senin-Jumat, 07:00-16:00 WIB)"
+                                        <button disabled
+                                            title="Peminjaman hanya dapat dilakukan pada jam operasional (Senin-Jumat, 07:00-16:00 WIB)"
                                             class="w-full bg-gray-400 text-white py-2 px-4 rounded font-medium cursor-not-allowed flex items-center justify-center">
                                             <i class="fas fa-clock mr-2"></i>
                                             {{ $book->stock > 0 ? 'Di Luar Jam Operasional' : 'Stok Habis' }}
@@ -128,8 +145,10 @@
                                     </li>
                                 </ul>
                             </div>
+
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -177,8 +196,8 @@
                                         <input type="checkbox" name="terms" id="terms" required
                                             class="mt-1 mr-2 text-green-600 border-gray-300 rounded focus:ring-green-500">
                                         <label for="terms" class="text-xs text-gray-600">
-                                            Saya setuju untuk mengembalikan buku sesuai tanggal jatuh tempo dan menjaga
-                                            kondisi buku dengan baik.
+                                            Saya setuju untuk mengembalikan buku sesuai tanggal jatuh tempo dan menjaga kondisi
+                                            buku dengan baik.
                                         </label>
                                     </div>
 
@@ -209,6 +228,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 
     <script>
@@ -219,8 +239,6 @@
         function closeBorrowModal() {
             document.getElementById('borrowModal').classList.add('hidden');
         }
-
-        // Close modal when clicking outside
         document.getElementById('borrowModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeBorrowModal();

@@ -4,62 +4,108 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
 
 class ChatbotController extends Controller
 {
+    public function index()
+    {
+        return view('chatbot');
+    }
+
     public function chat(Request $request)
     {
-        $message = trim($request->input('message'));
+        $request->validate([
+            'message' => 'required|string'
+        ]);
 
-        if (!$message) {
-            return response()->json(['reply' => 'Pesan tidak boleh kosong.'], 400);
+        $message = strtolower($request->message);
+
+        // ============================================
+        // 1. LOAD DATASET DARI FILE SYSTEM
+        // ============================================
+        $path = storage_path('app/books.json');
+
+        if (!file_exists($path)) {
+            return $this->fallbackAI($message, "Dataset tidak ditemukan.");
         }
 
-        // Cache agar cepat jika pertanyaan sama
-        $cacheKey = 'chatbot_reply_' . md5($message);
-        if (Cache::has($cacheKey)) {
-            return response()->json(['reply' => Cache::get($cacheKey)]);
+        $json = file_get_contents($path);
+        $books = json_decode($json, true);
+
+        if (!$books) {
+            return $this->fallbackAI($message, "Dataset rusak / JSON invalid.");
         }
 
-        try {
-            // Panggil API OpenAI (gunakan key kamu sendiri di .env)
-            $apiKey = env('OPENAI_API_KEY');
-            if (!$apiKey) {
-                return response()->json(['reply' => 'API key OpenAI belum diatur.'], 500);
-            }
+        // ============================================
+        // 2. CARI BUKU DALAM DATASET
+        // ============================================
+        foreach ($books as $book) {
+            if (str_contains(strtolower($book['title']), $message)) {
 
-            $response = Http::withToken($apiKey)
-                ->timeout(15)
-                ->post('https://api.openai.com/v1/chat/completions', [
-                    'model' => 'gpt-4o-mini',
-                    'messages' => [
+                return response()->json([
+                    'reply' => "Berikut informasi lengkap tentang buku <span class='font-bold'>{$book['title']}</span>:",
+                    'books' => [
                         [
-                            'role' => 'system',
-                            'content' => 'Kamu adalah chatbot perpustakaan. Jawab dengan sopan, informatif, dan hanya terkait dunia buku, penulis, penerbit, genre, sinopsis, atau hal akademik terkait literasi.'
-                        ],
-                        [
-                            'role' => 'user',
-                            'content' => $message
+                            'title'      => $book['title'],
+                            'author'     => $book['author'],
+                            'cover'      => $book['cover_image'],
+                            'year'       => $book['year'],
+                            'detail'     => $book['detail'],
+                            'stock'      => $book['stock'],
+                            'category'   => $book['category'],
+                            'shelf_code' => $book['shelf_code']
                         ]
-                    ],
-                    'max_tokens' => 1000,
-                    'temperature' => 0.7,
+                    ]
                 ]);
-
-            if ($response->failed()) {
-                return response()->json(['reply' => 'Gagal menghubungi server OpenAI.'], 500);
             }
+        }
 
-            $data = $response->json();
-            $reply = $data['choices'][0]['message']['content'] ?? 'Maaf, saya tidak dapat memproses pertanyaan itu.';
+        // ============================================
+        // 3. JIKA TIDAK ADA → AI JELASKAN
+        // ============================================
+        return $this->fallbackAI($message);
+    }
 
-            // Simpan ke cache 30 menit
-            Cache::put($cacheKey, $reply, now()->addMinutes(30));
+    // ============================================
+    // 4. FALLBACK KE OPENROUTER
+    // ============================================
+    private function fallbackAI($message, $note = null)
+    {
+        $payload = [
+            'model' => config('services.openrouter.model'),
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' =>
+                        "Kamu adalah chatbot perpustakaan. 
+                         Jika buku tidak ada dalam dataset, 
+                         jawab dengan penjelasan umum berdasarkan pengetahuan publik. 
+                         Jika ada, jawab ringkas dan ramah."
+                ],
+                [
+                    'role' => 'user',
+                    'content' => $message
+                ]
+            ]
+        ];
 
-            return response()->json(['reply' => $reply]);
-        } catch (\Throwable $e) {
-            return response()->json(['reply' => 'Terjadi kesalahan internal: ' . $e->getMessage()], 500);
-        }   
+        $res = Http::withHeaders([
+            'Authorization' => 'Bearer ' . config('services.openrouter.api_key'),
+            'HTTP-Referer'  => url('/'),
+            'X-Title'       => 'Library Chatbot'
+        ])->post(config('services.openrouter.base_url'), $payload);
+
+        if ($res->failed()) {
+            return response()->json([
+                'reply' => "Maaf, AI sedang tidak bisa menjawab."
+            ]);
+        }
+
+        return response()->json([
+            'reply' =>
+                ($note ? "($note)\n\n" : "") .
+                ($res->json()['choices'][0]['message']['content'] ?? "Tidak ada jawaban."),
+            'books' => []
+        ]);
     }
 }

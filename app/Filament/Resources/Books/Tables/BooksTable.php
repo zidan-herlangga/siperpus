@@ -7,6 +7,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
+
 use Filament\Tables\Table;
 
 class BooksTable
@@ -18,6 +20,9 @@ class BooksTable
                 TextColumn::make('title')
                     ->label('Judul Buku')
                     ->searchable(),
+                ImageColumn::make('cover_image')
+                    ->label('Sampul Buku')
+                    ->height(70),
                 TextColumn::make('author')
                     ->label('Pengarang')
                     ->searchable(),

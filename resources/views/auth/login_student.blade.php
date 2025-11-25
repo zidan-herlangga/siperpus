@@ -39,11 +39,12 @@
 
                         {{-- Email --}}
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Terdaftar</label>
+                            <label for="login" class="block text-sm font-medium text-gray-700 mb-2">Email/NIS
+                                Terdaftar</label>
                             <div class="relative">
-                                <input type="email" name="email" id="email" value="{{ old('email') }}" required
+                                <input type="text" name="login" id="login" value="{{ old('login') }}" required
                                     class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
-                                    placeholder="nama@email.com">
+                                    placeholder="Masukkan email/nis Anda">
                                 <i class="fas fa-envelope absolute left-3 top-3 text-gray-400 text-sm"></i>
                             </div>
                         </div>
@@ -65,7 +66,8 @@
 
                         {{-- Pertanyaan Keamanan --}}
                         <div>
-                            <label for="randomNumberInput" class="block text-sm font-medium text-gray-700 mb-2" id="randomNumberDisplay"></label>
+                            <label for="randomNumberInput" class="block text-sm font-medium text-gray-700 mb-2"
+                                id="randomNumberDisplay"></label>
                             <div class="relative">
                                 <input type="number" name="randomNumberInput" id="randomNumberInput" required
                                     class="w-full px-3 py-2.5 bg-white border border-gray-300 rounded focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
@@ -82,7 +84,7 @@
                             </label>
 
                             {{-- Forgot Password --}}
-                            
+
                             <a href="{{ route('student.password.request') }}" class="text-gray-600 hover:text-gray-700">
                                 Lupa Password?
                             </a>
@@ -119,7 +121,7 @@
         function togglePassword(fieldId, button) {
             const field = document.getElementById(fieldId);
             const icon = button.querySelector('i');
-            
+
             if (field.type === 'password') {
                 field.type = 'text';
                 icon.classList.remove('fa-eye');

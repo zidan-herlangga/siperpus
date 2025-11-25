@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\Books\Schemas;
 
+use Filament\Forms\Components\Field;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Schema;
+use File;
 
 class BookForm
 {
@@ -14,6 +17,12 @@ class BookForm
                 TextInput::make('title')
                     ->label('Judul Buku')
                     ->required(),
+                FileUpload::make('cover_image')
+                    ->label('Sampul Buku')
+                    ->image()
+                    ->directory('book-covers')
+                    ->visibility('public')
+                    ->nullable(),
                 TextInput::make('author')
                     ->label('Pengarang')
                     ->required(),
