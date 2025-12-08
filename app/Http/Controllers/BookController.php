@@ -39,6 +39,14 @@ class BookController extends Controller
 
     public function show(Book $book)
     {
-        return view('books.show', compact('book'));
+        // Ambil buku terkait berdasarkan kategori, kecuali buku yang sedang dilihat
+        $relatedBooks = Book::where('category', $book->category)
+                            ->where('id', '!=', $book->id)
+                            ->inRandomOrder() // Acak agar lebih bervariasi
+                            ->limit(4) // Batasi hanya 4 buku
+                            ->get();
+
+
+        return view('books.show', compact('book', 'relatedBooks'));
     }
 }

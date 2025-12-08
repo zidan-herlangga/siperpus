@@ -1,15 +1,14 @@
 {
-    "name": "E Library SMK Karya Guna 2",
-    "short_name": "LPT",
+    "name": "Elibrary SMK Karya Guna 2",
+    "short_name": "Elib KG2",
     "start_url": "/",
-    "background_color": "#6777ef",
+    "background_color": "#065f46",
     "description": "Temukan ribuan koleksi buku dan jelajahi dunia literasi secara digital — cepat, mudah, dan menyenangkan.",
     "display": "fullscreen",
-
-    "theme_color": "#6777ef",
+    "theme_color": "#065f46",
     "icons": [
         {
-            "src": "logo.png",
+            "src": "logokg2.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"

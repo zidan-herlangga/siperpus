@@ -10,11 +10,12 @@ use Illuminate\Support\Facades\Mail;
 
 class SendReminderEmails extends Command
 {
-    protected $signature = 'app:send-reminder';
+    protected $signature = 'app:send-reminder {--force}';
     protected $description = 'Mengirim email pengingat untuk buku yang akan jatuh tempo atau sudah terlambat.';
 
     public function handle()
     {
+
         $this->info('Memulai proses pengiriman email pengingat...');
 
         // Reminder H-1

@@ -7,6 +7,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
+use App\Enums\StatusAktif;
+
 class StudentForm
 {
     public static function configure(Schema $schema): Schema
@@ -35,9 +37,12 @@ class StudentForm
                     ->label('Email Terverifikasi Pada')
                     ->placeholder('-')
                     ->default(null),
-                Select::make('status')
+                Select::make('is_active')
                     ->label('Status')
-                    ->options(['Aktif' => 'Aktif', 'Nonaktif' => 'Nonaktif'])
+                    ->options([
+                        StatusAktif::Aktif->value => 'Aktif',
+                        StatusAktif::Nonaktif->value => 'Nonaktif',
+                    ])
                     ->default('Aktif')
                     ->required(),
             ]);

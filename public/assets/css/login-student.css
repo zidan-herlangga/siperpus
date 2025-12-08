@@ -1,0 +1,39 @@
+	/* Animasi untuk elemen */
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+           .animate-slide-down {
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Styling untuk checkbox */
+        input[type="checkbox"]:checked {
+            background-color: #059669;
+            border-color: #059669;
+        }
+        
+        /* Styling untuk input focus */
+        input:focus {
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        /* Styling untuk button hover */
+        button:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Styling untuk link hover */
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>

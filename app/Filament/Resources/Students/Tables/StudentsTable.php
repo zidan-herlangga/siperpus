@@ -34,7 +34,7 @@ class StudentsTable
                     ->label('Email Terverifikasi Pada')
                     ->dateTime()
                     ->sortable(),
-                TextColumn::make('status')
+                TextColumn::make('is_active')
                     ->label('Status')
                     ->badge(),
                 TextColumn::make('created_at')

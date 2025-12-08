@@ -18,7 +18,7 @@ class StudentSeeder extends Seeder
             'email' => 'zidanherlangga24@gmail.com', // Ganti dengan email valid untuk tes
             'email_verified_at' => now(),
             'password' => Hash::make('password'), 
-            'status' => 'Aktif',
+            'is_active' => 'Aktif',
         ]);
 
         Student::create([
@@ -29,7 +29,7 @@ class StudentSeeder extends Seeder
             'email' => 'kachishiro78@gmail.com', // Ganti dengan email valid untuk tes
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // Password default
-            'status' => 'Aktif',
+            'is_active' => 'Aktif',
         ]);
 
         Student::create([
@@ -40,7 +40,7 @@ class StudentSeeder extends Seeder
             'email' => 'zaky.hart17@gmail.com', // Ganti dengan email valid untuk tes
             'email_verified_at' => null,
             'password' => Hash::make('password'), // Password default
-            'status' => 'Aktif',
+            'is_active' => 'Aktif',
         ]);
 
         Student::create([
@@ -51,7 +51,7 @@ class StudentSeeder extends Seeder
             'contact' => '089516150350', // Ganti dengan email valid untuk tes
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // Password default
-            'status' => 'Aktif',
+            'is_active' => 'Aktif',
         ]);
 
         Student::create([
@@ -62,7 +62,7 @@ class StudentSeeder extends Seeder
             'email' => 'alsyacallysta15@gmail.com', // Ganti dengan email valid untuk tes
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // Password default
-            'status' => 'Aktif',
+            'is_active' => 'Aktif',
         ]);
     }
 }

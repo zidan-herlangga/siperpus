@@ -2,14 +2,13 @@
 
 namespace App\Filament\Resources\Reminders\Tables;
 
-use Filament\Actions\Action;
-use Filament\Notifications\Notification;
 use Filament\Tables;
+use Filament\Actions\Action;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Artisan;
 use App\Models\Reminder;
 
@@ -53,8 +52,19 @@ class RemindersTable
                     ->icon('heroicon-o-paper-airplane')
                     ->color('primary')
                     ->requiresConfirmation()
+                    ->modalAutofocus(false)
+                    ->extraAttributes(['wire:key' => 'send-reminder-button'])
+
                     ->action(function () {
+
+                        // Reset sent_at agar command mau mengirim ulang email
+                        Reminder::query()->update([
+                            'sent_at' => null,
+                        ]);
+
+                        // Panggil command tanpa --force
                         Artisan::call('app:send-reminder');
+
                         $output = Artisan::output();
 
                         Notification::make()
@@ -62,6 +72,11 @@ class RemindersTable
                             ->body($output ?: 'Semua email pengingat telah dikirim.')
                             ->success()
                             ->send();
+                    })
+
+                    ->after(function (Tables\Contracts\HasTable $livewire) {
+                        // Refresh tabel biar state action reset
+                        $livewire->dispatch('$refresh');
                     }),
             ])
             ->bulkActions([
@@ -76,3 +91,4 @@ class RemindersTable
             ]);
     }
 }
+

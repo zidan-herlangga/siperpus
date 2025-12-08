@@ -68,7 +68,7 @@ function openBorrowGuideModal() {
     guideModal.classList.remove('hidden');
     setTimeout(() => {
         guideModal.classList.remove('opacity-0');
-        if(modalContent) modalContent.classList.remove('scale-95', 'opacity-0');
+        if (modalContent) modalContent.classList.remove('scale-95', 'opacity-0');
     }, 10);
 }
 
@@ -79,8 +79,8 @@ function closeBorrowGuideModal() {
     const guideModal = document.getElementById('borrowGuideModal');
     const modalContent = guideModal ? guideModal.querySelector('.modal-content') : null;
     if (!guideModal) return;
-    
-    if(modalContent) modalContent.classList.add('scale-95', 'opacity-0');
+
+    if (modalContent) modalContent.classList.add('scale-95', 'opacity-0');
     guideModal.classList.add('opacity-0');
     setTimeout(() => guideModal.classList.add('hidden'), 300);
 }
@@ -90,7 +90,7 @@ function closeBorrowGuideModal() {
 // EVENT LISTENER (Berjalan setelah halaman siap)
 // ===============================================
 document.addEventListener("DOMContentLoaded", function () {
-    
+
     // 1. Mobile Menu Toggle
     const mobileMenuButton = document.getElementById("mobileMenuButton");
     const mobileMenu = document.getElementById("mobileMenu");
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function setupFormLoading(formId) {
         const form = document.getElementById(formId);
         if (form) {
-            form.addEventListener("submit", function() {
+            form.addEventListener("submit", function () {
                 const btn = form.querySelector('button[type="submit"]');
                 if (btn) {
                     btn.disabled = true;
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
     setupFormLoading('loginForm');
     setupFormLoading('registrationForm');
     setupFormLoading('borrowForm');
-    
+
     // 3. Modal Event Listeners
     const borrowModal = document.getElementById('borrowModal');
     if (borrowModal) {
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
         guideModal.addEventListener('click', (e) => (e.target === guideModal) && closeBorrowGuideModal());
         document.addEventListener('keydown', (e) => (e.key === 'Escape') && closeBorrowGuideModal());
     }
-    
+
     // 4. Verification Modal Logic
     const verificationModal = document.getElementById("verificationModal");
     if (verificationModal) {

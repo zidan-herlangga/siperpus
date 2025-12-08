@@ -1,0 +1,56 @@
+        /* Animasi untuk elemen */
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .animate-slide-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.5s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Animasi modal */
+        .modal-content {
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from { 
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Styling untuk card hover */
+        .hover\:shadow-md:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Styling untuk transform hover */
+        .hover\:-translate-y-1:hover {
+            transform: translateY(-0.25rem);
+        }
+        
+        /* Styling untuk line clamp */
+        .line-clamp-1 {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+        }

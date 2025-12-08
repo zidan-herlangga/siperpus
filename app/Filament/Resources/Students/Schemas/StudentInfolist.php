@@ -26,7 +26,7 @@ class StudentInfolist
                     ->label('Email Terverifikasi Pada')
                     ->dateTime()
                     ->placeholder('-'),
-                TextEntry::make('status')
+                TextEntry::make('is_active')
                     ->label('Status')
                     ->badge(),
                 TextEntry::make('created_at')

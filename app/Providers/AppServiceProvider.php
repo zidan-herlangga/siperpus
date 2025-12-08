@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,7 +21,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        app()->bind(Authenticate::class, function ($app) {
+            return new class($app->make(AuthFactory::class)) extends Authenticate {
+                protected function redirectTo($request)
+                {
+                    return route('homepage'); 
+                }
+            };
+        });
     }
 
     public static function isLibraryOpen(): bool

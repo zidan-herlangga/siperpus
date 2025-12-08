@@ -15,44 +15,60 @@ class BorrowingController extends Controller
      */
     public function store(Request $request, Book $book)
     {
+        // Ambil user yang sedang login
+        $student = Auth::guard('student')->user();
 
-        // --- VALIDASI BARU: Cek Jam Operasional ---
-        if (! AppServiceProvider::isLibraryOpen()) {
-            return back()->withErrors(['borrow' => 'Peminjaman hanya dapat dilakukan pada jam operasional.']);
+        // --- VALIDASI: Cek Apakah Siswa Login dan Aktif ---
+        // Periksa apakah siswa ada dan apakah properti is_active-nya bernilai true
+        if (!$student || !$student->is_active) {
+            return response()->json([
+                'message' => 'Akun Anda tidak aktif. Silakan hubungi administrator.',
+                'errors' => ['account' => 'Akun Anda tidak aktif.']
+            ], 403); // Status 403 Forbidden
         }
         
-        $student = Auth::guard('student')->user();
+        // --- VALIDASI: Cek Jam Operasional ---
+        if (! AppServiceProvider::isLibraryOpen()) {
+            return response()->json([
+                'message' => 'Peminjaman hanya dapat dilakukan pada jam operasional perpustakaan.',
+                'errors' => ['borrow' => 'Peminjaman hanya dapat dilakukan pada jam operasional.']
+            ], 403);
+        }
         
-        // --- VALIDASI BARU: Mencegah pinjam buku yang sama ---
+        // --- VALIDASI: Mencegah pinjam buku yang sama ---
         $isAlreadyBorrowed = Borrowing::where('student_id', $student->id)
             ->where('book_id', $book->id)
-            ->where('status', 'Dipinjam')
+            ->whereIn('status', ['Pending', 'Dipinjam'])
             ->exists();
 
-        
         if ($isAlreadyBorrowed) {
-            return back()->withErrors(['borrow' => 'Anda sudah meminjam buku ini dan belum mengembalikannya.']);
+            return response()->json([
+                'message' => 'Anda sudah meminjam atau sedang dalam proses peminjaman buku ini.',
+                'errors' => ['borrow' => 'Anda sudah meminjam buku ini dan belum mengembalikannya.']
+            ], 409);
         }
-        // --- AKHIR VALIDASI BARU ---
 
         // 1. Pastikan stok buku masih tersedia
         if ($book->stock < 1) {
-            return back()->withErrors(['stock' => 'Maaf, stok buku ini sudah habis.']);
+            return response()->json([
+                'message' => 'Maaf, stok buku ini sudah habis.',
+                'errors' => ['stock' => 'Maaf, stok buku ini sudah habis.']
+            ], 400);
         }
         
-        // 3. Buat data peminjaman baru
-        Borrowing::create([
+        // 2. Buat data peminjaman baru
+        $borrowing = Borrowing::create([
             'student_id' => $student->id,
             'book_id' => $book->id,
             'borrow_date' => now(),
-            'due_date' => now()->addDays(7), // Jatuh tempo 7 hari dari sekarang
-            'status' => 'Pending', // Status awal peminjaman : Dipinjam
+            'due_date' => now()->addDays(7),
+            'status' => 'Pending',
         ]);
 
-        // 4. Kurangi stok buku
-        // $book->decrement('stock');
-
-        // 5. Redirect ke dashboard dengan pesan sukses
-        return redirect()->route('student.dashboard')->with('status', 'Buku "' . $book->title . '" berhasil dipinjam!');
+        // 3. Kembalikan respons JSON sukses
+        return response()->json([
+            'message' => 'Permintaan peminjaman buku "' . $book->title . '" berhasil diajukan! Menunggu persetujuan admin.',
+            'redirect_url' => route('books.show', $book)
+        ], 200);
     }
 }

@@ -24,20 +24,20 @@ Route::get('/', [HomeController::class, 'index'])->name('homepage');
 Route::middleware('guest:student')->group(function () {
     Route::get('/register-student', [StudentRegistrationController::class, 'create'])->name('student.register.form');
     Route::post('/register-student', [StudentRegistrationController::class, 'store'])->name('student.register.store');
-    Route::get('/login', [StudentLoginController::class, 'showLoginForm'])->name('student.login.form');
-    Route::post('/login', [StudentLoginController::class, 'authenticate'])->name('student.login.auth');
+    Route::get('/login-student', [StudentLoginController::class, 'showLoginForm'])->name('student.login.form');
+    Route::post('/login-student', [StudentLoginController::class, 'authenticate'])->name('student.login.auth');
 
     Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
         ->name('student.password.request');
 
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
-        ->name('student.password.email');
+        ->name('password.email');
 
     Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
-        ->name('student.password.reset');
+        ->name('password.reset');
 
     Route::post('reset-password', [ResetPasswordController::class, 'reset'])
-        ->name('student.password.update');
+        ->name('password.update');
 });
 
 // Logout
@@ -58,7 +58,12 @@ Route::middleware(['auth:student', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
     Route::post('/borrow/{book}', [BorrowingController::class, 'store'])->name('books.borrow');
 
-    Route::get('/chatbot', fn() => view('chatbot'))->name('student.chatbot');
+    // Route::get('/chatbot', fn() => view('chatbot'))->name('student.chatbot');
+    // ==========================
+    // CHATBOT (POST)
+    // ==========================
+    Route::get('/chatbot', [ChatbotController::class, 'index']);
+    Route::post('/chatbot', [ChatbotController::class, 'chat'])->name('chat.send');
 });
 
 // ==========================
@@ -90,9 +95,3 @@ Route::post('/email/verification-notification', function (Request $request) {
     $request->user('student')->sendEmailVerificationNotification();
     return back()->with('message', 'Link verifikasi baru dikirim!');
 })->middleware(['auth:student', 'throttle:6,1'])->name('verification.send');
-
-// ==========================
-// CHATBOT (POST)
-// ==========================
-Route::get('/chatbot', [ChatbotController::class, 'index']);
-Route::post('/chatbot', [ChatbotController::class, 'chat'])->name('chat.send');

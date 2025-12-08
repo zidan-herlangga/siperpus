@@ -1,0 +1,101 @@
+
+    /* Animasi untuk elemen */
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out;
+    }
+    
+    .animate-slide-up {
+        animation: slideUp 0.5s ease-out;
+    }
+    
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+    
+    .animate-on-scroll.animated {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    /* Efek hover untuk kartu buku */
+    .book-card:hover .book-cover-container i {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+    }
+    
+    /* Animasi modal */
+    .modal-content {
+        animation: modalFadeIn 0.3s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+        from { 
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes modalFadeIn {
+        from { 
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to { 
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    /* Custom pagination styling */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 2px;
+    }
+    
+    .pagination .page-item {
+        display: flex;
+    }
+    
+    .pagination .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        margin: 0 2px;
+        border-radius: 50%;
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        color: #374151;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    
+    .pagination .page-link:hover {
+        background-color: #f3f4f6;
+        color: #059669;
+        border-color: #059669;
+    }
+    
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(to right, #059669, #10b981);
+        color: white;
+        border-color: transparent;
+    }
+    
+    .pagination .disabled .page-link {
+        color: #9ca3af;
+        cursor: not-allowed;
+    }
