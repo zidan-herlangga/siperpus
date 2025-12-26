@@ -31,8 +31,8 @@ class AdminPerpusPanelProvider extends PanelProvider
             ->default()
             ->sidebarFullyCollapsibleOnDesktop()
             ->id('admin-perpus')
-            ->path('adminlogin')
-            ->brandName('Admin')
+            ->path('adminperpustakaan')
+            // ->brandName('')
             // ->registrationRouteSlug('register')
             ->login()
             ->colors([

@@ -9,6 +9,10 @@
     --dark-green: #047857;
 }
 
+body {
+    overscroll-behavior: contain;
+}
+
 .gradient-bg {
     background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
 }

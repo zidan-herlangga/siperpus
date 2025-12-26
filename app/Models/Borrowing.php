@@ -55,9 +55,24 @@ class Borrowing extends Model
                 $borrowing->fine = $borrowing->calculateFine();
             }
 
+            // 2b. Pending → Dikembalikan → Kembalikan stok
+            if ($originalStatus === 'Pending' && $newStatus === 'Dikembalikan') {
+                // Jika langsung dari Pending ke Dikembalikan, kembalikan stok
+                $borrowing->book->increment('stock');
+
+                if (empty($borrowing->return_date)) {
+                    $borrowing->return_date = now();
+                }
+            }
+
             // 3. Dikembalikan → Dipinjam → Kurangi stok lagi
             if ($originalStatus === 'Dikembalikan' && $newStatus === 'Dipinjam') {
                 $borrowing->book->decrement('stock');
+            }
+
+            // 4. Pending → Batal → Kembalikan stok
+            if ($originalStatus === 'Pending' && $newStatus === 'Batal') {
+                $borrowing->book->increment('stock');
             }
         });
     }

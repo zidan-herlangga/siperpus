@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class StudentsTable
@@ -20,6 +21,8 @@ class StudentsTable
                     ->searchable(),
                 TextColumn::make('nis')
                     ->label('NIS')
+                    ->icon(Heroicon::Identification)
+                    ->iconColor('primary')
                     ->searchable(),
                 TextColumn::make('class')
                     ->label('Kelas')
@@ -29,6 +32,8 @@ class StudentsTable
                     ->searchable(),
                 TextColumn::make('email')
                     ->label('Email')
+                    ->icon(Heroicon::Envelope)
+                    ->iconColor('primary')
                     ->searchable(),
                 TextColumn::make('email_verified_at')
                     ->label('Email Terverifikasi Pada')

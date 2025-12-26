@@ -223,8 +223,16 @@
                     {{-- Profil Siswa --}}
                     <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 animate-slide-up" style="animation-delay: 0.3s;">
                         <div class="flex items-center mb-4">
-                            <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-white text-xl font-bold mr-3">
-                                {{ substr($student->name, 0, 1) }}
+                            <div class="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold mr-3">
+                               @if ($student->avatar)
+                                    <img src="{{ asset('storage/' . $student->avatar) }}" 
+                                        alt="{{ $student->name }}"
+                                        class="w-16 h-16 rounded-full object-cover">
+                                @else
+                                    <div class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center text-xl font-bold">
+                                        {{ strtoupper(substr($student->name, 0, 1)) }}
+                                    </div>
+                                @endif
                             </div>
                             <div>
                                 <h3 class="text-lg font-bold text-gray-800">{{ $student->name }}</h3>
@@ -238,7 +246,7 @@
                             </li>
                             <li class="flex items-center bg-gray-50 p-2 rounded">
                                 <i class="fas fa-id-badge mr-3 text-blue-600 w-4"></i>
-                                <span>{{ $student->nis }}</span>
+                                <span>{{ $student->nis ?? '-' }}</span>
                             </li>
                             <li class="flex items-center bg-gray-50 p-2 rounded">
                                 <i class="fas fa-envelope mr-3 text-purple-600 w-4"></i>
@@ -257,6 +265,10 @@
                             <i class="fas fa-bolt text-yellow-500 mr-2"></i>Aksi Cepat
                         </h3>
                         <div class="space-y-3">
+                            <a href="{{ route('student.edit') }}"
+                                class="block w-full text-center bg-gradient-to-r from-gray-600 to-gray-600 text-white font-medium py-2.5 px-3 rounded-lg hover:from-gray-700 hover:to-gray-700 transition-all duration-300 transform hover:-translate-y-0.5 shadow-md">
+                                <i class="fas fa-pencil mr-2"></i>Edit Profil
+                            </a>
                             <a href="{{ route('books.index') }}"
                                 class="block w-full text-center bg-gradient-to-r from-green-600 to-emerald-600 text-white font-medium py-2.5 px-3 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:-translate-y-0.5 shadow-md">
                                 <i class="fas fa-search mr-2"></i>Cari Buku Baru

@@ -51,6 +51,7 @@ class BorrowingsTable
                         'gray' => fn ($state) => $state === 'Pending',
                         'warning' => fn ($state) => $state === 'Dipinjam',
                         'success' => fn ($state) => $state === 'Dikembalikan',
+                        'danger' => fn ($state) => $state === 'Batal',
                     ]),
 
                 TextColumn::make('fine_amount')
@@ -72,6 +73,7 @@ class BorrowingsTable
                         'Pending' => 'Pending',
                         'Dipinjam' => 'Dipinjam',
                         'Dikembalikan' => 'Dikembalikan',
+                        'Batal' => 'Batal',
                     ]),
                 Tables\Filters\Filter::make('overdue')
                     ->label('Hanya Terlambat')

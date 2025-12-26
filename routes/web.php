@@ -4,6 +4,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BorrowingController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentLoginController;
 use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -50,12 +51,21 @@ Route::post('/logout', [StudentLoginController::class, 'logout'])
 // ==========================
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
+Route::get('/books/{book:slug}/stock', [BookController::class, 'getStock'])->name('books.stock');
+// Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
 
 // ==========================
 // RUTE YANG DILINDUNGI
 // ==========================
 Route::middleware(['auth:student', 'verified'])->group(function () {
+    // DASHBOARD STUDENT
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
+
+    // PROFILE STUDENT
+    Route::get('/dashboard/edit-profile', [StudentController::class, 'index'])->name('student.edit');
+    Route::post('/dashboard/edit-profile', [StudentController::class, 'update'])->name('student.update');
+
+    // PEMINJAMAN BUKU
     Route::post('/borrow/{book}', [BorrowingController::class, 'store'])->name('books.borrow');
 
     // Route::get('/chatbot', fn() => view('chatbot'))->name('student.chatbot');

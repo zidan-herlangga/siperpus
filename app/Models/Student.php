@@ -27,6 +27,7 @@ class Student extends Authenticatable implements MustVerifyEmail, CanResetPasswo
         'name',
         'nis',
         'class',
+        'avatar',
         'contact',
         'email',
         'is_active',

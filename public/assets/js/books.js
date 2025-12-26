@@ -20,10 +20,28 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('scroll', animateOnScroll);
 
     // Tampilkan loading indicator saat form dikirim
-    const searchForm = document.querySelector("form[action='{{ route('books.index') }}']");
+    const searchForm = document.querySelector('[data-search-url]');
+    const searchUrl = searchForm ? searchForm.dataset.searchUrl : '';
     if (searchForm) {
-        searchForm.addEventListener('submit', function () {
-            document.getElementById('loadingIndicator').classList.remove('hidden');
+        searchForm.addEventListener('submit', function (e) {
+            e.preventDefault(); // Mencegah form submit normal
+
+            const searchInput = this.querySelector('input[name="search"]');
+            const query = searchInput ? searchInput.value : '';
+
+            // Gunakan searchUrl yang sudah kita dapatkan
+            fetch(`${searchUrl}?search=${encodeURIComponent(query)}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'text/html', // Karena mungkin Anda me-render partial view
+                }
+            })
+                .then(response => response.text())
+                .then(html => {
+                    // Logika untuk memperbarui daftar buku di halaman
+                    // document.getElementById('book-list-container').innerHTML = html;
+                })
+                .catch(error => console.error('Error:', error));
         });
     }
 });

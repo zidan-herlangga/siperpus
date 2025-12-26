@@ -4,80 +4,47 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class ChatbotService
 {
-  protected string $apiKey;
+    protected string $apiKey;
+    protected string $model;
 
-  public function __construct()
-  {
-    $this->apiKey = config('services.openrouter.key') ?? env('OPENROUTER_API_KEY');
-  }
-
-  public function sendMessage(string $message): string
-  {
-    $message = trim($message);
-    if (!$message) {
-      return 'Pesan tidak boleh kosong.';
+    public function __construct() {
+        $this->apiKey = config('services.openrouter.api_key');
+        $this->model = config('services.openrouter.model', 'openai/gpt-4o-mini');
     }
 
-    $cacheKey = 'chatbot_reply_' . md5($message);
-    if (Cache::has($cacheKey)) {
-      return Cache::get($cacheKey);
+    public function sendMessage(string $message): array
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'X-Title' => 'PerpusBot Engine',
+            ])->post("https://openrouter.ai/api/v1/chat/completions", [
+                "model" => $this->model,
+                "messages" => [
+                    [
+                        "role" => "system", 
+                        "content" => "Kamu adalah Chatbot Perpustakaan Digital dengan kemampuan Text Mining.
+                        
+                        PROTOKOL AKURASI:
+                        1. Jika terdapat teks '[DATA ASLI DARI KATALOG]', kamu WAJIB menggunakan informasi tersebut sebagai prioritas utama.
+                        2. Jika data di KATALOG tidak lengkap (seperti sinopsis kosong), tulis 'Informasi tidak tersedia' untuk bagian tersebut. JANGAN MENGARANG.
+                        3. Jika buku TIDAK ADA di KATALOG, gunakan pengetahuan publikmu untuk menjelaskan buku tersebut secara detail dan akurat.
+                        4. JANGAN PERNAH mengarang nama penulis.
+                        5. Gunakan format: 📘 Judul, ✍️ Penulis, 📝 Sinopsis, 🏷️ Kategori, 📚 Rekomendasi serupa.
+                        6. Nada bicara ramah, profesional, dan informatif."
+                    ],
+                    ["role" => "user", "content" => $message]
+                ],
+                "temperature" => 0.1, // Konsistensi maksimal, nol halusinasi.
+            ]);
+
+            $result = $response->json('choices.0.message.content');
+            return ['success' => true, 'reply' => $result];
+        } catch (\Throwable $e) {
+            return ['success' => false, 'reply' => 'Gagal memproses informasi.'];
+        }
     }
-
-    if (!$this->apiKey) {
-      return 'API key OpenRouter belum diatur.';
-    }
-
-    try {
-      $response = Http::withHeaders([
-        'Authorization' => 'Bearer ' . $this->apiKey,
-        'HTTP-Referer' => url('/'),
-        'X-Title' => config('app.name'),
-        'Content-Type' => 'application/json',
-      ])->timeout(20)
-        ->post("https://openrouter.ai/api/v1/chat/completions", [
-          "model" => "openai/gpt-4o-mini",
-          "messages" => [
-            [
-              "role" => "system",
-              "content" => "Kamu adalah chatbot perpustakaan. Jawab dengan sopan, informatif, dan hanya terkait dunia buku, penulis, penerbit, genre, sinopsis, aturan perpustakaan, atau hal literasi."
-            ],
-            [
-              "role" => "user",
-              "content" => $message
-            ]
-          ],
-          "max_tokens" => 1000,
-          "temperature" => 0.7,
-        ]);
-
-      if ($response->failed()) {
-        Log::error('OpenRouter API failed', $response->json());
-        return 'Gagal menghubungi OpenRouter.';
-      }
-
-      $data = $response->json();
-
-      $reply = null;
-      if (
-        !empty($data['choices']) &&
-        isset($data['choices'][0]['message']['content'])
-      ) {
-        $reply = $data['choices'][0]['message']['content'];
-      }
-
-      $reply = $reply ?? 'Maaf, saya tidak dapat memproses pertanyaan itu.';
-
-      Cache::put($cacheKey, $reply, now()->addMinutes(30));
-
-      return $reply;
-
-    } catch (\Throwable $e) {
-      Log::error('ChatbotService Error', ['message' => $e->getMessage()]);
-      return 'Terjadi kesalahan internal: ' . $e->getMessage();
-    }
-  }
 }

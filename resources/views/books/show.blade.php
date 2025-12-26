@@ -77,14 +77,14 @@
                                 <i class="fas fa-map-marker-alt mr-1"></i>Rak {{ $book->shelf_code }}
                             </span>
                         </div>
-                        <div class="flex items-center">
+                        <!-- <div class="flex items-center">
                             <div class="flex text-yellow-300">
                                 @for ($i = 1; $i <= 5; $i++)
                                     <i class="fas fa-star {{ $i <= ($book->rating ?? 4) ? '' : 'text-gray-400' }}"></i>
                                 @endfor
                             </div>
                             <span class="ml-2 text-green-100 text-sm">({{ $book->reviews_count ?? 12 }} ulasan)</span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -95,7 +95,7 @@
                     <nav class="-mb-px flex space-x-8">
                         <button class="tab-btn py-2 px-1 border-b-2 font-medium text-sm border-green-500 text-green-600" data-tab="details">Detail Buku</button>
                         <button class="tab-btn py-2 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="synopsis">Sinopsis</button>
-                        <button class="tab-btn py-2 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="reviews">Ulasan</button>
+                        <!-- <button class="tab-btn py-2 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="reviews">Ulasan</button> -->
                     </nav>
                 </div>
 
@@ -120,10 +120,10 @@
                                         <dt class="text-sm font-medium text-gray-500 flex items-center"><i class="fas fa-barcode mr-2 text-green-500"></i>ISBN</dt>
                                         <dd class="mt-1 font-semibold text-gray-800">{{ $book->isbn ?? '-' }}</dd>
                                     </div>
-                                    <div class="bg-white p-3 rounded-lg border border-gray-200">
+                                    <!-- <div class="bg-white p-3 rounded-lg border border-gray-200">
                                         <dt class="text-sm font-medium text-gray-500 flex items-center"><i class="fas fa-file-alt mr-2 text-orange-500"></i>Halaman</dt>
                                         <dd class="mt-1 font-semibold text-gray-800">{{ $book->pages ?? '-' }}</dd>
-                                    </div>
+                                    </div> -->
                                 </dl>
                             </section>
                         </div>
@@ -132,10 +132,10 @@
                                 <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
                                     <i class="fas fa-book-open text-green-600 mr-2"></i>Sinopsis
                                 </h2>
-                                <p class="text-gray-600 leading-relaxed whitespace-pre-line">{{ $book->synopsis ?? 'Sinopsis untuk buku ini belum tersedia.' }}</p>
+                                <p class="text-gray-600 leading-relaxed whitespace-pre-line">{!! $book->synopsis ?? 'Sinopsis untuk buku ini belum tersedia.' !!}</p>
                             </section>
                         </div>
-                        <div id="reviews" class="tab-content hidden space-y-6">
+                        <!-- <div id="reviews" class="tab-content hidden space-y-6">
                             <section class="bg-gray-50 rounded-lg p-5">
                                 <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
                                     <i class="fas fa-comments text-green-600 mr-2"></i>Ulasan Pembaca
@@ -172,7 +172,7 @@
                                     @endfor
                                 </div>
                             </section>
-                        </div>
+                        </div> -->
                     </div>
 
                     {{-- Kolom Kanan (Stok & Info) --}}
@@ -300,7 +300,7 @@
                     <div class="pt-4">
                         @auth('student')
                             @if (Auth::guard('student')->user()->is_active_flag)
-                                <form id="borrowForm" action="{{ route('books.borrow', $book) }}" method="POST">
+                                <form id="borrowForm" action="{{ route('books.borrow', $book) }}" method="POST" data-book-id="{{ $book->id }}">
                                     @csrf
                                     <div class="space-y-3">
                                         <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded p-3 text-sm space-y-2">
@@ -345,73 +345,8 @@
         </div>
     </div>
 
-<!-- @section('scripts')
+@section('scripts')
 <script src="{{ asset('assets/js/books-show.js') }}"></script>
-@stop -->
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-            const tabBtns = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    tabBtns.forEach(tab => { tab.classList.remove('border-green-500', 'text-green-600'); tab.classList.add('border-transparent', 'text-gray-500'); });
-                    this.classList.remove('border-transparent', 'text-gray-500'); this.classList.add('border-green-500', 'text-green-600');
-                    tabContents.forEach(content => { content.classList.add('hidden'); });
-                    document.getElementById(tabId).classList.remove('hidden');
-                });
-            });
-
-            const borrowForm = document.getElementById('borrowForm');
-            const loadingState = document.getElementById('loadingState');
-            const successNotification = document.getElementById('successNotification');
-            const borrowModal = document.getElementById('borrowModal');
-            let errorMessageDiv = null;
-
-            if (borrowForm) {
-                borrowForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    if (errorMessageDiv && errorMessageDiv.parentNode) { errorMessageDiv.parentNode.removeChild(errorMessageDiv); errorMessageDiv = null; }
-                    loadingState.classList.remove('hidden'); closeBorrowModal();
-                    const formData = new FormData(this);
-                    fetch(this.action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
-                    .then(response => {
-                        loadingState.classList.add('hidden');
-                        if (!response.ok) {
-                            return response.json().then(data => {
-                                const errorMessages = Object.values(data.errors || {}).flat().join('<br>');
-                                errorMessageDiv = document.createElement('div');
-                                errorMessageDiv.innerHTML = `<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert"><strong class="font-bold">Gagal! </strong><span class="block sm:inline">${errorMessages || 'Terjadi kesalahan.'}</span></div>`;
-                                borrowForm.prepend(errorMessageDiv);
-                                showBorrowModal();
-                                throw new Error('Validation failed');
-                            });
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        successNotification.querySelector('#successMessage').innerText = data.message;
-                        successNotification.classList.remove('hidden');
-                        setTimeout(() => { successNotification.classList.add('hidden'); }, 3000);
-                        // window.location.href = data.redirect_url;
-                    })
-                    .catch(error => { /* Error handled */ });
-                });
-            }
-        });
-
-        function showBorrowModal() {
-            const modal = document.getElementById('borrowModal');
-            modal.classList.remove('hidden'); document.body.style.overflow = 'hidden';
-            setTimeout(() => { modal.querySelector('.modal-content').classList.remove('scale-95'); modal.querySelector('.modal-content').classList.add('scale-100'); }, 10);
-        }
-        function closeBorrowModal() {
-            const modal = document.getElementById('borrowModal');
-            modal.querySelector('.modal-content').classList.remove('scale-100'); modal.querySelector('.modal-content').classList.add('scale-95');
-            setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 200);
-        }
-        document.getElementById('borrowModal').addEventListener('click', function(e) { if (e.target === this) { closeBorrowModal(); } });
-</script>
+@stop 
 
 @endsection

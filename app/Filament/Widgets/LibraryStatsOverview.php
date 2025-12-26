@@ -38,6 +38,12 @@ class LibraryStatsOverview extends BaseWidget
                 ->icon('heroicon-o-arrows-right-left')
                 ->color('warning'),
 
+            // Kartu 5: Buku Batal
+            Stat::make('Batal Dipinjam', Borrowing::where('status', 'Batal')->count())
+                ->description('Jumlah peminjaman yang dibatalkan')
+                ->icon('heroicon-o-x-circle')
+                ->color('danger'),
+
             // Kartu 5: Buku Terlambat
             Stat::make('Buku Terlambat', Borrowing::where('status', 'Dipinjam')->where('due_date', '<', now())->count())
                 ->description('Jumlah buku yang melewati jatuh tempo')

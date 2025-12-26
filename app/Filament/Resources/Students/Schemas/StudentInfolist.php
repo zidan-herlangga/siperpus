@@ -14,7 +14,8 @@ class StudentInfolist
                 TextEntry::make('name')
                     ->label('Nama Siswa'),
                 TextEntry::make('nis')
-                    ->label('NIS'),
+                    ->label('NIS')
+                    ->formatStateUsing(fn ($state) => $state ?? '-'),
                 TextEntry::make('class')
                     ->label('Kelas'),
                 TextEntry::make('contact')
@@ -28,6 +29,11 @@ class StudentInfolist
                     ->placeholder('-'),
                 TextEntry::make('is_active')
                     ->label('Status')
+                    ->color(fn ($state) => match($state) {
+                        'Aktif' => 'green',
+                        'Nonaktif' => 'red',
+                        default => 'primary',
+                    })
                     ->badge(),
                 TextEntry::make('created_at')
                     ->label('Dibuat Pada')

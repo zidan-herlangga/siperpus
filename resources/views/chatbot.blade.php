@@ -1,701 +1,195 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PerpusBot | Asisten Perpustakaan Digital</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PerpusBot v9</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="Asisten pintar untuk mencari buku di perpustakaan digital">
-    
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@32,400,0,0" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            200: '#bbf7d0',
-                            300: '#86efac',
-                            400: '#4ade80',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
-                            900: '#14532d',
-                        }
-                    },
-                    fontFamily: {
-                        'sans': ['Inter', 'system-ui', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .material-symbols-rounded {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 3px;
-        }
-        
-        .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .animate-bounce-slow {
-            animation: bounce 1.4s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 80%, 100% {
-                transform: scale(0);
-                opacity: 0.5;
-            }
-            40% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-        
-        .animate-slide-in {
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #22c55e 0%, #14532d 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-        
-        .dark .glass-effect {
-            background: rgba(17, 24, 39, 0.9);
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; overflow: hidden; }
+        .sidebar-glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-right: 1px solid #e2e8f0; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .message-anim { animation: slideIn 0.3s ease-out forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 1024px) { .sidebar-closed { transform: translateX(-100%); } }
     </style>
 </head>
-<body class="bg-gradient-to-br from-primary-50 via-emerald-50 to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 font-sans antialiased transition-colors duration-300">
-    
-    <!-- Sidebar Overlay -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity duration-300" onclick="toggleSidebar()"></div>
-    
-    <!-- Sidebar -->
-    <aside id="sidebar" class="fixed left-0 top-0 bottom-0 w-80 bg-white dark:bg-gray-800 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
-        <!-- Sidebar Header -->
-        <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-primary-500 to-emerald-600">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h2 class="text-xl font-bold text-white">Riwayat Chat</h2>
-                    <p class="text-sm text-primary-100 mt-1">Percakapan Anda</p>
-                </div>
-                <button onclick="toggleSidebar()" class="text-white hover:bg-white/20 p-2 rounded-lg transition-colors">
-                    <span class="material-symbols-rounded">close</span>
-                </button>
-            </div>
+<body class="h-full flex overflow-hidden">
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/30 z-30 hidden lg:hidden"></div>
+
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 w-72 lg:w-80 sidebar-glass z-40 p-6 flex flex-col transition-transform duration-300 sidebar-closed lg:translate-x-0">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg"><i class="fas fa-robot"></i></div>
+            <h1 class="font-bold text-xl text-slate-800 tracking-tight text-slate-800 uppercase">PerpusBot</h1>
+            <button onclick="toggleSidebar()" class="lg:hidden ml-auto p-2 text-slate-400"><i class="fas fa-times"></i></button>
         </div>
-        
-        <!-- History List -->
-        <div id="history-list" class="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-thin">
-            <div class="text-center text-gray-500 dark:text-gray-400 py-8">
-                <span class="material-symbols-rounded text-5xl opacity-30">history</span>
-                <p class="mt-2 text-sm">Belum ada riwayat chat</p>
+
+        <button onclick="createNewChat()" class="w-full p-4 bg-emerald-50 text-emerald-700 rounded-2xl font-bold hover:bg-emerald-100 mb-6 transition flex items-center justify-center gap-2">
+            <i class="fas fa-plus-circle"></i> Chat Baru
+        </button>
+
+        <div class="flex-1 overflow-y-auto no-scrollbar space-y-1" id="history-container">
             </div>
-        </div>
-        
-        <!-- Sidebar Footer -->
-        <div class="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
-            <button onclick="clearHistory()" class="w-full bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
-                <span class="material-symbols-rounded">delete_sweep</span>
-                Hapus Semua Riwayat
-            </button>
+
+        <div class="mt-auto pt-4 border-t border-slate-100">
+            <button onclick="clearAllData()" class="text-[10px] font-bold text-red-400 hover:text-red-600 uppercase tracking-widest px-3 p-2 mb-2 transition">Bersihkan Memori</button>
+            <a href="{{ route('student.dashboard') }}" class="flex items-center gap-3 p-3 bg-slate-50 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-100 transition uppercase tracking-wider">
+                <i class="fas fa-chevron-left"></i> Dashboard
+            </a>
         </div>
     </aside>
-    
-    <!-- Main Content -->
-    <div class="min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="glass-effect border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <!-- Left: Menu Button -->
-                    <button onclick="toggleSidebar()" class="p-2 rounded-xl hover:bg-primary-100 dark:hover:bg-gray-700 transition-colors">
-                        <span class="material-symbols-rounded text-gray-700 dark:text-gray-300">menu</span>
-                    </button>
-                    
-                    <!-- Center: Logo -->
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                            <span class="text-white text-xl">🤖</span>
-                        </div>
-                        <div class="hidden sm:block">
-                            <h1 class="text-lg font-bold gradient-text">PerpusBot</h1>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">AI Assistant</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Right: Actions -->
-                    <div class="flex items-center gap-2">
-                        <button id="theme-toggle" onclick="toggleTheme()" class="p-2 rounded-xl hover:bg-primary-100 dark:hover:bg-gray-700 transition-colors">
-                            <span class="material-symbols-rounded text-gray-700 dark:text-gray-300" id="theme-icon">light_mode</span>
-                        </button>
-                        <button onclick="deleteAllChats()" class="p-2 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
-                            <span class="material-symbols-rounded text-red-600 dark:text-red-400">delete</span>
-                        </button>
-                    </div>
+
+    <main class="flex-1 flex flex-col bg-white relative overflow-hidden">
+        <header class="h-16 lg:h-20 border-b flex items-center px-4 lg:px-10 justify-between bg-white/50 backdrop-blur sticky top-0 z-20">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 text-slate-500 bg-slate-50 rounded-lg"><i class="fas fa-bars"></i></button>
+                <div class="flex flex-col">
+                    <h2 class="font-bold text-slate-800 text-sm lg:text-base" id="header-title">Chat Baru</h2>
+                    <span class="text-[9px] font-bold text-emerald-500 tracking-tighter uppercase">Asisten Literasi Online</span>
                 </div>
             </div>
         </header>
-        
-        <!-- Chat Container -->
-        <main class="flex-1 overflow-y-auto pb-32 scrollbar-thin">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                
-                <!-- Welcome Section -->
-                <div id="welcome-section" class="text-center py-12">
-                    <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-3xl shadow-2xl mb-6 animate-bounce">
-                        <span class="text-4xl">👋</span>
-                    </div>
-                    <h1 class="text-3xl sm:text-4xl font-bold mb-3 gradient-text">
-                        Halo, {{ $student->name }}!
-                    </h1>
-                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
-                        Ada yang bisa saya bantu hari ini?
-                    </p>
-                    
-                    <!-- Suggestions -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-8">
-                        <button onclick="sendSuggestion('Cari buku Laskar Pelangi')" class="group bg-white dark:bg-gray-800 hover:bg-primary-50 dark:hover:bg-gray-700 border-2 border-gray-200 dark:border-gray-700 hover:border-primary-400 rounded-2xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg text-left">
-                            <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary-200 transition-colors">
-                                    <span class="material-symbols-rounded text-primary-600 dark:text-primary-400">auto_stories</span>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm">Cari Buku</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Laskar Pelangi</p>
-                                </div>
-                            </div>
-                        </button>
-                        
-                        <button onclick="sendSuggestion('Buku kategori Sains')" class="group bg-white dark:bg-gray-800 hover:bg-primary-50 dark:hover:bg-gray-700 border-2 border-gray-200 dark:border-gray-700 hover:border-primary-400 rounded-2xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg text-left">
-                            <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-blue-200 transition-colors">
-                                    <span class="material-symbols-rounded text-blue-600 dark:text-blue-400">science</span>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm">Kategori</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Buku Sains</p>
-                                </div>
-                            </div>
-                        </button>
-                        
-                        <button onclick="sendSuggestion('Jam operasional perpustakaan')" class="group bg-white dark:bg-gray-800 hover:bg-primary-50 dark:hover:bg-gray-700 border-2 border-gray-200 dark:border-gray-700 hover:border-primary-400 rounded-2xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg text-left">
-                            <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-amber-200 transition-colors">
-                                    <span class="material-symbols-rounded text-amber-600 dark:text-amber-400">schedule</span>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm">Informasi</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Jam Operasional</p>
-                                </div>
-                            </div>
-                        </button>
-                        
-                        <button onclick="sendSuggestion('Rekomendasi buku teknologi')" class="group bg-white dark:bg-gray-800 hover:bg-primary-50 dark:hover:bg-gray-700 border-2 border-gray-200 dark:border-gray-700 hover:border-primary-400 rounded-2xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg text-left">
-                            <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 transition-colors">
-                                    <span class="material-symbols-rounded text-purple-600 dark:text-purple-400">lightbulb</span>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm">Rekomendasi</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Buku Teknologi</p>
-                                </div>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Messages Container -->
-                <div id="messages-container" class="space-y-6"></div>
+
+        <div id="chat-window" class="flex-1 overflow-y-auto p-4 lg:p-10 space-y-6 lg:space-y-8 no-scrollbar bg-slate-50/10">
             </div>
-        </main>
-        
-        <!-- Input Area -->
-        <div class="fixed bottom-0 left-0 right-0 glass-effect border-t border-gray-200 dark:border-gray-700 z-20">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                <form id="chat-form" class="flex gap-3 items-end">
-                    <div class="flex-1 relative">
-                        <textarea 
-                            id="message-input" 
-                            rows="1"
-                            placeholder="Ketik pesan Anda di sini..."
-                            maxlength="500"
-                            class="w-full px-4 py-3 pr-12 rounded-2xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900 outline-none resize-none transition-all duration-200"
-                            style="min-height: 52px; max-height: 150px;"
-                        ></textarea>
-                        <div class="absolute right-3 bottom-3 text-xs text-gray-400 dark:text-gray-500">
-                            <span id="char-count">0</span>/500
-                        </div>
-                    </div>
-                    <button 
-                        type="submit" 
-                        id="send-button"
-                        class="bg-gradient-to-r from-primary-500 to-emerald-600 hover:from-primary-600 hover:to-emerald-700 text-white p-3 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                    >
-                        <span class="material-symbols-rounded">send</span>
-                    </button>
-                </form>
-                <p class="text-xs text-center text-gray-500 dark:text-gray-400 mt-3">
-                    PerpusBot dapat membuat kesalahan. Periksa informasi penting.
-                </p>
-            </div>
+
+        <div class="p-4 lg:p-8 bg-white border-t border-slate-50">
+            <form id="chat-form" class="max-w-4xl mx-auto flex items-end gap-3 bg-slate-100 p-1.5 lg:p-2 rounded-[2rem] shadow-inner focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all">
+                <textarea id="user-input" rows="1" placeholder="Cari buku atau tanya..." class="flex-1 bg-transparent border-none focus:ring-0 px-4 py-2 lg:px-6 lg:py-3 text-sm outline-none resize-none max-h-32"></textarea>
+                <button type="submit" class="w-10 h-10 lg:w-14 lg:h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all flex-shrink-0"><i class="fas fa-arrow-up"></i></button>
+            </form>
         </div>
-    </div>
+    </main>
 
     <script>
-        // Constants
-        const API_URL = "{{ route('chat.send') }}";
-        const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').content;
-        
-        // DOM Elements
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebar-overlay');
-        const welcomeSection = document.getElementById('welcome-section');
-        const messagesContainer = document.getElementById('messages-container');
+        const chatWindow = document.getElementById('chat-window');
         const chatForm = document.getElementById('chat-form');
-        const messageInput = document.getElementById('message-input');
-        const sendButton = document.getElementById('send-button');
-        const charCount = document.getElementById('char-count');
-        const themeIcon = document.getElementById('theme-icon');
-        const historyList = document.getElementById('history-list');
+        const userInput = document.getElementById('user-input');
+        const historyContainer = document.getElementById('history-container');
+        const headerTitle = document.getElementById('header-title');
         
-        // State
-        let chatHistory = [];
-        let currentSessionId = Date.now();
-        let isTyping = false;
-        
-        // Initialize
+        const KEY = 'perpusbot_v9_storage';
+        let sessions = JSON.parse(localStorage.getItem(KEY)) || [];
+        let currentId = null;
+
         document.addEventListener('DOMContentLoaded', () => {
-            loadChatHistory();
-            applyTheme();
-            setupEventListeners();
-            autoResizeTextarea();
+            if(sessions.length > 0) loadSession(sessions[0].id);
+            else createNewChat();
+            renderHistory();
+            
+            userInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
         });
-        
-        // Event Listeners
-        function setupEventListeners() {
-            chatForm.addEventListener('submit', handleSubmit);
-            messageInput.addEventListener('input', () => {
-                charCount.textContent = messageInput.value.length;
-                autoResizeTextarea();
-            });
-            
-            messageInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    chatForm.dispatchEvent(new Event('submit'));
-                }
-            });
-        }
-        
-        // Auto-resize textarea
-        function autoResizeTextarea() {
-            messageInput.style.height = 'auto';
-            messageInput.style.height = Math.min(messageInput.scrollHeight, 150) + 'px';
-        }
-        
-        // Toggle Sidebar
+
         function toggleSidebar() {
-            const isOpen = !sidebar.classList.contains('-translate-x-full');
+            document.getElementById('sidebar').classList.toggle('sidebar-closed');
+            document.getElementById('overlay').classList.toggle('hidden');
+        }
+
+        function createNewChat() {
+            currentId = Date.now();
+            sessions.unshift({ id: currentId, title: 'Chat Baru', messages: [] });
+            save();
+            loadSession(currentId);
+        }
+
+        function loadSession(id) {
+            currentId = id;
+            const s = sessions.find(x => x.id === id);
+            headerTitle.innerText = s.title;
+            chatWindow.innerHTML = '';
+            s.messages.forEach(m => renderMsg(m.role, m.content, m.extra));
+            renderHistory();
+            if(window.innerWidth < 1024) toggleSidebar();
+        }
+
+        function renderMsg(role, content, extra = null) {
+            const wrap = document.createElement('div');
+            wrap.className = `flex gap-3 lg:gap-4 ${role === 'user' ? 'flex-row-reverse self-end' : ''} mb-6 message-anim`;
+            const bubble = role === 'user' ? 'bg-emerald-600 text-white rounded-tr-none' : 'bg-white text-slate-700 border border-slate-100 rounded-tl-none shadow-sm';
             
-            if (isOpen) {
-                sidebar.classList.add('-translate-x-full');
-                sidebarOverlay.classList.add('hidden');
-            } else {
-                sidebar.classList.remove('-translate-x-full');
-                sidebarOverlay.classList.remove('hidden');
-            }
+            wrap.innerHTML = `
+                <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-xl flex-shrink-0 flex items-center justify-center text-white ${role === 'user' ? 'bg-slate-800' : 'bg-emerald-500 shadow-md'}"><i class="fas fa-${role === 'user' ? 'user' : 'robot'} text-[10px] lg:text-xs"></i></div>
+                <div class="max-w-[85%] lg:max-w-[75%]">
+                    <div class="p-4 lg:p-5 rounded-2xl lg:rounded-[2rem] text-xs lg:text-sm leading-relaxed whitespace-pre-wrap shadow-sm ${bubble}">${content}</div>
+                    ${role === 'bot' && extra && extra.books && extra.books.length > 0 ? renderBento(extra.books) : ''}
+                </div>`;
+            chatWindow.appendChild(wrap);
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
         }
-        
-        // Toggle Theme
-        function toggleTheme() {
-            const html = document.documentElement;
-            const isDark = html.classList.contains('dark');
-            
-            if (isDark) {
-                html.classList.remove('dark');
-                themeIcon.textContent = 'light_mode';
-                localStorage.setItem('theme', 'light');
-            } else {
-                html.classList.add('dark');
-                themeIcon.textContent = 'dark_mode';
-                localStorage.setItem('theme', 'dark');
-            }
+
+        function renderBento(books) {
+            const cards = books.map(b => `
+                <div class="flex-shrink-0 w-56 lg:w-64 bg-white border border-slate-100 rounded-[2rem] p-4 shadow-sm">
+                    <img src="${b.cover_image}" class="w-full h-36 lg:h-44 object-cover rounded-2xl mb-3 shadow-inner" onerror="this.src='https://via.placeholder.com/300x400?text=No+Cover'">
+                    <h4 class="text-xs lg:text-sm font-bold truncate text-slate-800">${b.title}</h4>
+                    <p class="text-[10px] text-slate-400 mt-1 truncate">Oleh: ${b.author}</p>
+                    <div class="mt-4 border-t pt-2 flex justify-between items-center text-[9px] font-bold">
+                        <span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-bold uppercase tracking-tighter">Rak ${b.shelf_code}</span>
+                        <span class="text-slate-300">${b.stock} Eks</span>
+                    </div>
+                </div>`).join('');
+            return `<div class="flex gap-4 overflow-x-auto mt-4 pb-2 no-scrollbar">${cards}</div>`;
         }
-        
-        function applyTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark');
-                themeIcon.textContent = 'dark_mode';
-            }
+
+        function renderHistory() {
+            historyContainer.innerHTML = sessions.map(s => `
+                <div class="group relative flex items-center gap-2">
+                    <button onclick="loadSession(${s.id})" class="flex-1 text-left p-3 rounded-xl text-xs font-medium truncate transition ${currentId === s.id ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-600 hover:bg-slate-50'}">
+                        <i class="fas fa-comment-dots mr-2 opacity-50"></i>${s.title}
+                    </button>
+                    <button onclick="deleteSession(event, ${s.id})" class="absolute right-2 opacity-0 group-hover:opacity-100 p-2 text-slate-400 hover:text-red-500 transition-all"><i class="fas fa-trash-alt text-[10px]"></i></button>
+                </div>`).join('');
         }
-        
-        // Send Suggestion
-        function sendSuggestion(text) {
-            messageInput.value = text;
-            chatForm.dispatchEvent(new Event('submit'));
+
+        function deleteSession(e, id) {
+            e.stopPropagation();
+            if(!confirm('Hapus chat ini?')) return;
+            sessions = sessions.filter(x => x.id !== id);
+            save();
+            if(currentId === id) sessions.length > 0 ? loadSession(sessions[0].id) : createNewChat();
+            else renderHistory();
         }
-        
-        // Handle Submit
-        async function handleSubmit(e) {
+
+        function save() { localStorage.setItem(KEY, JSON.stringify(sessions)); }
+        function clearAllData() { if(confirm('Hapus riwayat permanen?')) { localStorage.removeItem(KEY); location.reload(); } }
+
+        chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            if (isTyping) return;
-            
-            const message = messageInput.value.trim();
-            if (!message) return;
-            
-            // Hide welcome section
-            if (welcomeSection) {
-                welcomeSection.style.display = 'none';
-            }
-            
-            // Add user message
-            addMessage(message, 'user');
-            
-            // Clear input
-            messageInput.value = '';
-            charCount.textContent = '0';
-            messageInput.style.height = 'auto';
-            messageInput.focus();
-            
-            // Show typing indicator
-            const typingId = showTypingIndicator();
-            
+            const msg = userInput.value.trim();
+            if(!msg) return;
+
+            const session = sessions.find(s => s.id === currentId);
+            if(session.messages.length === 0) { session.title = msg.substring(0, 20); renderHistory(); headerTitle.innerText = session.title; }
+
+            renderMsg('user', msg);
+            session.messages.push({ role: 'user', content: msg });
+            userInput.value = ''; userInput.style.height = 'auto';
+
+            const loader = document.createElement('div');
+            loader.className = 'flex items-center gap-2 p-4 text-[11px] text-slate-400 italic animate-pulse ml-10 lg:ml-14';
+            loader.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> PerpusBot sedang mencari jawaban...';
+            chatWindow.appendChild(loader);
+
             try {
-                isTyping = true;
-                sendButton.disabled = true;
-                
-                const response = await fetch(API_URL, {
+                const res = await fetch("{{ route('chat.send') }}", {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': CSRF_TOKEN,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ message })
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                    body: JSON.stringify({ message: msg })
                 });
-                
-                const data = await response.json();
-                
-                removeTypingIndicator(typingId);
-                
-                if (data.success) {
-                    addBotResponse(data);
-                    saveToHistory(message, data);
-                } else {
-                    addMessage('Maaf, terjadi kesalahan. Silakan coba lagi.', 'bot');
-                }
-                
-            } catch (error) {
-                console.error('Error:', error);
-                removeTypingIndicator(typingId);
-                addMessage('Maaf, koneksi ke server gagal. Periksa koneksi internet Anda.', 'bot');
-            } finally {
-                isTyping = false;
-                sendButton.disabled = false;
-            }
-        }
-        
-        // Add Message
-        function addMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `flex gap-3 animate-slide-in ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
-            
-            const content = `
-                ${sender === 'bot' ? `
-                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                        <span class="text-white text-lg">🤖</span>
-                    </div>
-                ` : ''}
-                
-                <div class="max-w-[75%] sm:max-w-[60%]">
-                    <div class="${sender === 'user' 
-                        ? 'bg-gradient-to-r from-primary-500 to-emerald-600 text-white' 
-                        : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700'
-                    } rounded-2xl px-4 py-3 shadow-lg">
-                        <p class="text-sm leading-relaxed whitespace-pre-wrap">${text}</p>
-                    </div>
-                    ${sender === 'bot' ? `
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 ml-2">
-                            ${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
-                        </p>
-                    ` : ''}
-                </div>
-                
-                ${sender === 'user' ? `
-                    <div class="w-10 h-10 bg-gradient-to-br from-gray-400 to-gray-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                        <span class="text-white font-bold text-sm">{{ substr($student->name, 0, 1) }}</span>
-                    </div>
-                ` : ''}
-            `;
-            
-            messageDiv.innerHTML = content;
-            messagesContainer.appendChild(messageDiv);
-            scrollToBottom();
-        }
-        
-        // Add Bot Response
-        function addBotResponse(data) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'flex gap-3 animate-slide-in justify-start';
-            
-            let booksHTML = '';
-            if (data.books && data.books.length > 0) {
-                booksHTML = `
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                        ${data.books.map(book => `
-                            <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-3 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                                <img src="${book.cover}" alt="${book.title}" class="w-full h-40 object-cover rounded-lg mb-3" onerror="this.src='https://via.placeholder.com/200x280/e5e7eb/9ca3af?text=No+Cover'">
-                                <h4 class="font-semibold text-sm text-gray-900 dark:text-gray-100 line-clamp-2 mb-1">${book.title}</h4>
-                                <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">${book.author}</p>
-                                <div class="flex items-center justify-between text-xs">
-                                    <span class="text-gray-500 dark:text-gray-400">${book.year}</span>
-                                    <span class="px-2 py-1 rounded-lg font-medium ${
-                                        book.stock > 5 ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' :
-                                        book.stock > 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300' :
-                                        'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-                                    }">
-                                        ${book.stock > 0 ? `Stok: ${book.stock}` : 'Habis'}
-                                    </span>
-                                </div>
-                                <div class="flex items-center gap-2 mt-2 text-xs text-gray-500 dark:text-gray-400">
-                                    <span>📚 ${book.category}</span>
-                                    <span>•</span>
-                                    <span>🗄️ ${book.shelf_code}</span>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            }
-            
-            let aiHTML = '';
-            if (data.ai_explanation) {
-                aiHTML = `
-                    <div class="bg-primary-50 dark:bg-primary-900/20 border-l-4 border-primary-500 rounded-lg p-3 mt-3">
-                        <div class="flex items-start gap-2">
-                            <span class="material-symbols-rounded text-primary-600 dark:text-primary-400 text-lg">lightbulb</span>
-                            <div class="flex-1">
-                                <p class="text-xs font-semibold text-primary-700 dark:text-primary-300 mb-1">Informasi AI</p>
-                                <p class="text-sm text-gray-700 dark:text-gray-300">${data.ai_explanation}</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            const content = `
-                <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <span class="text-white text-lg">🤖</span>
-                </div>
-                
-                <div class="max-w-[75%] sm:max-w-[85%]">
-                    <div class="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 shadow-lg">
-                        <p class="text-sm leading-relaxed whitespace-pre-wrap">${data.reply}</p>
-                        ${aiHTML}
-                        ${booksHTML}
-                    </div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 ml-2">
-                        ${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                </div>
-            `;
-            
-            messageDiv.innerHTML = content;
-            messagesContainer.appendChild(messageDiv);
-            scrollToBottom();
-        }
-        
-        // Typing Indicator
-        function showTypingIndicator() {
-            const id = 'typing-' + Date.now();
-            const typingDiv = document.createElement('div');
-            typingDiv.id = id;
-            typingDiv.className = 'flex gap-3 animate-slide-in justify-start';
-            
-            typingDiv.innerHTML = `
-                <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <span class="text-white text-lg">🤖</span>
-                </div>
-                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 shadow-lg">
-                    <div class="flex gap-1">
-                        <span class="w-2 h-2 bg-primary-500 rounded-full animate-bounce-slow"></span>
-                        <span class="w-2 h-2 bg-primary-500 rounded-full animate-bounce-slow" style="animation-delay: 0.2s;"></span>
-                        <span class="w-2 h-2 bg-primary-500 rounded-full animate-bounce-slow" style="animation-delay: 0.4s;"></span>
-                    </div>
-                </div>
-            `;
-            
-            messagesContainer.appendChild(typingDiv);
-            scrollToBottom();
-            
-            return id;
-        }
-        
-        function removeTypingIndicator(id) {
-            const element = document.getElementById(id);
-            if (element) {
-                element.remove();
-            }
-        }
-        
-        // Save to History
-        function saveToHistory(userMessage, botResponse) {
-            const session = {
-                id: currentSessionId,
-                userMessage: userMessage,
-                botResponse: botResponse.reply,
-                timestamp: Date.now(),
-                books: botResponse.books || []
-            };
-            
-            chatHistory.unshift(session);
-            
-            // Limit to 50 recent chats
-            if (chatHistory.length > 50) {
-                chatHistory = chatHistory.slice(0, 50);
-            }
-            
-            localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
-            updateHistoryList();
-        }
-        
-        // Update History List
-        function updateHistoryList() {
-            if (chatHistory.length === 0) {
-                historyList.innerHTML = `
-                    <div class="text-center text-gray-500 dark:text-gray-400 py-8">
-                        <span class="material-symbols-rounded text-5xl opacity-30">history</span>
-                        <p class="mt-2 text-sm">Belum ada riwayat chat</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            historyList.innerHTML = chatHistory.map((session, index) => `
-                <div class="bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-xl p-3 cursor-pointer transition-colors border border-gray-200 dark:border-gray-600" onclick="loadSession(${index})">
-                    <div class="flex items-start gap-2">
-                        <span class="material-symbols-rounded text-primary-600 dark:text-primary-400 text-sm">chat</span>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">${session.userMessage}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                ${new Date(session.timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        // Load Session
-        function loadSession(index) {
-            const session = chatHistory[index];
-            if (!session) return;
-            
-            welcomeSection.style.display = 'none';
-            messagesContainer.innerHTML = '';
-            
-            addMessage(session.userMessage, 'user');
-            addBotResponse({
-                reply: session.botResponse,
-                books: session.books
-            });
-            
-            toggleSidebar();
-        }
-        
-        // Load Chat History
-        function loadChatHistory() {
-            const saved = localStorage.getItem('chatHistory');
-            if (saved) {
-                try {
-                    chatHistory = JSON.parse(saved);
-                    updateHistoryList();
-                } catch (e) {
-                    console.error('Failed to load history:', e);
-                    chatHistory = [];
-                }
-            }
-        }
-        
-        // Clear History
-        function clearHistory() {
-            if (confirm('Yakin ingin menghapus semua riwayat chat?')) {
-                chatHistory = [];
-                localStorage.removeItem('chatHistory');
-                updateHistoryList();
-            }
-        }
-        
-        // Delete All Chats
-        function deleteAllChats() {
-            if (confirm('Yakin ingin menghapus semua percakapan?')) {
-                messagesContainer.innerHTML = '';
-                welcomeSection.style.display = 'block';
-                chatHistory = [];
-                localStorage.removeItem('chatHistory');
-                updateHistoryList();
-                currentSessionId = Date.now();
-            }
-        }
-        
-        // Scroll to Bottom
-        function scrollToBottom() {
-            setTimeout(() => {
-                window.scrollTo({
-                    top: document.documentElement.scrollHeight,
-                    behavior: 'smooth'
-                });
-            }, 100);
-        }
+                const data = await res.json();
+                loader.remove();
+                renderMsg('bot', data.reply, data);
+                session.messages.push({ role: 'bot', content: data.reply, extra: data });
+                save();
+            } catch (err) { loader.remove(); renderMsg('bot', 'Gagal memproses. Periksa koneksi.'); }
+        });
     </script>
 </body>
 </html>

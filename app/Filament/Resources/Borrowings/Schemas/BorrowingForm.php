@@ -44,7 +44,9 @@ class BorrowingForm
                     ->options([
                         'Pending' => 'Pending',
                         'Dipinjam' => 'Dipinjam',
-                        'Dikembalikan' => 'Dikembalikan'])
+                        'Dikembalikan' => 'Dikembalikan',
+                        'Batal' => 'Batal',
+                    ])
                     ->default('Pending')
                     ->required(),
             ]);

@@ -19,12 +19,12 @@ class BorrowingController extends Controller
         $student = Auth::guard('student')->user();
 
         // --- VALIDASI: Cek Apakah Siswa Login dan Aktif ---
-        // Periksa apakah siswa ada dan apakah properti is_active-nya bernilai true
-        if (!$student || !$student->is_active) {
+        // Menggunakan is_active_flag sesuai dengan yang ada di file blade
+        if (!$student || !$student->is_active_flag) {
             return response()->json([
                 'message' => 'Akun Anda tidak aktif. Silakan hubungi administrator.',
                 'errors' => ['account' => 'Akun Anda tidak aktif.']
-            ], 403); // Status 403 Forbidden
+            ], 403);
         }
         
         // --- VALIDASI: Cek Jam Operasional ---
@@ -35,20 +35,28 @@ class BorrowingController extends Controller
             ], 403);
         }
         
-        // --- VALIDASI: Mencegah pinjam buku yang sama ---
-        $isAlreadyBorrowed = Borrowing::where('student_id', $student->id)
+        // --- VALIDASI: Cek apakah siswa sudah pernah meminjam atau mengajukan peminjaman buku ini ---
+        // Logika ini akan mencegah peminjaman ganda jika statusnya 'Pending' atau 'Dipinjam'
+        $existingBorrowing = Borrowing::where('student_id', $student->id)
             ->where('book_id', $book->id)
             ->whereIn('status', ['Pending', 'Dipinjam'])
-            ->exists();
+            ->first();
 
-        if ($isAlreadyBorrowed) {
+        if ($existingBorrowing) {
+            // Berikan pesan error yang berbeda berdasarkan status yang ada
+            if ($existingBorrowing->status === 'Pending') {
+                $errorMessage = 'Anda sudah mengajukan peminjaman untuk buku ini. Silakan tunggu konfirmasi dari admin.';
+            } else { // Statusnya 'Dipinjam'
+                $errorMessage = 'Anda sedang meminjam buku ini dan belum mengembalikannya.';
+            }
+
             return response()->json([
-                'message' => 'Anda sudah meminjam atau sedang dalam proses peminjaman buku ini.',
-                'errors' => ['borrow' => 'Anda sudah meminjam buku ini dan belum mengembalikannya.']
-            ], 409);
+                'message' => $errorMessage,
+                'errors' => ['borrow' => $errorMessage]
+            ], 409); // 409 Conflict adalah kode status yang tepat untuk kondisi ini
         }
 
-        // 1. Pastikan stok buku masih tersedia
+        // --- VALIDASI: Pastikan stok buku masih tersedia ---
         if ($book->stock < 1) {
             return response()->json([
                 'message' => 'Maaf, stok buku ini sudah habis.',
@@ -56,19 +64,29 @@ class BorrowingController extends Controller
             ], 400);
         }
         
-        // 2. Buat data peminjaman baru
+        // --- PROSES: Buat data peminjaman baru dengan status 'Pending' ---
         $borrowing = Borrowing::create([
             'student_id' => $student->id,
             'book_id' => $book->id,
             'borrow_date' => now(),
             'due_date' => now()->addDays(7),
-            'status' => 'Pending',
+            'status' => 'Pending', // Status awal adalah Pending
         ]);
 
-        // 3. Kembalikan respons JSON sukses
+        // Kurangi stok buku
+        $book->decrement('stock');
+
+        // --- BATAL: Jika Admin tolak buku, kembalikan stok buku ---
+        if ($borrowing->status === 'Batal') {
+            $book->increment('stock');
+        }
+
+        // --- RESPONSE: Kembalikan respons JSON sukses ---
         return response()->json([
             'message' => 'Permintaan peminjaman buku "' . $book->title . '" berhasil diajukan! Menunggu persetujuan admin.',
             'redirect_url' => route('books.show', $book)
         ], 200);
+
+
     }
 }

@@ -109,16 +109,15 @@
 
                                 {{-- NIS --}}
                                 <div class="form-group">
-                                    <label for="nis" class="block text-sm font-medium text-gray-700 mb-2">NIS</label>
+                                    <label for="nis" class="block text-sm font-medium text-gray-700 mb-2">NIS <span class="text-gray-500">(opsional)</span></label>
                                     <div class="relative group">
-                                        <div class="absolute inset-y-0 left-0 pl-3 pb-5 flex items-center pointer-events-none">
+                                        <div class="absolute inset-y-0 left-0 pl-3 pb-0 flex items-center pointer-events-none">
                                             <i class="fas fa-id-card text-gray-400 group-focus-within:text-green-600 transition-colors text-sm"></i>
                                         </div>
                                         <input type="text" name="nis" id="nis" value="{{ old('nis') }}"
-                                            required
                                             class="w-full pl-10 pr-3 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all group-hover:border-gray-400"
                                             placeholder="Contoh: 20250001">
-                                        <div class="validation-message"></div>
+                                        <!-- <div class="validation-message"></div> -->
                                     </div>
                                 </div>
                             </div>

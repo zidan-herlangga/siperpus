@@ -51,6 +51,7 @@ class AllBorrowingsReport extends BaseWidget
                         'Pending' => 'gray',
                         'Dipinjam' => 'warning',
                         'Dikembalikan' => 'success',
+                        'Batal' => 'danger',
                     }),
                 
                 Tables\Columns\TextColumn::make('fine')
@@ -66,6 +67,11 @@ class AllBorrowingsReport extends BaseWidget
                         // Jika sudah dikembalikan → gunakan denda final dari DB
                         if ($record->status === 'Dikembalikan') {
                             return $record->fine;
+                        }
+
+                        // Jika status Batal, tidak ada denda
+                        if ($record->status === 'Batal') {
+                            return 0;
                         }
                 
                         // Jika belum dikembalikan & sudah telat → hitung berjalan

@@ -44,15 +44,15 @@ class BorrowingSeeder extends Seeder
 
         // --- SKENARIO 2: UJI COBA JATUH TEMPO (OVERDUE) ---
         // Buku ini sudah terlambat 2 hari
-        Borrowing::create([
-            'student_id' => $studentForOverdue->id,
-            'book_id' => $bookForOverdue->id,
-            'borrow_date' => now()->subDays(9), // Dipinjam 9 hari yang lalu
-            'due_date' => today()->subDays(2),   // Jatuh tempo 2 hari yang lalu (18 Oktober 2025)
-            'status' => 'Dipinjam',
-        ]);
-        // Kurangi stok buku
-        $bookForOverdue->decrement('stock');
-        $this->command->info('Data uji coba untuk KETERLAMBATAN telah dibuat.');
+        // Borrowing::create([
+        //     'student_id' => $studentForOverdue->id,
+        //     'book_id' => $bookForOverdue->id,
+        //     'borrow_date' => now()->subDays(9), // Dipinjam 9 hari yang lalu
+        //     'due_date' => today()->subDays(2),   // Jatuh tempo 2 hari yang lalu (18 Oktober 2025)
+        //     'status' => 'Dipinjam',
+        // ]);
+        // // Kurangi stok buku
+        // $bookForOverdue->decrement('stock');
+        // $this->command->info('Data uji coba untuk KETERLAMBATAN telah dibuat.');
     }
 }

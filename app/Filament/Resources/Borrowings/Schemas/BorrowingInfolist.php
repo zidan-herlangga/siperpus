@@ -46,6 +46,13 @@ class BorrowingInfolist
                     ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                 TextEntry::make('status')
                     ->label('Status')
+                    ->color(fn ($state) => match($state) {
+                        'Pending' => 'gray',
+                        'Dipinjam' => 'yellow',
+                        'Dikembalikan' => 'green',
+                        'Batal' => 'red',
+                        default => 'primary',
+                    })
                     ->badge(),
                 TextEntry::make('created_at')
                     ->label('Dibuat Pada')

@@ -25,7 +25,7 @@ class StudentRegistrationController extends Controller
         // Validasi input dari form
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'nis' => ['required', 'string', 'max:255', 'unique:students'],
+            'nis' => ['nullable', 'string', 'max:255', 'unique:students'],
             'class' => ['required', 'string', 'max:255'],
             'contact' => ['required', 'string', 'max:20'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:students'],

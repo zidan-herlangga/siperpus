@@ -9,27 +9,71 @@ class BookController extends Controller
 {
     public function index(Request $request)
     {
-        ini_set('max_execution_time', 3600);
         $query = Book::query();
 
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
+        /**
+         * =========================
+         * SEARCH (AMAN)
+         * =========================
+         */
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+
             $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('author', 'like', "%{$search}%")
-                    ->orWhere('category', 'like', "%{$search}%");
+                $q->where('title', 'LIKE', "%{$search}%")
+                  ->orWhere('author', 'LIKE', "%{$search}%")
+                  ->orWhere('category', 'LIKE', "%{$search}%");
             });
         }
 
-        if ($request->has('category') && $request->category != '') {
+        /**
+         * =========================
+         * CATEGORY FILTER (AMAN)
+         * =========================
+         */
+        if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
 
-        // Pagination aktif
-        $books = $query->orderBy('title')->paginate(12)->withQueryString();
+        /**
+         * =========================
+         * SORTING (WHITELIST = ANTI SQL INJECTION)
+         * =========================
+         */
+        $sort = $request->input('sort', 'newest');
 
-        // Get unique categories for filter dropdown
-        $categories = Book::select('category')
+        $allowedSorts = [
+            'newest'     => ['created_at', 'desc'],
+            'oldest'     => ['created_at', 'asc'],
+            'title_asc'  => ['title', 'asc'],
+            'title_desc' => ['title', 'desc'],
+            'popular'    => ['borrow_count', 'desc'],
+        ];
+
+        // fallback default
+        [$column, $direction] = $allowedSorts[$sort] ?? $allowedSorts['newest'];
+
+        // Cegah error jika kolom tidak ada
+        if (in_array($column, \Schema::getColumnListing('books'))) {
+            $query->orderBy($column, $direction);
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        /**
+         * =========================
+         * PAGINATION
+         * =========================
+         */
+        $books = $query->paginate(12)->withQueryString();
+
+        /**
+         * =========================
+         * CATEGORY LIST
+         * =========================
+         */
+        $categories = Book::query()
+            ->whereNotNull('category')
             ->distinct()
             ->orderBy('category')
             ->pluck('category');
@@ -37,16 +81,25 @@ class BookController extends Controller
         return view('books.index', compact('books', 'categories'));
     }
 
-    public function show(Book $book)
+    public function show(string $slug)
     {
-        // Ambil buku terkait berdasarkan kategori, kecuali buku yang sedang dilihat
-        $relatedBooks = Book::where('category', $book->category)
-                            ->where('id', '!=', $book->id)
-                            ->inRandomOrder() // Acak agar lebih bervariasi
-                            ->limit(4) // Batasi hanya 4 buku
-                            ->get();
+        $book = Book::where('slug', $slug)->firstOrFail();
 
+        $relatedBooks = Book::query()
+            ->where('category', $book->category)
+            ->whereKeyNot($book->id)
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
 
         return view('books.show', compact('book', 'relatedBooks'));
+    }
+
+    public function getStock(Book $book)
+    {
+        return response()->json([
+            'stock' => (int) $book->stock,
+            'available' => $book->stock > 0,
+        ]);
     }
 }
