@@ -2,15 +2,17 @@
 
 namespace App\Filament\Resources\Reminders\Tables;
 
+use App\Models\Borrowing;
+use App\Mail\DueDateReminder; // Import class baru Anda
+use App\Mail\OverdueReminder; // Import class baru Anda
 use Filament\Tables;
-use Filament\Actions\Action;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Artisan;
-use App\Models\Reminder;
 
 class RemindersTable
 {
@@ -18,65 +20,65 @@ class RemindersTable
     {
         return $table
             ->columns([
-                TextColumn::make('borrowing.student.name')
+                TextColumn::make('student.name')
                     ->label('Siswa')
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('borrowing.book.title')
+                TextColumn::make('book.title')
                     ->label('Buku')
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('type')
-                    ->label('Jenis Pengingat')
-                    ->badge()
-                    ->color(fn ($state) => $state === 'pre_due' ? 'warning' : 'danger'),
-
-                TextColumn::make('sent_at')
-                    ->label('Dikirim Pada')
-                    ->dateTime('d M Y H:i')
+                TextColumn::make('due_date')
+                    ->label('Jatuh Tempo')
+                    ->date('d M Y')
+                    ->color(fn ($record) => $record->due_date->isPast() ? 'danger' : 'warning')
                     ->sortable(),
+
+                TextColumn::make('last_reminder_sent_at')
+                    ->label('Terakhir Diingatkan')
+                    ->dateTime('d M Y H:i')
+                    ->placeholder('Belum pernah')
+                    ->sortable(),
+
+                TextColumn::make('fine_amount')
+                    ->label('Denda')
+                    ->money('IDR'),
             ])
-            ->filters([
-                SelectFilter::make('type')
-                    ->label('Jenis Reminder')
-                    ->options([
-                        'pre_due' => 'H-1 Jatuh Tempo',
-                        'overdue' => 'Terlambat',
-                    ]),
-            ])
-            ->headerActions([
-                Action::make('sendReminder')
-                    ->label('Kirim Pengingat')
-                    ->icon('heroicon-o-paper-airplane')
-                    ->color('primary')
+            ->actions([
+                Action::make('sendIndividual')
+                    ->label('Kirim')
+                    ->icon('heroicon-m-paper-airplane')
+                    ->color('success')
                     ->requiresConfirmation()
-                    ->modalAutofocus(false)
-                    ->extraAttributes(['wire:key' => 'send-reminder-button'])
+                    ->action(function (Borrowing $record) {
+                        try {
+                            // LOGIKA PEMILIHAN EMAIL
+                            // Jika sudah lewat jatuh tempo, gunakan OverdueReminder
+                            // Jika belum lewat, gunakan DueDateReminder
+                            if ($record->due_date->isPast()) {
+                                Mail::to($record->student->email)->send(new OverdueReminder($record));
+                            } else {
+                                Mail::to($record->student->email)->send(new DueDateReminder($record));
+                            }
 
-                    ->action(function () {
+                            // Update timestamp di database
+                            $record->update(['last_reminder_sent_at' => now()]);
 
-                        // Reset sent_at agar command mau mengirim ulang email
-                        Reminder::query()->update([
-                            'sent_at' => null,
-                        ]);
-
-                        // Panggil command tanpa --force
-                        Artisan::call('app:send-reminder');
-
-                        $output = Artisan::output();
-
-                        Notification::make()
-                            ->title('Pengingat selesai dikirim')
-                            ->body($output ?: 'Semua email pengingat telah dikirim.')
-                            ->success()
-                            ->send();
-                    })
-
-                    ->after(function (Tables\Contracts\HasTable $livewire) {
-                        // Refresh tabel biar state action reset
-                        $livewire->dispatch('$refresh');
+                            Notification::make()
+                                ->title('Email Berhasil Dikirim')
+                                ->body('Notifikasi terkirim ke ' . $record->student->email)
+                                ->success()
+                                ->send();
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Gagal Mengirim')
+                                ->body('Cek SMTP/App Password. Error: ' . $e->getMessage())
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                        }
                     }),
             ])
             ->bulkActions([
@@ -91,4 +93,3 @@ class RemindersTable
             ]);
     }
 }
-

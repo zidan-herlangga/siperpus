@@ -3,7 +3,7 @@
 @section('title', 'Dashboard Siswa' . ' - ' . config('app.name'))
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/dashboard-student.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/dashboard-student.css') }}">
 @stop
 
 @section('content')
@@ -11,11 +11,12 @@
         <div class="container mx-auto px-4">
             {{-- Header dengan Animasi --}}
             <div class="mb-8 animate-fade-in">
-                <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl p-6 shadow-lg relative overflow-hidden">
+                <div
+                    class="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl p-6 shadow-lg relative overflow-hidden">
                     <!-- Animated background elements -->
                     <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
                     <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
-                    
+
                     <div class="relative z-10 flex flex-col md:flex-row items-center justify-between">
                         <div>
                             <h1 class="text-3xl font-bold mb-2">
@@ -40,7 +41,8 @@
                 <div class="lg:col-span-2 space-y-6">
                     {{-- Statistik Kartu --}}
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 animate-slide-up">
-                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                        <div
+                            class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:shadow-md transition-shadow">
                             <div class="flex items-center justify-between mb-2">
                                 <i class="fas fa-book text-green-600 text-xl"></i>
                                 <span class="text-xs text-gray-500">Bulan ini</span>
@@ -48,7 +50,8 @@
                             <p class="text-2xl font-bold text-gray-800">{{ $currentBorrowings->count() }}</p>
                             <p class="text-xs text-gray-600">Sedang Dipinjam</p>
                         </div>
-                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                        <div
+                            class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:shadow-md transition-shadow">
                             <div class="flex items-center justify-between mb-2">
                                 <i class="fas fa-history text-blue-600 text-xl"></i>
                                 <span class="text-xs text-gray-500">Total</span>
@@ -56,20 +59,24 @@
                             <p class="text-2xl font-bold text-gray-800">{{ $returnedBorrowings->count() }}</p>
                             <p class="text-xs text-gray-600">Riwayat Peminjaman</p>
                         </div>
-                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                        <div
+                            class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:shadow-md transition-shadow">
                             <div class="flex items-center justify-between mb-2">
                                 <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
                                 <span class="text-xs text-gray-500">Aktif</span>
                             </div>
-                            <p class="text-2xl font-bold text-gray-800">{{ $currentBorrowings->where('due_date', '<', now())->count() }}</p>
+                            <p class="text-2xl font-bold text-gray-800">
+                                {{ $currentBorrowings->where('due_date', '<', now())->count() }}</p>
                             <p class="text-xs text-gray-600">Terlambat</p>
                         </div>
-                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                        <div
+                            class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 hover:shadow-md transition-shadow">
                             <div class="flex items-center justify-between mb-2">
                                 <i class="fas fa-coins text-yellow-600 text-xl"></i>
                                 <span class="text-xs text-gray-500">Total</span>
                             </div>
-                            <p class="text-2xl font-bold text-gray-800">Rp {{ number_format($currentBorrowings->sum('fine_amount'), 0, ',', '.') }}</p>
+                            <p class="text-2xl font-bold text-gray-800">Rp
+                                {{ number_format($currentBorrowings->sum('fine_amount'), 0, ',', '.') }}</p>
                             <p class="text-xs text-gray-600">Denda</p>
                         </div>
                     </div>
@@ -89,17 +96,21 @@
                         <div class="grid md:grid-cols-2 gap-4">
                             @forelse ($currentBorrowings as $borrowing)
                                 @php $isOverdue = now()->gt($borrowing->due_date); @endphp
-                                <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+                                <div
+                                    class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
                                     <div class="h-2 {{ $isOverdue ? 'bg-red-500' : 'bg-green-500' }}"></div>
                                     <div class="p-4">
                                         <div class="flex justify-between items-start mb-2">
-                                            <h3 class="font-bold text-gray-800 line-clamp-1">{{ $borrowing->book->title }}</h3>
+                                            <h3 class="font-bold text-gray-800 line-clamp-1">{{ $borrowing->book->title }}
+                                            </h3>
                                             @if ($isOverdue)
-                                                <span class="bg-red-100 text-red-700 text-xs font-medium px-2 py-1 rounded-full">
+                                                <span
+                                                    class="bg-red-100 text-red-700 text-xs font-medium px-2 py-1 rounded-full">
                                                     <i class="fas fa-clock mr-1"></i>Terlambat
                                                 </span>
                                             @else
-                                                <span class="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded-full">
+                                                <span
+                                                    class="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded-full">
                                                     <i class="fas fa-check-circle mr-1"></i>Aktif
                                                 </span>
                                             @endif
@@ -117,7 +128,8 @@
                                                 <span class="text-gray-500 flex items-center">
                                                     <i class="fas fa-calendar-check mr-1 text-green-500"></i>Jatuh Tempo:
                                                 </span>
-                                                <span class="font-medium {{ $isOverdue ? 'text-red-600' : 'text-green-700' }}">
+                                                <span
+                                                    class="font-medium {{ $isOverdue ? 'text-red-600' : 'text-green-700' }}">
                                                     {{ \Carbon\Carbon::parse($borrowing->due_date)->format('d M Y') }}
                                                 </span>
                                             </div>
@@ -142,7 +154,8 @@
                                             </div>
                                         </div>
                                         @if ($isOverdue)
-                                            <div class="mt-3 bg-red-50 text-red-700 text-xs font-medium p-2 rounded text-center">
+                                            <div
+                                                class="mt-3 bg-red-50 text-red-700 text-xs font-medium p-2 rounded text-center">
                                                 <i class="fas fa-exclamation-triangle mr-1"></i>
                                                 Terlambat {{ abs(floor(now()->diffInDays($borrowing->due_date))) }} hari
                                             </div>
@@ -150,7 +163,8 @@
                                     </div>
                                 </div>
                             @empty
-                                <div class="col-span-2 bg-green-50 border border-green-200 text-green-700 text-center p-6 rounded-lg font-medium">
+                                <div
+                                    class="col-span-2 bg-green-50 border border-green-200 text-green-700 text-center p-6 rounded-lg font-medium">
                                     <i class="fas fa-check-circle text-2xl mb-2"></i>
                                     <p>Tidak ada buku yang sedang dipinjam</p>
                                 </div>
@@ -185,10 +199,12 @@
                                             <tr class="hover:bg-gray-50 transition-colors">
                                                 <td class="p-3">
                                                     <div class="flex items-center">
-                                                        <div class="w-8 h-10 bg-green-100 rounded flex items-center justify-center mr-3">
+                                                        <div
+                                                            class="w-8 h-10 bg-green-100 rounded flex items-center justify-center mr-3">
                                                             <i class="fas fa-book text-green-600 text-xs"></i>
                                                         </div>
-                                                        <span class="font-medium text-gray-800">{{ $borrowing->book->title }}</span>
+                                                        <span
+                                                            class="font-medium text-gray-800">{{ $borrowing->book->title }}</span>
                                                     </div>
                                                 </td>
                                                 <td class="p-3 text-gray-600 hidden sm:table-cell">
@@ -198,7 +214,8 @@
                                                     {{ \Carbon\Carbon::parse($borrowing->return_date)->format('d M Y') }}
                                                 </td>
                                                 <td class="p-3">
-                                                    <span class="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded-full">
+                                                    <span
+                                                        class="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded-full">
                                                         <i class="fas fa-check-circle mr-1"></i>Selesai
                                                     </span>
                                                 </td>
@@ -221,15 +238,17 @@
                 {{-- Sidebar --}}
                 <aside class="lg:col-span-1 space-y-6 mt-6 lg:mt-0">
                     {{-- Profil Siswa --}}
-                    <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 animate-slide-up" style="animation-delay: 0.3s;">
+                    <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 animate-slide-up"
+                        style="animation-delay: 0.3s;">
                         <div class="flex items-center mb-4">
-                            <div class="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold mr-3">
-                               @if ($student->avatar)
-                                    <img src="{{ asset('storage/' . $student->avatar) }}" 
-                                        alt="{{ $student->name }}"
+                            <div
+                                class="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold mr-3">
+                                @if ($student->avatar)
+                                    <img src="{{ asset('storage/' . $student->avatar) }}" alt="{{ $student->name }}"
                                         class="w-16 h-16 rounded-full object-cover">
                                 @else
-                                    <div class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center text-xl font-bold">
+                                    <div
+                                        class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center text-xl font-bold">
                                         {{ strtoupper(substr($student->name, 0, 1)) }}
                                     </div>
                                 @endif
@@ -260,7 +279,8 @@
                     </div>
 
                     {{-- Aksi Cepat --}}
-                    <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 animate-slide-up" style="animation-delay: 0.4s;">
+                    <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 animate-slide-up"
+                        style="animation-delay: 0.4s;">
                         <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
                             <i class="fas fa-bolt text-yellow-500 mr-2"></i>Aksi Cepat
                         </h3>
@@ -273,10 +293,10 @@
                                 class="block w-full text-center bg-gradient-to-r from-green-600 to-emerald-600 text-white font-medium py-2.5 px-3 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:-translate-y-0.5 shadow-md">
                                 <i class="fas fa-search mr-2"></i>Cari Buku Baru
                             </a>
-                            <a href="/chatbot"
+                            {{-- <a href="/chatbot"
                                 class="block w-full text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium py-2.5 px-3 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:-translate-y-0.5 shadow-md">
                                 <i class="fas fa-robot mr-2"></i>Chatbot Perpustakaan
-                            </a>
+                            </a> --}}
                             <button onclick="openBorrowGuideModal()"
                                 class="block w-full text-center bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-medium py-2.5 px-3 rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform hover:-translate-y-0.5 shadow-md">
                                 <i class="fas fa-info-circle mr-2"></i>Petunjuk Peminjaman
@@ -285,34 +305,35 @@
                     </div>
 
                     <!-- {{-- Rekomendasi Buku --}}
-                    <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 animate-slide-up" style="animation-delay: 0.5s;">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-star text-yellow-500 mr-2"></i>Rekomendasi Buku
-                        </h3>
-                        <div class="space-y-3">
-                            @for ($i = 1; $i <= 3; $i++)
-                                <div class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
-                                    <img src="" alt="Book Cover" class="w-12 h-16 object-cover rounded">
-                                    <div class="flex-1">
-                                        <h4 class="text-sm font-medium text-gray-800 line-clamp-1">Buku Rekomendasi {{ $i }}</h4>
-                                        <p class="text-xs text-gray-500">Penulis {{ $i }}</p>
-                                        <div class="flex text-yellow-400 text-xs mt-1">
-                                            @for ($j = 1; $j <= 5; $j++)
-                                                <i class="fas fa-star {{ $j <= 4 ? '' : 'text-gray-300' }}"></i>
-                                            @endfor
+                            <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 animate-slide-up" style="animation-delay: 0.5s;">
+                                <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                                    <i class="fas fa-star text-yellow-500 mr-2"></i>Rekomendasi Buku
+                                </h3>
+                                <div class="space-y-3">
+                                    @for ($i = 1; $i <= 3; $i++)
+                                        <div class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                                            <img src="" alt="Book Cover" class="w-12 h-16 object-cover rounded">
+                                            <div class="flex-1">
+                                                <h4 class="text-sm font-medium text-gray-800 line-clamp-1">Buku Rekomendasi {{ $i }}</h4>
+                                                <p class="text-xs text-gray-500">Penulis {{ $i }}</p>
+                                                <div class="flex text-yellow-400 text-xs mt-1">
+                                                    @for ($j = 1; $j <= 5; $j++)
+    <i class="fas fa-star {{ $j <= 4 ? '' : 'text-gray-300' }}"></i>
+    @endfor
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endfor
                                 </div>
-                            @endfor
-                        </div>
-                    </div> -->
+                            </div> -->
                 </aside>
             </div>
         </div>
     </div>
 
     {{-- Modal Petunjuk dengan Desain Lebih Menarik --}}
-    <div id="borrowGuideModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+    <div id="borrowGuideModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
         <div class="bg-white rounded-lg max-w-md w-full shadow-xl p-5 transform transition-all modal-content">
             <div class="flex justify-between items-center mb-4 border-b pb-2">
                 <h3 class="text-lg font-bold text-green-700 flex items-center">
@@ -324,32 +345,37 @@
             </div>
             <ol class="list-decimal list-inside text-gray-700 space-y-3 text-sm">
                 <li class="flex items-start">
-                    <span class="bg-green-100 text-green-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0">1</span>
+                    <span
+                        class="bg-green-100 text-green-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0">1</span>
                     <div>Login atau daftar terlebih dahulu sebelum meminjam buku.</div>
                 </li>
                 <li class="flex items-start">
-                    <span class="bg-green-100 text-green-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0">2</span>
+                    <span
+                        class="bg-green-100 text-green-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0">2</span>
                     <div>Pilih buku dari katalog, lalu klik tombol "Pinjam".</div>
                 </li>
                 <li class="flex items-start">
-                    <span class="bg-green-100 text-green-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0">3</span>
+                    <span
+                        class="bg-green-100 text-green-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0">3</span>
                     <div>Konfirmasi peminjaman dan ambil buku di perpustakaan.</div>
                 </li>
                 <li class="flex items-start">
-                    <span class="bg-green-100 text-green-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0">4</span>
+                    <span
+                        class="bg-green-100 text-green-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0">4</span>
                     <div>Kembalikan buku sebelum jatuh tempo agar tidak terkena denda.</div>
                 </li>
             </ol>
             <div class="mt-6 flex justify-end">
-                <button onclick="closeBorrowGuideModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                <button onclick="closeBorrowGuideModal()"
+                    class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
                     Mengerti
                 </button>
             </div>
         </div>
     </div>
 
-@section('scripts')
-<script src="{{ asset('assets/js/')  }}"></script>
-@stop
+    @section('scripts')
+        <script src="{{ asset('assets/js/') }}"></script>
+    @stop
 
 @endsection
