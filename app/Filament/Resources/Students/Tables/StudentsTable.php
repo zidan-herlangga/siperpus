@@ -9,6 +9,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\ImageColumn;
 
 class StudentsTable
 {
@@ -16,6 +17,9 @@ class StudentsTable
     {
         return $table
             ->columns([
+                ImageColumn::make('avatar')
+                    ->label('Foto')
+                    ->circular(),
                 TextColumn::make('name')
                     ->label('Nama Siswa')
                     ->searchable(),

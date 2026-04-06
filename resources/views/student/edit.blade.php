@@ -1,231 +1,220 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Profile Siswa - ' . config('app.name'))
+@section('title', 'Edit Profil Siswa - ' . config('app.name'))
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('assets/css/register-student.css') }}">
+    <style>
+        .bg-mesh {
+            background-color: #f0fdf4;
+            background-image: 
+                radial-gradient(at 20% 20%, rgba(52, 211, 153, 0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
+                radial-gradient(at 0% 80%, rgba(167, 243, 208, 0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 80%, rgba(52, 211, 153, 0.1) 0px, transparent 50%);
+        }
+        .card-glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), 0 4px 20px -5px rgba(0, 0, 0, 0.03);
+        }
+        .input-modern {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1.5px solid #e5e7eb;
+        }
+        .input-modern:hover:not(:disabled):not([readonly]) { border-color: #d1d5db; }
+        .input-modern:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        .input-modern:disabled, .input-modern[readonly] {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+        .input-modern.border-red-400 { border-color: #f87171; }
+        .input-modern.border-red-400:focus { box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.1); border-color: #f87171; }
+        .input-icon { transition: color 0.3s ease; }
+        .input-group:focus-within .input-icon { color: #059669; }
+        
+        .upload-area { border: 2px dashed #e5e7eb; transition: all 0.3s ease; }
+        .upload-area:hover { border-color: #10b981; background-color: #f0fdf4; }
+        
+        .btn-cancel { transition: all 0.3s ease; }
+        .btn-cancel:hover { background-color: #e5e7eb; }
+        .btn-save {
+            background: linear-gradient(135deg, #059669, #047857);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-save:hover:not(:disabled) {
+            background: linear-gradient(135deg, #047857, #065f46);
+            box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.4);
+        }
+        .btn-save:disabled { opacity: 0.7; cursor: not-allowed; }
+    </style>
 @stop
 
 @section('content')
-
-
-    <div class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center px-4 py-8">
+    <div class="min-h-screen bg-mesh flex items-center justify-center px-4 py-12">
         <div class="w-full max-w-3xl">
-            <!-- Background decoration -->
-            <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div class="absolute top-20 right-20 w-64 h-64 bg-green-200 rounded-full opacity-20 animate-pulse"></div>
-                <div class="absolute bottom-20 left-20 w-80 h-80 bg-emerald-200 rounded-full opacity-20 animate-pulse"
-                    style="animation-delay: 1s;"></div>
-            </div>
-
-
-
-            {{-- Card utama --}}
-            <div class="bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden animate-fade-in">
+            <div class="card-glass rounded-2xl overflow-hidden animate-fade-in">
+                
                 {{-- Header --}}
-                <div
-                    class="bg-gradient-to-r from-green-600 to-emerald-600 text-white text-center py-8 px-6 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-full">
-                        <div class="absolute top-2 left-2 w-16 h-16 bg-white/10 rounded-full animate-pulse"></div>
-                        <div class="absolute bottom-2 right-2 w-24 h-24 bg-white/10 rounded-full animate-pulse"
-                            style="animation-delay: 1s;"></div>
-                    </div>
-
+                <div class="bg-gradient-to-br from-emerald-600 to-green-700 text-white p-10 text-center relative">
+                    <div class="absolute inset-0 bg-black/5"></div>
                     <div class="relative z-10">
-                        <div
-                            class="w-20 h-20 bg-white/20 backdrop-blur rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-user-edit text-3xl"></i>
+                        <div class="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
+                            <i class="fas fa-user-pen text-2xl"></i>
                         </div>
-                        <h1 class="text-2xl font-bold mb-1">Edit Profile Siswa</h1>
-                        <p class="text-green-100 text-sm">Perbarui informasi akun Anda.</p>
+                        <h1 class="text-2xl font-bold tracking-tight mb-1">Edit Profil Siswa</h1>
+                        <p class="text-green-100 text-sm">Perbarui informasi akun Anda di bawah ini.</p>
                     </div>
                 </div>
 
-                {{-- Form --}}
-                <div class="p-6">
-                    <form id="editProfileForm" action="{{ route('student.update') }}" method="POST"
-                        enctype="multipart/form-data" class="space-y-6">
+                {{-- Form Area --}}
+                <div class="p-8">
+                    <!-- Container untuk pesan Sukses/Error dari AJAX -->
+                    <div id="alertContainer"></div>
+
+                    <form id="editProfileForm" action="{{ route('student.update') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                         @csrf
+                        {{-- CATATAN: Jika route kamu memakai PUT/PATCH, biarkan @method('PUT') di bawah ini. 
+                                     Jika route kamu memakai POST, hapus baris @method di bawah ini. --}}
 
-                        {{-- Pesan Sukses --}}
-                        @if (session('success'))
-                            <div
-                                class="bg-green-50 border border-green-200 text-green-700 text-sm p-3 rounded-lg flex items-start animate-slide-down">
-                                <i class="fas fa-check-circle mr-2 mt-0.5"></i>
-                                <span>{{ session('success') }}</span>
-                            </div>
-                        @endif
-
-                        {{-- Pesan Error --}}
-                        @if ($errors->any())
-                            <div
-                                class="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-lg flex items-start animate-slide-down">
-                                <i class="fas fa-exclamation-circle mr-2 mt-0.5"></i>
-                                <div>
-                                    <p class="font-medium mb-1">Terjadi kesalahan:</p>
-                                    <ul class="list-disc list-inside space-y-1">
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                        @endif
-
-                        {{-- Informasi Pribadi --}}
-                        <div class="form-section">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                                <i class="fas fa-user-circle text-green-600 text-sm"></i> Informasi Pribadi
+                        {{-- === Informasi Pribadi === --}}
+                        <div>
+                            <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs"><i class="fas fa-user"></i></div>
+                                Informasi Pribadi
                             </h3>
-                            <div class="grid md:grid-cols-2 gap-4">
-                                {{-- Nama --}}
-                                <div class="form-group">
-                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nama
-                                        Lengkap</label>
-                                    <div class="relative group">
-                                        <div
-                                            class="absolute inset-y-0 left-0 pl-3 pb-0 flex items-center pointer-events-none">
-                                            <i
-                                                class="fas fa-user text-gray-400 group-focus-within:text-green-600 transition-colors text-sm"></i>
+                            <div class="grid md:grid-cols-2 gap-5">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap</label>
+                                    <div class="relative input-group">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i class="fas fa-user input-icon text-gray-400 text-sm"></i>
                                         </div>
-                                        <input type="text" name="name" id="name"
-                                            value="{{ old('name', auth()->user()->name) }}" required
-                                            class="w-full pl-10 pr-3 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all group-hover:border-gray-400 @error('name') border-red-500 @enderror"
+                                        <input type="text" name="name" id="name" value="{{ old('name', $student->name) }}" required
+                                            class="input-modern w-full pl-11 pr-4 py-3 rounded-xl bg-white outline-none text-gray-800 placeholder-gray-400"
                                             placeholder="Masukkan nama lengkap">
                                     </div>
-                                    @error('name')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
                                 </div>
 
-                                {{-- NIS --}}
-                                <div class="form-group">
-                                    <label for="nis" class="block text-sm font-medium text-gray-700 mb-2">NIS</label>
-                                    <div class="relative group">
-                                        <div
-                                            class="absolute inset-y-0 left-0 pl-3 pb-0 flex items-center pointer-events-none">
-                                            <i
-                                                class="fas fa-id-card text-gray-400 group-focus-within:text-green-600 transition-colors text-sm"></i>
+                                {{-- NIS (DIBUAT READONLY) --}}
+                                <div>
+                                    <label for="nis" class="block text-sm font-medium text-gray-700 mb-1.5">NIS <span class="text-gray-400 font-normal">(Tidak dapat diubah)</span></label>
+                                    <div class="relative input-group">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i class="fas fa-id-card input-icon text-gray-400 text-sm"></i>
                                         </div>
-                                        <input type="text" name="nis" id="nis"
-                                            value="{{ old('nis', auth()->user()->nis) }}" required disabled
-                                            class="w-full pl-10 pr-3 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all group-hover:border-gray-400 @error('nis') border-red-500 @enderror"
+                                        <input type="text" name="nis" id="nis" value="{{ $student->nis }}" readonly
+                                            class="input-modern w-full pl-11 pr-4 py-3 rounded-xl outline-none"
                                             placeholder="Contoh: 20250001">
                                     </div>
-                                    @error('nis')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
                                 </div>
                             </div>
                         </div>
 
-                        {{-- Informasi Sekolah & Kontak --}}
-                        <div class="form-section">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                                <i class="fas fa-school text-emerald-600 text-sm"></i> Informasi Sekolah & Kontak
+                        {{-- === Sekolah & Kontak === --}}
+                        <div>
+                            <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs"><i class="fas fa-school"></i></div>
+                                Sekolah & Kontak
                             </h3>
-                            <div class="grid md:grid-cols-2 gap-4">
-                                {{-- Kelas --}}
-                                <div class="form-group">
-                                    <label for="class" class="block text-sm font-medium text-gray-700 mb-2">Kelas</label>
-                                    <div class="relative group">
-                                        <div
-                                            class="absolute inset-y-0 left-0 pl-3 pb-0 flex items-center pointer-events-none">
-                                            <i
-                                                class="fas fa-graduation-cap text-gray-400 group-focus-within:text-green-600 transition-colors text-sm"></i>
+                            <div class="grid md:grid-cols-2 gap-5">
+                                
+                                {{-- KELAS (DIBUAT READONLY) --}}
+                                <div>
+                                    <label for="class" class="block text-sm font-medium text-gray-700 mb-1.5">Kelas <span class="text-gray-400 font-normal">(Tidak dapat diubah)</span></label>
+                                    <div class="relative input-group">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i class="fas fa-graduation-cap input-icon text-gray-400 text-sm"></i>
                                         </div>
-                                        <input type="text" name="class" id="class"
-                                            value="{{ old('class', auth()->user()->class) }}" required disabled
-                                            class="w-full pl-10 pr-3 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all group-hover:border-gray-400 @error('class') border-red-500 @enderror"
+                                        <input type="text" name="class" id="class" value="{{ $student->class }}" readonly 
+                                            class="input-modern w-full pl-11 pr-4 py-3 rounded-xl outline-none"
                                             placeholder="Contoh: XII Akuntansi">
                                     </div>
-                                    @error('class')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
                                 </div>
 
-                                {{-- No HP --}}
-                                <div class="form-group">
-                                    <label for="contact" class="block text-sm font-medium text-gray-700 mb-2">Nomor
-                                        Telepon</label>
-                                    <div class="relative group">
-                                        <div
-                                            class="absolute inset-y-0 left-0 pl-3 pb-0 flex items-center pointer-events-none">
-                                            <i
-                                                class="fas fa-phone text-gray-400 group-focus-within:text-green-600 transition-colors text-sm"></i>
+                                <div>
+                                    <label for="contact" class="block text-sm font-medium text-gray-700 mb-1.5">Nomor Telepon / WA</label>
+                                    <div class="relative input-group">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i class="fas fa-phone input-icon text-gray-400 text-sm"></i>
                                         </div>
-                                        <input type="tel" name="contact" id="contact"
-                                            value="{{ old('contact', auth()->user()->contact) }}"
-                                            class="w-full pl-10 pr-3 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all group-hover:border-gray-400 @error('contact') border-red-500 @enderror"
+                                        <input type="tel" name="contact" id="contact" value="{{ old('contact', $student->contact) }}"
+                                            class="input-modern w-full pl-11 pr-4 py-3 rounded-xl bg-white outline-none text-gray-800 placeholder-gray-400"
                                             placeholder="081234567890">
                                     </div>
-                                    @error('contact')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
                                 </div>
                             </div>
                         </div>
 
-                        {{-- Informasi Akun --}}
-                        <div class="form-section">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                                <i class="fas fa-lock text-teal-600 text-sm"></i> Informasi Akun
+                        {{-- === Informasi Akun === --}}
+                        <div>
+                            <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xs"><i class="fas fa-shield-halved"></i></div>
+                                Informasi Akun
                             </h3>
-                            <div class="form-group">
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                                <div class="relative group">
-                                    <div class="absolute inset-y-0 left-0 pl-3 pb-0 flex items-center pointer-events-none">
-                                        <i
-                                            class="fas fa-envelope text-gray-400 group-focus-within:text-green-600 transition-colors text-sm"></i>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                                <div class="relative input-group">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <i class="fas fa-at input-icon text-gray-400 text-sm"></i>
                                     </div>
-                                    <input type="email" name="email" id="email"
-                                        value="{{ old('email', auth()->user()->email) }}" required
-                                        class="w-full pl-10 pr-3 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all group-hover:border-gray-400 @error('email') border-red-500 @enderror"
+                                    <input type="email" name="email" id="email" value="{{ old('email', $student->email) }}" required
+                                        class="input-modern w-full pl-11 pr-4 py-3 rounded-xl bg-white outline-none text-gray-800 placeholder-gray-400"
                                         placeholder="nama@email.com">
                                 </div>
-                                @error('email')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
                             </div>
                         </div>
 
-                        {{-- Upload Avatar --}}
-                        <div class="form-section">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                                <i class="fas fa-image text-purple-600 text-sm"></i> Upload Avatar
+                        {{-- === Upload Avatar === --}}
+                        <div>
+                            <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-xs"><i class="fas fa-camera"></i></div>
+                                Foto Profil
                             </h3>
-                            <div class="form-group">
-                                <label for="avatar" class="block text-sm font-medium text-gray-700 mb-2">Pilih Foto
-                                    Profil</label>
-                                <input type="file" name="avatar" id="avatar"
-                                    value="{{ old('avatar', $student->avatar) }}"
-                                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
-                                    file:rounded-lg file:border-0
-                                    file:text-sm file:font-semibold
-                                    file:bg-green-600 file:text-white
-                                    hover:file:bg-green-700
-                                    transition-all"
-                                    accept="image/*">
-                                @error('avatar')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
+                            <div class="flex flex-col sm:flex-row gap-5 items-start">
+                                <div class="flex-shrink-0">
+                                    <div id="avatarPreviewContainer" class="w-28 h-28 rounded-xl bg-gray-100 border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden relative">
+                                        @if ($student->avatar)
+                                            <img src="{{ asset('storage/' . $student->avatar) }}" alt="Avatar" class="w-full h-full object-cover" id="currentAvatar">
+                                        @else
+                                            <div class="text-center text-gray-400">
+                                                <i class="fas fa-user text-2xl mb-1"></i>
+                                                <p class="text-[10px]">Belum ada foto</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="flex-1 w-full">
+                                    <div class="upload-area rounded-xl p-4 text-center cursor-pointer relative">
+                                        <input type="file" name="avatar" id="avatar" accept="image/png,image/jpeg,image/gif" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                        <div class="pointer-events-none">
+                                            <i class="fas fa-cloud-arrow-up text-gray-400 text-xl mb-2"></i>
+                                            <p class="text-sm text-gray-600 font-medium">Klik untuk pilih foto</p>
+                                            <p class="text-xs text-gray-400 mt-1">PNG, JPG, atau GIF (Maks. 2MB)</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        {{-- Tombol --}}
-                        <div class="flex flex-col md:flex-row md:space-x-4 gap-4 mt-6">
+                        {{-- === Tombol Aksi === --}}
+                        <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-100 mt-2">
                             <a href="{{ route('student.dashboard') }}"
-                                class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-300 transition-all duration-300">
-                                <i class="fas fa-arrow-left"></i>
-                                <span id="buttonText">Batal Perubahan</span>
+                                class="btn-cancel w-full sm:w-1/2 bg-gray-100 text-gray-600 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm border border-gray-200">
+                                <i class="fas fa-arrow-left text-xs"></i>
+                                Batal
                             </a>
                             <button type="submit" id="submitButton"
-                                class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:-translate-y-0.5 shadow-md">
-                                <i class="fas fa-save text-sm"></i>
-                                <span id="buttonText">Simpan Perubahan</span>
+                                class="btn-save w-full sm:w-1/2 text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm">
+                                <i class="fas fa-floppy-disk text-xs" id="btnIcon"></i>
+                                <span id="btnText">Simpan Perubahan</span>
                                 <div id="buttonLoader" class="hidden">
-                                    <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin">
-                                    </div>
+                                    <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                                 </div>
                             </button>
                         </div>
@@ -237,5 +226,139 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('assets/js/register-student.js') }}"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const avatarInput = document.getElementById('avatar');
+        const previewContainer = document.getElementById('avatarPreviewContainer');
+        const form = document.getElementById('editProfileForm');
+        const submitBtn = document.getElementById('submitButton');
+        const btnText = document.getElementById('btnText');
+        const btnIcon = document.getElementById('btnIcon');
+        const btnLoader = document.getElementById('buttonLoader');
+        const alertContainer = document.getElementById('alertContainer');
+
+        // --- Preview Avatar Logic ---
+        avatarInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('Ukuran foto maksimal adalah 2MB.');
+                    this.value = '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewContainer.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover">
+                        <button type="button" id="removeAvatar" class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs shadow-md hover:bg-red-600 transition-colors z-20">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    document.getElementById('removeAvatar').addEventListener('click', function() {
+                        resetPreview();
+                    });
+                }
+                reader.readAsDataURL(file);
+            } else {
+                resetPreview();
+            }
+        });
+
+        function resetPreview() {
+            avatarInput.value = '';
+            @if ($student->avatar)
+                previewContainer.innerHTML = `<img src="{{ asset('storage/' . $student->avatar) }}" alt="Avatar" class="w-full h-full object-cover">`;
+            @else
+                previewContainer.innerHTML = `
+                    <div class="text-center text-gray-400">
+                        <i class="fas fa-user text-2xl mb-1"></i>
+                        <p class="text-[10px]">Belum ada foto</p>
+                    </div>`;
+            @endif
+        }
+
+        // --- Form Submit AJAX (Tanpa Refresh & Aman dari Hack) ---
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Cegah reload
+
+            // Bersihkan alert sebelumnya
+            alertContainer.innerHTML = '';
+
+            // Ubah tombol jadi loading
+            submitBtn.disabled = true;
+            btnIcon.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+            btnText.textContent = 'Menyimpan...';
+
+            const formData = new FormData(form);
+                fetch(form.action, { 
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    // PAKSA cetak status HTTP untuk debugging
+                    console.log("Status HTTP dari Server:", response.status, response.statusText);
+                    
+                    // Ambil teks mentah dari response
+                    return response.text().then(text => {
+                        console.log("Response Mentah dari Server:", text);
+                        
+                        // Coba ubah teks menjadi JSON jika memungkinkan
+                        try {
+                            let data = JSON.parse(text);
+                            if (response.ok) {
+                                return data; // Lanjut ke blok .then() sukses
+                            } else {
+                                throw data;   // Lempar ke blok .catch() jika ada error validasi dsb
+                            }
+                        } catch (e) {
+                            // Jika teks bukan JSON (biasanya error HTML 500 dari Laravel)
+                            throw { message: text }; 
+                        }
+                    });
+                })
+                .then(data => {
+                    if (data.success) {
+                        alertContainer.innerHTML = `
+                            <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm p-4 rounded-xl flex items-start mb-6 animate-slide-down">
+                                <i class="fas fa-check-circle mr-3 mt-0.5 text-emerald-500"></i>
+                                <span>${data.success}</span>
+                            </div>`;
+                        
+                        if(data.avatar_url) {
+                            previewContainer.innerHTML = `<img src="${data.avatar_url}" alt="Avatar" class="w-full h-full object-cover">`;
+                            avatarInput.value = '';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error("Data Error Ditolak:", error);
+                    
+                    if (error.errors) {
+                        let errorMessages = Object.values(error.errors).map(err => `<li>${err[0]}</li>`).join('');
+                        alertContainer.innerHTML = `
+                            <div class="bg-red-50 border border-red-200 text-red-600 text-sm p-4 rounded-xl flex items-start mb-6 animate-slide-down">
+                                <i class="fas fa-exclamation-triangle mr-3 mt-0.5 text-red-500"></i>
+                                <div>
+                                    <p class="font-medium mb-1">Gagal menyimpan:</p>
+                                    <ul class="list-disc list-inside space-y-0.5 text-red-500">${errorMessages}</ul>
+                                </div>
+                            </div>`;
+                    } else {
+                        alert('Terjadi kesalahan. Buka Tab Console (F12) untuk lihat detailnya.');
+                    }
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    btnIcon.classList.remove('hidden');
+                    btnLoader.classList.add('hidden');
+                    btnText.textContent = 'Simpan Perubahan';
+                });
+        });
+    });
+    </script>
 @stop

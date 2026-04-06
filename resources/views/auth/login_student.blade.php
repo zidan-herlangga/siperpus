@@ -4,57 +4,110 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('assets/css/login-student.css') }}">
+<style>
+    /* Custom style spesifik halaman ini agar tidak konflik */
+    .bg-mesh {
+        background-color: #f0fdf4;
+        background-image: 
+            radial-gradient(at 40% 20%, rgba(52, 211, 153, 0.15) 0px, transparent 50%),
+            radial-gradient(at 80% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
+            radial-gradient(at 0% 50%, rgba(167, 243, 208, 0.15) 0px, transparent 50%),
+            radial-gradient(at 80% 50%, rgba(52, 211, 153, 0.1) 0px, transparent 50%),
+            radial-gradient(at 0% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+    }
+    .card-glass {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 
+            0 10px 40px -10px rgba(0, 0, 0, 0.05),
+            0 4px 20px -5px rgba(0, 0, 0, 0.03);
+    }
+    .input-modern {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1.5px solid #e5e7eb;
+    }
+    .input-modern:hover {
+        border-color: #d1d5db;
+    }
+    .input-modern:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+    .input-icon {
+        transition: color 0.3s ease;
+    }
+    .input-group:focus-within .input-icon {
+        color: #059669;
+    }
+    .btn-login {
+        background: linear-gradient(135deg, #059669, #047857);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-login:hover:not(:disabled) {
+        background: linear-gradient(135deg, #047857, #065f46);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.4);
+    }
+    .btn-login:active:not(:disabled) {
+        transform: translateY(0);
+    }
+    .btn-login:disabled {
+        opacity: 0.8;
+        cursor: not-allowed;
+    }
+    
+    /* Toast Notification */
+    .toast-container {
+        transform: translateX(calc(100% + 2rem));
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .toast-container.show {
+        transform: translateX(0);
+    }
+</style>
 @stop
 
 @section('content')
-    <div class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center px-4 py-8">
-        <div class="w-full max-w-md">
-            <!-- Background decoration -->
-            <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div class="absolute -top-40 -right-40 w-80 h-80 bg-green-200 rounded-full opacity-20"></div>
-                <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-200 rounded-full opacity-20"></div>
-            </div>
-
-            {{-- Card utama dengan animasi --}}
-            <div class="bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden animate-fade-in">
-
-                {{-- Header Card dengan Gradien --}}
-                <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white text-center py-8 px-6 relative overflow-hidden">
-                    <!-- Animated background elements -->
-                    <div class="absolute top-0 left-0 w-full h-full">
-                        <div class="absolute top-2 left-2 w-16 h-16 bg-white/10 rounded-full animate-pulse"></div>
-                        <div class="absolute bottom-2 right-2 w-24 h-24 bg-white/10 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
-                    </div>
-                    
+    <div class="min-h-screen bg-mesh flex items-center justify-center px-4 py-12 relative">
+        
+        {{-- Card Utama --}}
+        <div class="w-full max-w-md animate-fade-in">
+            <div class="card-glass rounded-2xl overflow-hidden">
+                
+                {{-- Header Card --}}
+                <div class="bg-gradient-to-br from-emerald-600 to-green-700 text-white text-center py-10 px-6 relative">
+                    <div class="absolute inset-0 bg-black/5"></div>
                     <div class="relative z-10">
-                        <div class="w-20 h-20 bg-white/20 backdrop-blur rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-user-graduate text-3xl"></i>
+                        <div class="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
+                            <i class="fas fa-user-graduate text-2xl"></i>
                         </div>
-                        <h1 class="text-2xl font-bold mb-1">Login Siswa</h1>
-                        <p class="text-green-100 text-sm">Masuk untuk mengakses sistem peminjaman buku</p>
+                        <h1 class="text-2xl font-bold tracking-tight">Masuk ke Akun</h1>
+                        <p class="text-green-100 text-sm mt-1">Perpustakaan SMK Karya Guna 2</p>
                     </div>
                 </div>
 
-                {{-- Form --}}
-                <div class="p-6">
+                {{-- Form Area --}}
+                <div class="p-8">
                     <form id="loginForm" action="{{ route('student.login.auth') }}" method="POST" class="space-y-5">
                         @csrf
 
                         {{-- Pesan Status --}}
                         @if (session('status'))
-                            <div class="bg-green-50 border border-green-200 text-green-700 text-sm p-3 rounded-lg flex items-start animate-slide-down">
-                                <i class="fas fa-check-circle mr-2 mt-0.5"></i>
+                            <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm p-4 rounded-xl flex items-start animate-slide-down">
+                                <i class="fas fa-check-circle mr-3 mt-0.5 text-emerald-500"></i>
                                 <span>{{ session('status') }}</span>
                             </div>
                         @endif
 
                         {{-- Pesan Error --}}
                         @if ($errors->any())
-                            <div class="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-lg flex items-start animate-slide-down">
-                                <i class="fas fa-exclamation-circle mr-2 mt-0.5"></i>
+                            <div class="bg-red-50 border border-red-200 text-red-600 text-sm p-4 rounded-xl flex items-start animate-slide-down">
+                                <i class="fas fa-exclamation-triangle mr-3 mt-0.5 text-red-500"></i>
                                 <div>
-                                    <p class="font-medium mb-1">Terjadi kesalahan:</p>
-                                    <ul class="list-disc list-inside space-y-1">
+                                    <p class="font-medium mb-1">Gagal masuk:</p>
+                                    <ul class="list-disc list-inside space-y-0.5 text-red-500">
                                         @foreach ($errors->all() as $error)
                                             <li>{{ $error }}</li>
                                         @endforeach
@@ -63,223 +116,189 @@
                             </div>
                         @endif
 
-                        {{-- Email/NIS --}}
+                        {{-- Input Email/NIS --}}
                         <div>
-                            <label for="login" class="block text-sm font-medium text-gray-700 mb-2">Email/NIS Terdaftar</label>
-                            <div class="relative group">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-envelope text-gray-400 group-focus-within:text-green-600 transition-colors text-sm"></i>
+                            <label for="login" class="block text-sm font-semibold text-gray-700 mb-1.5">Email / NIS</label>
+                            <div class="relative input-group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-at input-icon text-gray-400 text-sm"></i>
                                 </div>
                                 <input type="text" name="login" id="login" value="{{ old('login') }}" required
-                                    class="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all group-hover:border-gray-400"
-                                    placeholder="Masukkan email/nis Anda">
+                                    class="input-modern w-full pl-11 pr-4 py-3 rounded-xl bg-white outline-none text-gray-800 placeholder-gray-400"
+                                    placeholder="contoh@siswa.com atau NIS">
                             </div>
                         </div>
 
-                        {{-- Password --}}
+                        {{-- Input Password --}}
                         <div>
-                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                            <div class="relative group">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-lock text-gray-400 group-focus-within:text-green-600 transition-colors text-sm"></i>
+                            <label for="password" class="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
+                            <div class="relative input-group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-lock input-icon text-gray-400 text-sm"></i>
                                 </div>
                                 <input type="password" name="password" id="password" required
-                                    class="w-full pl-10 pr-12 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all group-hover:border-gray-400"
-                                    placeholder="Masukkan password Anda">
-                                <button type="button" onclick="togglePassword('password', this)"
-                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-green-600 transition-colors">
+                                    class="input-modern w-full pl-11 pr-12 py-3 rounded-xl bg-white outline-none text-gray-800 placeholder-gray-400"
+                                    placeholder="Masukkan password">
+                                <button type="button" id="togglePasswordBtn"
+                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors">
                                     <i class="fas fa-eye text-sm" id="password-icon"></i>
                                 </button>
                             </div>
                         </div>
 
-                        {{-- Pertanyaan Keamanan --}}
+                        {{-- Pertanyaan Keamanan (Math Captcha) --}}
                         <div>
-                            <label for="randomNumberInput" class="block text-sm font-medium text-gray-700 mb-2"
-                                id="randomNumberDisplay"></label>
-                            <div class="relative group">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-calculator text-gray-400 group-focus-within:text-green-600 transition-colors text-sm"></i>
+                            <label for="randomNumberInput" class="block text-sm font-semibold text-gray-700 mb-1.5" id="randomNumberDisplay">
+                                <i class="fas fa-shield-halved mr-1 text-emerald-600"></i> Verifikasi Keamanan
+                            </label>
+                            <div class="relative input-group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-calculator input-icon text-gray-400 text-sm"></i>
                                 </div>
                                 <input type="number" name="randomNumberInput" id="randomNumberInput" required
-                                    class="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all group-hover:border-gray-400"
+                                    class="input-modern w-full pl-11 pr-4 py-3 rounded-xl bg-white outline-none text-gray-800 placeholder-gray-400"
                                     placeholder="Jawaban">
                             </div>
-                            <p class="text-xs text-gray-500 mt-1">Pertanyaan keamanan untuk verifikasi</p>
                         </div>
 
-                        {{-- Remember Me & Forgot Password --}}
-                        <div class="flex justify-between items-center text-sm">
-                            <label class="flex items-center space-x-2 cursor-pointer">
+                        {{-- Remember & Lupa Password --}}
+                        <div class="flex items-center justify-between text-sm">
+                            <label class="flex items-center gap-2 cursor-pointer select-none group">
                                 <input type="checkbox" name="remember"
-                                    class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500">
-                                <span class="text-gray-700">Ingat Saya</span>
+                                    class="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500 transition">
+                                <span class="text-gray-600 group-hover:text-gray-800 transition-colors">Ingat saya</span>
                             </label>
-
-                            <a href="{{ route('student.password.request') }}" class="text-gray-600 hover:text-green-600 transition-colors">
-                                Lupa Password?
+                            <a href="{{ route('student.password.request') }}" class="text-emerald-600 hover:text-emerald-700 font-medium transition-colors">
+                                Lupa password?
                             </a>
                         </div>
 
-                        {{-- Tombol Login dengan Loading State --}}
+                        {{-- Tombol Submit --}}
                         <button type="submit" id="submitButton"
-                            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:-translate-y-0.5 shadow-md">
-                            <i class="fas fa-sign-in-alt text-sm"></i> 
-                            <span id="buttonText">Masuk Sekarang</span>
+                            class="btn-login w-full text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm">
+                            <span id="buttonText">Masuk ke Akun</span>
+                            <i class="fas fa-arrow-right text-xs" id="buttonArrow"></i>
                             <div id="buttonLoader" class="hidden">
-                                <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                             </div>
                         </button>
 
-                        {{-- Link ke Register --}}
-                        <div class="text-center text-sm mt-6 border-t border-gray-200 pt-5">
-                            <p class="text-gray-600">
-                                Belum punya akun?
-                                <a href="{{ route('student.register.form') }}"
-                                    class="font-medium text-green-600 hover:text-green-700 transition-colors">Daftar Sekarang</a>
-                            </p>
+                        {{-- Divider --}}
+                        <div class="relative my-6">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-200"></div>
+                            </div>
+                            <div class="relative flex justify-center text-xs">
+                                <span class="bg-white px-4 text-gray-400 uppercase tracking-wider">Atau</span>
+                            </div>
                         </div>
+
+                        {{-- Link Register --}}
+                        <p class="text-center text-sm text-gray-600">
+                            Belum punya akun siswa? 
+                            <a href="{{ route('student.register.form') }}" class="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline transition-colors">
+                                Daftar Sekarang
+                            </a>
+                        </p>
                     </form>
                 </div>
             </div>
-
-            {{-- Footer kecil --}}
-            <p class="text-center text-gray-500 text-xs mt-5">
-                &copy; {{ date('Y') }} Perpustakaan SMK Karya Guna 2 Bekasi
-            </p>
         </div>
     </div>
 
-    <!-- Success/Error Notification -->
-    <div id="notification" class="fixed top-4 right-4 max-w-sm transform translate-x-full transition-transform duration-300 z-50">
-        <div class="bg-white rounded-lg shadow-lg p-4 flex items-center">
-            <div id="notificationIcon" class="mr-3"></div>
-            <div>
-                <p id="notificationTitle" class="font-semibold text-gray-800"></p>
-                <p id="notificationMessage" class="text-sm text-gray-600"></p>
+    {{-- Toast Notification --}}
+    <div id="notification" class="toast-container fixed top-6 right-6 max-w-sm z-[100]">
+        <div class="bg-white rounded-xl shadow-2xl border border-gray-100 p-4 flex items-start gap-3">
+            <div id="notificationIcon" class="mt-0.5"></div>
+            <div class="flex-1">
+                <p id="notificationTitle" class="font-semibold text-gray-800 text-sm"></p>
+                <p id="notificationMessage" class="text-gray-500 text-xs mt-0.5"></p>
             </div>
+            <button onclick="hideNotification()" class="text-gray-300 hover:text-gray-500 transition-colors">
+                <i class="fas fa-times text-xs"></i>
+            </button>
         </div>
     </div>
-
-    <!-- @section('scripts')
-    <script src="{{ asset('assets/js/login-student.js') }}"></script>
-    @stop -->
 
     <script>
-    // Toggle password visibility
-        function togglePassword(fieldId, button) {
-            const field = document.getElementById(fieldId);
-            const icon = document.getElementById('password-icon');
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- ELEMEN DOM ---
+            const loginForm = document.getElementById('loginForm');
+            const passwordInput = document.getElementById('password');
+            const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+            const passwordIcon = document.getElementById('password-icon');
+            const submitButton = document.getElementById('submitButton');
+            const buttonText = document.getElementById('buttonText');
+            const buttonArrow = document.getElementById('buttonArrow');
+            const buttonLoader = document.getElementById('buttonLoader');
+            
+            let correctAnswer = generateMathQuestion();
 
-            if (field.type === 'password') {
-                field.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                field.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+            // --- FUNGSI TOGGLE PASSWORD ---
+            togglePasswordBtn.addEventListener('click', function() {
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+                passwordIcon.classList.toggle('fa-eye', !isPassword);
+                passwordIcon.classList.toggle('fa-eye-slash', isPassword);
+            });
+
+            // --- FUNGSI MATH CAPTCHA ---
+            function generateMathQuestion() {
+                const num1 = Math.floor(Math.random() * 10) + 1;
+                const num2 = Math.floor(Math.random() * 10) + 1;
+                const sum = num1 + num2;
+                
+                document.getElementById('randomNumberDisplay').innerHTML = 
+                    `<i class="fas fa-shield-halved mr-1 text-emerald-600"></i> Berapa ${num1} + ${num2} = ?`;
+                
+                return sum;
             }
-        }
 
-        // Generate angka acak untuk pertanyaan sederhana
-        function generateRandomNumberQuestion() {
-            const num1 = Math.floor(Math.random() * 10) + 1; // Angka antara 1-10
-            const num2 = Math.floor(Math.random() * 10) + 1; // Angka antara 1-10
-            const sum = num1 + num2;
-
-            // Tampilkan pertanyaan di label
-            const questionLabel = document.getElementById('randomNumberDisplay');
-            questionLabel.innerHTML = `<i class="fas fa-shield-alt mr-1 text-green-600"></i> Berapa hasil dari ${num1} + ${num2}?`;
-
-            return sum;
-        }
-
-        // Simpan jawaban yang benar
-        let correctAnswer = generateRandomNumberQuestion();
-
-        // Show notification function
-        function showNotification(title, message, type) {
-            const notification = document.getElementById('notification');
-            const notificationIcon = document.getElementById('notificationIcon');
-            const notificationTitle = document.getElementById('notificationTitle');
-            const notificationMessage = document.getElementById('notificationMessage');
-            
-            // Set icon based on type
-            if (type === 'error') {
-                notificationIcon.innerHTML = '<i class="fas fa-exclamation-circle text-red-500 text-xl"></i>';
-            } else if (type === 'success') {
-                notificationIcon.innerHTML = '<i class="fas fa-check-circle text-green-500 text-xl"></i>';
+            // --- NOTIFIKASI TOAST ---
+            function showNotification(title, message, type) {
+                const notification = document.getElementById('notification');
+                const iconEl = document.getElementById('notificationIcon');
+                
+                if (type === 'error') {
+                    iconEl.innerHTML = '<div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center"><i class="fas fa-xmark text-red-500 text-sm"></i></div>';
+                } else {
+                    iconEl.innerHTML = '<div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center"><i class="fas fa-check text-emerald-500 text-sm"></i></div>';
+                }
+                
+                document.getElementById('notificationTitle').textContent = title;
+                document.getElementById('notificationMessage').textContent = message;
+                
+                notification.classList.add('show');
+                
+                setTimeout(hideNotification, 4000);
             }
-            
-            // Set content
-            notificationTitle.textContent = title;
-            notificationMessage.textContent = message;
-            
-            // Show notification
-            notification.classList.remove('translate-x-full');
-            
-            // Hide after 3 seconds
-            setTimeout(() => {
-                notification.classList.add('translate-x-full');
-            }, 3000);
-        }
 
-        // Validasi jawaban sebelum submit form
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            const userAnswer = parseInt(document.getElementById('randomNumberInput').value, 10);
-            
-            if (userAnswer !== correctAnswer) {
-                event.preventDefault();
-                showNotification('Jawaban Salah', 'Jawaban Anda salah. Silahkan coba lagi.', 'error');
+            function hideNotification() {
+                document.getElementById('notification').classList.remove('show');
+            }
+
+            // --- VALIDASI & SUBMIT FORM ---
+            loginForm.addEventListener('submit', function(event) {
+                const userAnswer = parseInt(document.getElementById('randomNumberInput').value, 10);
                 
-                // Regenerate pertanyaan baru
-                correctAnswer = generateRandomNumberQuestion();
-                document.getElementById('randomNumberInput').value = '';
-                
-                // Focus on input
-                document.getElementById('randomNumberInput').focus();
-            } else {
-                // Show loading state
-                const submitButton = document.getElementById('submitButton');
-                const buttonText = document.getElementById('buttonText');
-                const buttonLoader = document.getElementById('buttonLoader');
-                
+                // Validasi Jawaban
+                if (isNaN(userAnswer) || userAnswer !== correctAnswer) {
+                    event.preventDefault();
+                    showNotification('Verifikasi Gagal', 'Jawaban matematika yang Anda masukkan salah.', 'error');
+                    
+                    correctAnswer = generateMathQuestion();
+                    document.getElementById('randomNumberInput').value = '';
+                    document.getElementById('randomNumberInput').focus();
+                    return;
+                }
+
+                // Jika Lolos, tampilkan loading state
                 submitButton.disabled = true;
                 buttonText.textContent = 'Memproses...';
+                buttonArrow.classList.add('hidden');
                 buttonLoader.classList.remove('hidden');
-            }
-        });
-
-        // Add input validation feedback
-        document.getElementById('login').addEventListener('input', function() {
-            if (this.value.length > 0) {
-                this.classList.add('border-green-500');
-                this.classList.remove('border-gray-300');
-            } else {
-                this.classList.remove('border-green-500');
-                this.classList.add('border-gray-300');
-            }
-        });
-
-        document.getElementById('password').addEventListener('input', function() {
-            if (this.value.length > 0) {
-                this.classList.add('border-green-500');
-                this.classList.remove('border-gray-300');
-            } else {
-                this.classList.remove('border-green-500');
-                this.classList.add('border-gray-300');
-            }
-        });
-
-        document.getElementById('randomNumberInput').addEventListener('input', function() {
-            if (this.value.length > 0) {
-                this.classList.add('border-green-500');
-                this.classList.remove('border-gray-300');
-            } else {
-                this.classList.remove('border-green-500');
-                this.classList.add('border-gray-300');
-            }
+            });
         });
     </script>
 @endsection

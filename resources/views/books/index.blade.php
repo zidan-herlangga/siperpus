@@ -1,63 +1,131 @@
 @extends('layouts.app')
 
-@section('title', 'Katalog - ' . config('app.name'))
+@section('title', 'Katalog Buku - ' . config('app.name'))
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('assets/css/books.css') }}">
+<style>
+    /* Custom style spesifik halaman ini */
+    .bg-mesh {
+        background-color: #f9fafb;
+        background-image: 
+            radial-gradient(at 20% 20%, rgba(52, 211, 153, 0.08) 0px, transparent 50%),
+            radial-gradient(at 80% 0%, rgba(16, 185, 129, 0.06) 0px, transparent 50%),
+            radial-gradient(at 0% 100%, rgba(167, 243, 208, 0.08) 0px, transparent 50%);
+    }
+    .card-glass {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Input & Select Modern */
+    .input-modern {
+        border: 1.5px solid #e5e7eb;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .input-modern:hover { border-color: #d1d5db; }
+    .input-modern:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    /* Card Buku */
+    .book-card {
+        background: white;
+        border: 1px solid #f3f4f6;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .book-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px -12px rgba(0,0,0,0.1);
+        border-color: #e5e7eb;
+    }
+    .book-card:hover .book-cover-icon {
+        transform: scale(1.1) rotate(-3deg);
+    }
+    .book-cover-icon {
+        transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    
+    .btn-detail {
+        background: linear-gradient(135deg, #059669, #047857);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-detail:hover {
+        background: linear-gradient(135deg, #047857, #065f46);
+        box-shadow: 0 8px 20px -4px rgba(5, 150, 105, 0.4);
+    }
+    
+    /* Modal Styles */
+    .modal-backdrop {
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    .modal-backdrop.show {
+        opacity: 1;
+        visibility: visible;
+    }
+    .modal-box {
+        transform: scale(0.95) translateY(10px);
+        transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .modal-backdrop.show .modal-box {
+        transform: scale(1) translateY(0);
+    }
+</style>
 @stop
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-green-50 py-8">
+<div class="min-h-screen bg-mesh py-8">
     <div class="container mx-auto px-4">
 
-        {{-- Header dengan Animasi --}}
-        <div class="text-center mb-8 animate-fade-in">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+        {{-- Header --}}
+        <div class="text-center mb-8 reveal">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800 tracking-tight mb-2">
                 Katalog Buku
             </h1>
-            <p class="text-gray-600 max-w-2xl mx-auto">
+            <p class="text-gray-500 max-w-2xl mx-auto text-sm">
                 Jelajahi koleksi perpustakaan digital kami — temukan dan pinjam buku favoritmu dengan mudah.
             </p>
         </div>
 
-        {{-- Search + Filter dengan Desain Lebih Menarik --}}
-        <div class="bg-white rounded-lg shadow-md p-4 mb-6 border border-gray-200 animate-slide-up">
+        {{-- Search & Filter Bar (Sticky) --}}
+        <div class="bg-white/90 backdrop-blur-md rounded-2xl p-5 mb-8 border border-gray-100 shadow-sm reveal reveal-delay-1 transition-all duration-300" id="filterBar">
             <form action="{{ route('books.index') }}" method="GET" class="grid md:grid-cols-5 gap-4 items-end">
-                {{-- Search Input --}}
+                {{-- Search --}}
                 <div class="md:col-span-2">
-                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Cari Buku</label>
+                    <label for="search" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Cari Buku</label>
                     <div class="relative">
-                        <input 
-                            type="text" 
-                            name="search" 
-                            id="search" 
-                            placeholder="Cari judul, pengarang, atau kategori..." 
+                        <i class="fas fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input type="text" name="search" id="search" placeholder="Judul, pengarang, ISBN..." 
                             value="{{ request('search') }}"
-                            class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
-                        >
-                        <i class="fas fa-search absolute left-3 top-3 text-gray-400 text-sm"></i>
+                            class="input-modern w-full pl-10 pr-4 py-2.5 rounded-xl bg-white outline-none text-gray-800 placeholder-gray-400 text-sm">
                     </div>
                 </div>
 
-                {{-- Category Filter --}}
+                {{-- Category --}}
                 <div>
-                    <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+                    <label for="category" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Kategori</label>
                     <select name="category" id="category"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all">
-                        <option value="">Semua Kategori</option>
+                        class="input-modern w-full px-4 py-2.5 rounded-xl bg-white outline-none text-gray-800 text-sm appearance-none cursor-pointer">
+                        <option value="">Semua</option>
                         @foreach ($categories as $category)
-                            <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
-                                {{ $category }}
-                            </option>
+                            <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>{{ $category }}</option>
                         @endforeach
                     </select>
                 </div>
 
-                {{-- Sort Filter --}}
+                {{-- Sort --}}
                 <div>
-                    <label for="sort" class="block text-sm font-medium text-gray-700 mb-2">Urutkan</label>
+                    <label for="sort" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Urutkan</label>
                     <select name="sort" id="sort"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all">
+                        class="input-modern w-full px-4 py-2.5 rounded-xl bg-white outline-none text-gray-800 text-sm appearance-none cursor-pointer">
                         <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
                         <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
                         <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Judul A-Z</option>
@@ -68,173 +136,208 @@
                 {{-- Buttons --}}
                 <div class="flex gap-2">
                     <button type="submit"
-                        class="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition-all transform hover:-translate-y-0.5 shadow-md">
-                        <i class="fas fa-search mr-2"></i>Cari
+                        class="btn-detail flex-1 text-white px-4 py-2.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2">
+                        <i class="fas fa-magnifying-glass text-xs"></i> Cari
                     </button>
                     <a href="{{ route('books.index') }}"
-                        class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-medium transition-all text-center">
-                        <i class="fas fa-rotate-right mr-2"></i>Reset
+                        class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2.5 rounded-xl font-semibold transition-all text-center text-sm flex items-center justify-center gap-2 border border-gray-200">
+                        <i class="fas fa-arrow-rotate-left text-xs"></i> Reset
                     </a>
                 </div>
             </form>
         </div>
 
-        {{-- Filter Summary dengan Desain Lebih Menarik --}}
+        {{-- Filter Summary --}}
         @if (request('search') || request('category'))
-            <div class="mb-4 text-gray-600 text-center animate-fade-in">
-                Menampilkan <span class="font-medium text-green-600">{{ $books->total() }}</span> hasil
+            <div class="mb-6 text-center text-sm text-gray-500 reveal">
+                Menampilkan <span class="font-bold text-gray-800">{{ $books->total() }}</span> hasil
                 @if (request('search'))
-                    untuk "<strong class="text-green-700">{{ request('search') }}</strong>"
+                    untuk "<span class="font-semibold text-emerald-600">{{ request('search') }}</span>"
                 @endif
                 @if (request('category'))
-                    dalam kategori 
-                    <span class="bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium inline-flex items-center">
-                        <i class="fas fa-tag mr-1"></i>{{ request('category') }}
+                    di kategori 
+                    <span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1 border border-emerald-100">
+                        <i class="fas fa-tag text-[10px]"></i>{{ request('category') }}
                     </span>
                 @endif
             </div>
         @endif
 
-        {{-- Loading Indicator --}}
-        <div id="loadingIndicator" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-            <div class="bg-white rounded-lg shadow-lg p-4 flex items-center">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mr-3"></div>
-                <span class="text-gray-700">Memuat data...</span>
-            </div>
-        </div>
-
-        {{-- Book Grid dengan Animasi --}}
+        {{-- Book Grid --}}
         @if ($books->count() > 0)
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                @foreach ($books as $index => $book)
-                    <div class="book-card bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll" 
-                         style="animation-delay: {{ $index * 0.05 }}s;">
-                        <div class="relative overflow-hidden rounded-t-lg bg-gradient-to-br from-green-50 to-emerald-50 h-32 flex items-center justify-center">
-                            {{-- Book Cover Placeholder dengan Animasi --}}
-                            <div class="book-cover-container">
-                                <i class="fas fa-book text-4xl text-green-600"></i>
-                            </div>
+                @foreach ($books as $book)
+                    <div class="book-card reveal">
+                        {{-- Cover Area --}}
+                        <div class="relative bg-gradient-to-br from-gray-50 to-emerald-50/50 h-44 flex items-center justify-center p-4">
+                            <i class="fas fa-book-open book-cover-icon text-5xl text-emerald-300"></i>
                             
-                            {{-- Status Badge --}}
-                            <div class="absolute top-2 right-2">
+                            {{-- Badges --}}
+                            <div class="absolute top-3 left-3">
+                                <span class="bg-white/90 backdrop-blur-sm text-gray-600 text-[10px] font-bold px-2 py-1 rounded-md shadow-sm border border-gray-100">
+                                    {{ $book->shelf_code }}
+                                </span>
+                            </div>
+                            <div class="absolute top-3 right-3">
                                 @if ($book->stock > 0)
-                                    <span class="bg-green-500 text-white text-xs font-medium px-2 py-1 rounded-full flex items-center">
-                                        <i class="fas fa-check-circle mr-1"></i> Tersedia
+                                    <span class="bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+                                        Stok: {{ $book->stock }}
                                     </span>
                                 @else
-                                    <span class="bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full flex items-center">
-                                        <i class="fas fa-clock mr-1"></i> Habis
+                                    <span class="bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+                                        Habis
                                     </span>
                                 @endif
                             </div>
-                            
-                            {{-- Shelf Code Badge --}}
-                            <div class="absolute top-2 left-2">
-                                <span class="bg-white/80 backdrop-blur text-gray-700 text-xs px-2 py-1 rounded-full">
-                                    <i class="fas fa-map-marker-alt mr-1"></i> {{ $book->shelf_code }}
-                                </span>
-                            </div>
                         </div>
 
+                        {{-- Info Area --}}
                         <div class="p-4">
-                            {{-- Book Info --}}
-                            <h3 class="font-bold text-gray-800 mb-2 line-clamp-2 leading-tight text-sm hover:text-green-600 transition-colors">
+                            <h3 class="font-bold text-gray-800 text-sm leading-snug line-clamp-2 mb-3 min-h-[2.5rem] hover:text-emerald-600 transition-colors">
                                 {{ $book->title }}
                             </h3>
-                            <p class="text-xs text-gray-500 mb-2 flex items-center">
-                                <i class="fas fa-user-edit mr-1 text-purple-500"></i>{{ $book->author }}
-                            </p>
-                            <p class="text-xs text-gray-500 mb-3 flex items-center">
-                                <i class="fas fa-tag mr-1 text-blue-500"></i>{{ $book->category }}
-                            </p>
-
-                            {{-- Stock + Year --}}
-                            <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
-                                <span class="flex items-center">
-                                    <i class="fas fa-copy mr-1 text-green-500"></i> Stok: 
-                                    <span class="font-medium {{ $book->stock > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                        {{ $book->stock }}
-                                    </span>
-                                </span>
-                                <span class="flex items-center">
-                                    <i class="fas fa-calendar mr-1 text-orange-500"></i>{{ $book->year }}
-                                </span>
+                            
+                            <div class="space-y-1.5 mb-4 text-xs text-gray-500">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-pen-fancy w-3 text-center text-purple-400"></i>
+                                    <span class="truncate">{{ $book->author }}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-layer-group w-3 text-center text-blue-400"></i>
+                                    <span class="truncate">{{ $book->category }}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-calendar w-3 text-center text-orange-400"></i>
+                                    <span>{{ $book->year }}</span>
+                                </div>
                             </div>
 
-                            {{-- Button dengan Efek Hover --}}
                             <a href="{{ route('books.show', $book) }}"
-                                class="block w-full text-center bg-gradient-to-r from-green-600 to-emerald-600 text-white font-medium py-2 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:-translate-y-0.5 text-sm">
-                                <i class="fas fa-eye mr-1"></i> Lihat Detail
+                                class="btn-detail block w-full text-center text-white font-semibold py-2.5 rounded-xl text-sm">
+                                Lihat Detail
                             </a>
                         </div>
                     </div>
                 @endforeach
             </div>
         @else
-            {{-- Empty State dengan Desain Lebih Menarik --}}
-            <div class="text-center py-12 animate-fade-in">
-                <div class="bg-white rounded-lg shadow-md p-8 max-w-md mx-auto border border-gray-200">
-                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-book-open text-3xl text-gray-400"></i>
+            {{-- Empty State --}}
+            <div class="py-16 reveal">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 max-w-md mx-auto text-center">
+                    <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-5 border border-gray-100">
+                        <i class="fas fa-magnifying-glass text-3xl text-gray-300"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-700 mb-2">Tidak ada buku ditemukan</h3>
-                    <p class="text-gray-500 mb-4">Coba ubah kata kunci pencarian atau kategori.</p>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Buku Tidak Ditemukan</h3>
+                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">Maaf, tidak ada buku yang cocok dengan pencarian Anda. Coba ganti kata kunci atau filter.</p>
                     <a href="{{ route('books.index') }}"
-                        class="inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-2 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all">
-                        <i class="fas fa-rotate-right mr-2"></i> Reset Pencarian
+                        class="btn-detail inline-flex items-center gap-2 text-white px-6 py-2.5 rounded-xl font-semibold text-sm">
+                        <i class="fas fa-arrow-rotate-left text-xs"></i> Reset Pencarian
                     </a>
                 </div>
             </div>
         @endif
 
-        {{-- Pagination dengan Desain Lebih Menarik --}}
+        {{-- Pagination --}}
         @if ($books->hasPages())
-            <div class="mt-8 flex justify-center animate-fade-in">
+            <div class="mt-10 reveal">
                 {{ $books->links('vendor.pagination.custom-pagination') }}
             </div>
         @endif
     </div>
 </div>
 
-{{-- Modal Petunjuk dengan Desain Lebih Menarik --}}
-<div id="borrowGuideModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-    <div class="bg-white rounded-lg max-w-md w-full shadow-xl p-5 transform transition-all scale-95 modal-content">
-        <div class="flex justify-between items-center mb-4 border-b pb-2">
-            <h3 class="text-lg font-bold text-green-700 flex items-center">
-                <i class="fas fa-info-circle mr-2"></i> Petunjuk Peminjaman Buku
-            </h3>
-            <button onclick="closeBorrowGuideModal()" class="text-gray-500 hover:text-gray-700 transition-colors">
-                <i class="fas fa-times"></i>
-            </button>
+{{-- Modal Petunjuk --}}
+<div id="borrowGuideModal" class="modal-backdrop fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+    <div class="modal-box bg-white rounded-2xl shadow-2xl max-w-md w-full border border-gray-100 overflow-hidden">
+        <div class="bg-emerald-600 p-5 text-white">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-book-open-reader"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold">Petunjuk Peminjaman</h3>
+                    <p class="text-emerald-200 text-xs">Panduan singkat untuk meminjam buku</p>
+                </div>
+            </div>
         </div>
-        <ol class="list-decimal list-inside text-gray-700 space-y-3 text-sm">
-            <li class="flex items-start">
-                <span class="bg-green-100 text-green-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0">1</span>
-                <div>Login atau daftar terlebih dahulu sebelum meminjam buku.</div>
-            </li>
-            <li class="flex items-start">
-                <span class="bg-green-100 text-green-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0">2</span>
-                <div>Pilih buku dari katalog, lalu klik tombol "Pinjam".</div>
-            </li>
-            <li class="flex items-start">
-                <span class="bg-green-100 text-green-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0">3</span>
-                <div>Konfirmasi peminjaman dan ambil buku di perpustakaan.</div>
-            </li>
-            <li class="flex items-start">
-                <span class="bg-green-100 text-green-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0">4</span>
-                <div>Kembalikan buku sebelum jatuh tempo agar tidak terkena denda.</div>
-            </li>
-        </ol>
-        <div class="mt-6 flex justify-end">
-            <button onclick="closeBorrowGuideModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                Mengerti
-            </button>
+        <div class="p-6">
+            <ol class="space-y-4">
+                <li class="flex gap-3">
+                    <div class="w-7 h-7 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">Login / Daftar</p>
+                        <p class="text-xs text-gray-500 mt-0.5">Pastikan Anda sudah memiliki akun.</p>
+                    </div>
+                </li>
+                <li class="flex gap-3">
+                    <div class="w-7 h-7 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">Cari & Pinjam Buku</p>
+                        <p class="text-xs text-gray-500 mt-0.5">Temukan buku lalu klik tombol "Pinjam Buku".</p>
+                    </div>
+                </li>
+                <li class="flex gap-3">
+                    <div class="w-7 h-7 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">Pengembalian</p>
+                        <p class="text-xs text-gray-500 mt-0.5">Kembalikan buku sebelum jatuh tempo.</p>
+                    </div>
+                </li>
+            </ol>
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors">
+                    Mengerti
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
 @section('scripts')
-<script src="{{ asset('assets/js/books.js') }}"></script>
+<script>
+    // --- Scroll Reveal ---
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    revealElements.forEach(el => observer.observe(el));
+
+    
+
+    // --- Modal Logic (Standalone) ---
+    const modal = document.getElementById('borrowGuideModal');
+    
+    // Fungsi global agar bisa dipanggil dari layout/app jika ada tombol yang memakainya
+    window.openBorrowGuideModal = function() {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    window.closeBorrowGuideModal = function() {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    // Alias untuk modal di halaman ini
+    function openModal() {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    // Tutup modal jika klik luar
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+</script>
 @stop
 
 @endsection

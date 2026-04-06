@@ -1,5 +1,5 @@
 /* ====================== */
-/* ===== Layout APP ===== */
+/* ===== Layout CSS ===== */
 /* ====================== */
 :root {
     --primary-green: #065f46;
@@ -11,66 +11,121 @@
 
 body {
     overscroll-behavior: contain;
+    font-family:
+        "Inter",
+        system-ui,
+        -apple-system,
+        sans-serif;
 }
 
+/* Gradient */
 .gradient-bg {
-    background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+    background: linear-gradient(
+        135deg,
+        var(--primary-green) 0%,
+        var(--secondary-green) 100%
+    );
 }
 
-.hover-green:hover {
-    background-color: var(--accent-green);
-    color: white;
+/* Header Blur Effect on Scroll */
+.header-scrolled {
+    background: rgba(6, 95, 70, 0.85) !important;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
+/* Colors Utility */
 .text-green {
     color: var(--primary-green);
 }
-
 .bg-green {
     background-color: var(--primary-green);
 }
-
 .bg-light-green {
     background-color: var(--light-green);
 }
-
 .border-green {
     border-color: var(--primary-green);
 }
 
-/* Animasi loading */
-.loader {
-    border-top-color: var(--accent-green);
-    animation: spinner 1.5s linear infinite;
+/* Loading Screen Custom Book Animation */
+.book-loader {
+    position: relative;
+    width: 50px;
+    height: 40px;
+    margin: 0 auto;
+    perspective: 200px;
+}
+.book-loader-page {
+    position: absolute;
+    width: 25px;
+    height: 35px;
+    background-color: var(--primary-green);
+    border-radius: 2px 6px 6px 2px;
+    right: 0;
+    transform-origin: left center;
+    transition: all 0.3s;
+}
+.book-loader-page:nth-child(1) {
+    background-color: var(--dark-green);
+    animation: flipPage 1.2s infinite linear both;
+    z-index: 3;
+}
+.book-loader-page:nth-child(2) {
+    background-color: var(--secondary-green);
+    animation: flipPage 1.2s infinite linear 0.15s both;
+    z-index: 2;
+}
+.book-loader-page:nth-child(3) {
+    background-color: var(--accent-green);
+    animation: flipPage 1.2s infinite linear 0.3s both;
+    z-index: 1;
 }
 
-@keyframes spinner {
+@keyframes flipPage {
     0% {
-        transform: rotate(0deg);
+        transform: rotateY(0deg);
     }
-
+    50% {
+        transform: rotateY(-180deg);
+    }
     100% {
-        transform: rotate(360deg);
+        transform: rotateY(0deg);
     }
 }
 
-/* Efek transisi halus */
+/* Transisi Halus */
 .smooth-transition {
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Offcanvas styling */
+/* Offcanvas Styling */
 .offcanvas {
-    background: linear-gradient(to bottom, white, #f0fdf4);
+    background: linear-gradient(to bottom, #ffffff, #f0fdf4);
 }
 
-/* Efek hover untuk tombol */
+.offcanvas-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #374151;
+    transition: all 0.2s ease;
+    border-radius: 0.75rem;
+    font-size: 0.9375rem;
+}
+.offcanvas-link:hover {
+    background-color: #ecfdf5;
+    color: var(--primary-green);
+    transform: translateX(4px);
+}
+
+/* Hover Effect untuk Tombol */
 .btn-hover-effect {
     position: relative;
     overflow: hidden;
-    transition: all 0.3s;
 }
-
 .btn-hover-effect::before {
     content: "";
     position: absolute;
@@ -78,37 +133,64 @@ body {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
     transition: left 0.5s;
 }
-
 .btn-hover-effect:hover::before {
     left: 100%;
 }
 
-/* Animasi modal */
-.modal-fade {
-    animation: fadeIn 0.3s ease-in-out;
+/* ==========================================
+   BOTTOM NAVIGATION MOBILE
+   ========================================== */
+
+#bottomNav {
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
+#bottomNav.show-nav {
+    transform: translateY(0);
+}
+
+/* Efek Active dan Hover pada Item */
+.active-nav-item {
+    position: relative;
+}
+
+.active-nav-item::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 20px;
+    height: 3px;
+    background-color: #059669;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.active-nav-item.text-emerald-600::before {
+    transform: translateX(-50%) scaleX(1);
+}
+
+/* Smooth transition untuk teks dan ikon saat aktif */
+.active-nav-item.text-emerald-600 {
+    color: #059669;
+}
+.active-nav-item.text-emerald-600 div {
+    background-color: #d1fae5;
+}
+
+/* Media Query: Sembunyikan di Desktop, Tampilkan di Mobile */
+@media (min-width: 768px) {
+    #bottomNav {
+        transform: translateY(100%) !important; /* Force sembunyi di desktop */
     }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Efek hover untuk card */
-.card-hover {
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.card-hover:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }

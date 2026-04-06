@@ -1,39 +1,85 @@
-	/* Animasi untuk elemen */
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-           .animate-slide-down {
-            animation: slideDown 0.3s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Styling untuk checkbox */
-        input[type="checkbox"]:checked {
-            background-color: #059669;
-            border-color: #059669;
-        }
-        
-        /* Styling untuk input focus */
-        input:focus {
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-        }
-        
-        /* Styling untuk button hover */
-        button:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        
-        /* Styling untuk link hover */
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+/* ==========================================
+   ANIMASI DASAR LOGIN STYLES
+   ========================================== */
+
+/* Animasi masuk untuk card utama */
+.animate-fade-in {
+    animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Animasi masuk untuk pesan error/success dari atas */
+.animate-slide-down {
+    animation: slideDown 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================
+   CUSTOM ELEMENT STYLING
+   ========================================== */
+
+/* Styling khusus checkbox agar modern */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #059669;
+    border-color: #059669;
+}
+
+input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Menghilangkan panah atas/bawah pada input number (Math Captcha) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Global link hover smooth */
+a {
+    text-decoration: none;
+    transition: all 0.2s ease;
+}

@@ -7,226 +7,284 @@
 @stop
 
 @section('content')
-    {{-- Hero Section dengan Efek Parallax --}}
-    <section class="relative text-white py-20 md:py-28 overflow-hidden hero-section">
-        <div class="absolute inset-0 bg-gradient-to-br from-emerald-900/90 via-green-800/80 to-teal-700/80"></div>
-        
-        <!-- Animated Background Elements -->
-        <div class="absolute top-10 left-10 w-20 h-20 bg-green-400/20 rounded-full animate-pulse"></div>
-        <div class="absolute bottom-10 right-10 w-32 h-32 bg-emerald-400/20 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
-        <div class="absolute top-1/2 left-1/4 w-16 h-16 bg-teal-400/20 rounded-full animate-pulse" style="animation-delay: 2s;"></div>
 
-        <div class="relative container mx-auto px-6 text-center">
-            <h1 class="text-3xl md:text-4xl font-bold mb-6 leading-tight animate-fade-in-down">
-                Selamat Datang di <br><span class="text-yellow-300">{{ config('app.name', 'Perpustakaan') }}</span>
+    {{-- ==================== HERO ==================== --}}
+    <section class="hero-section flex items-center overflow-hidden">
+        <div class="grid-overlay"></div>
+        
+        <div class="hidden md:block absolute bottom-0 right-0 w-[340px] lg:w-[400px] z-10 translate-x-10 translate-y-5 opacity-80 hero-mascot-float">
+            <svg viewBox="0 0 300 450" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full drop-shadow-2xl">
+                <!-- Buku -->
+                <rect x="100" y="180" width="100" height="140" rx="5" fill="#facc15" transform="rotate(-5 150 250)"/>
+                <rect x="105" y="185" width="90" height="130" rx="3" fill="#fffbeb" transform="rotate(-5 150 250)"/>
+                <!-- Garis halaman buku -->
+                <line x1="115" y1="205" x2="185" y2="205" stroke="#d1d5db" stroke-width="2" transform="rotate(-5 150 250)"/>
+                <line x1="115" y1="220" x2="185" y2="220" stroke="#d1d5db" stroke-width="2" transform="rotate(-5 150 250)"/>
+                <line x1="115" y1="235" x2="175" y2="235" stroke="#d1d5db" stroke-width="2" transform="rotate(-5 150 250)"/>
+            </svg>
+        </div>
+
+        {{-- Ikon Buku Melayang (Kiri Atas) --}}
+        <div class="hidden lg:block absolute top-16 left-10 z-10 opacity-30 hero-icon-spin-slow">
+            <div class="w-24 h-24 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/10 shadow-xl">
+                <i class="fas fa-book-open text-4xl text-white"></i>
+            </div>
+        </div>
+
+        {{-- Ikon Globe Melayang (Kanan Atas) --}}
+        <div class="hidden lg:block absolute top-24 right-[340px] z-10 opacity-20 hero-mascot-float-reverse">
+            <div class="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/10 shadow-xl">
+                <i class="fas fa-globe text-3xl text-white"></i>
+            </div>
+        </div>
+
+        {{-- 4. Elemen Geometris Kaca (Kiri Bawah) --}}
+        <div class="hidden md:block absolute bottom-10 left-10 z-10 opacity-40 -rotate-12">
+            <div class="w-32 h-32 border-2 border-white/20 rounded-3xl backdrop-blur-sm"></div>
+        </div>
+        <div class="hidden md:block absolute bottom-28 left-32 z-10 opacity-20 rotate-12">
+            <div class="w-20 h-20 bg-white/10 rounded-2xl backdrop-blur-sm"></div>
+        </div>
+
+        {{-- Elemen Titik-titik Dekoratif --}}
+        <div class="hidden lg:flex absolute top-32 right-20 z-10 gap-3 opacity-30">
+            <div class="w-2.5 h-2.5 bg-yellow-300 rounded-full"></div>
+            <div class="w-2.5 h-2.5 bg-yellow-300 rounded-full"></div>
+            <div class="w-2.5 h-2.5 bg-yellow-300 rounded-full"></div>
+        </div>
+
+        {{-- === KONTEN UTAMA HERO === --}}
+        <div class="relative z-20 container mx-auto px-6 text-center text-white py-20 md:py-28 max-w-4xl">
+            <div class="hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-green-100 mb-6">
+                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                Perpustakaan Digital Aktif
+            </div>
+
+            <h1 class="hero-title text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-[1.1] tracking-tight">
+                Selamat Datang di<br>
+                <span class="bg-gradient-to-r from-yellow-300 via-amber-300 to-yellow-400 bg-clip-text text-transparent">
+                    {{ config('app.name', 'Perpustakaan') }}
+                </span>
             </h1>
-            <p class="text-lg mb-8 text-green-100 max-w-2xl mx-auto animate-fade-in-up">
+
+            <p class="hero-sub text-lg md:text-xl text-green-100/90 max-w-2xl mx-auto mb-10 leading-relaxed">
                 Temukan ribuan koleksi buku dan jelajahi dunia literasi secara digital — cepat, mudah, dan menyenangkan.
             </p>
-            <!-- Belum login -->
-            <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up" style="animation-delay: 0.2s;">
-                @if (Auth::guard('student')->user())
-                <a href="{{ route('books.index') }}"
-                    class="bg-yellow-400 text-green-900 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center justify-center">
-                    <i class="fas fa-search mr-2"></i> Jelajahi Koleksi
+
+            <div class="hero-actions flex flex-col sm:flex-row justify-center gap-4">
+                <a href="{{ route('books.index') }}" class="btn-primary">
+                    <i class="fas fa-search"></i> Jelajahi Koleksi
                 </a>
-                @else
-                <a href="{{ route('books.index') }}"
-                    class="bg-yellow-400 text-green-900 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center justify-center">
-                    <i class="fas fa-search mr-2"></i> Jelajahi Koleksi
+                @unless (Auth::guard('student')->check())
+                <a href="{{ route('student.register.form') }}" class="btn-outline">
+                    <i class="fas fa-user-plus"></i> Daftar Sekarang
                 </a>
-                <a href="{{ route('student.register.form') }}"
-                    class="border border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-green-800 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center justify-center">
-                    <i class="fas fa-user-plus mr-2"></i> Daftar Sekarang
-                </a>
-                @endif
+                @endunless
             </div>
         </div>
     </section>
 
-    {{-- Features Section dengan Animasi --}}
-    <section class="py-16 bg-white">
+    {{-- ==================== FEATURES ==================== --}}
+    <section class="py-20 md:py-24 bg-gradient-to-b from-gray-50/80 to-white">
         <div class="container mx-auto px-6">
-            <h2 class="text-2xl font-bold text-center text-gray-800 mb-10 animate-on-scroll">Kami Punya?</h2>
-            <div class="grid md:grid-cols-3 gap-8">
+            <div class="text-center mb-14 reveal">
+                <span class="section-badge"><i class="fas fa-sparkles text-[.65rem]"></i> Fitur Unggulan</span>
+                <h2 class="section-title mt-2">Mengapa Memilih Kami?</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
                 @php
                     $features = [
-                        [
-                            'icon' => 'fa-book',
-                            'title' => 'Koleksi Lengkap',
-                            'desc' => 'Ribuan buku dari berbagai kategori dan penerbit terkemuka.',
-                            'delay' => 0.1,
-                        ],
-                        [
-                            'icon' => 'fa-laptop',
-                            'title' => 'Akses Digital',
-                            'desc' => 'Sistem online yang bisa diakses kapan pun dan di mana pun.',
-                            'delay' => 0.2,
-                        ],
-                        [
-                            'icon' => 'fa-bell',
-                            'title' => 'Notifikasi Otomatis',
-                            'desc' => 'Dapatkan pengingat pengembalian buku dan informasi terbaru.',
-                            'delay' => 0.3,
-                        ],
+                        ['icon' => 'fa-book-open', 'title' => 'Koleksi Lengkap', 'desc' => 'Ribuan buku dari berbagai kategori dan penerbit terkemuka tersedia untuk Anda.'],
+                        ['icon' => 'fa-laptop-code', 'title' => 'Akses Digital', 'desc' => 'Sistem online yang bisa diakses kapan pun dan di mana pun melalui perangkat apa saja.'],
+                        ['icon' => 'fa-bell-concierge', 'title' => 'Notifikasi Cerdas', 'desc' => 'Pengingat pengembalian otomatis dan informasi terbaru langsung ke notifikasi Anda.'],
                     ];
                 @endphp
-                @foreach ($features as $index => $feature)
-                    <div class="text-center p-5 bg-green-50 rounded-lg transition-all duration-300 hover:bg-green-100 hover:shadow-lg transform hover:-translate-y-2 animate-on-scroll" 
-                         style="animation-delay: {{ $feature['delay'] }}s;">
-                        <div class="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-                            <i class="fas {{ $feature['icon'] }} text-green-600 text-2xl"></i>
+                @foreach ($features as $i => $f)
+                    <div class="feature-card reveal reveal-delay-{{ $i + 1 }}">
+                        <div class="feature-icon">
+                            <i class="fas {{ $f['icon'] }}"></i>
                         </div>
-                        <h3 class="text-lg font-semibold mb-2">{{ $feature['title'] }}</h3>
-                        <p class="text-gray-600 text-sm">{{ $feature['desc'] }}</p>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">{{ $f['title'] }}</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed">{{ $f['desc'] }}</p>
                     </div>
                 @endforeach
             </div>
         </div>
     </section>
 
-    {{-- Statistics Section dengan Animasi Angka --}}
-    <section class="py-16 bg-gradient-to-br from-gray-50 to-green-50">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-2xl font-bold text-gray-800 mb-10 animate-on-scroll">Statistik Perpustakaan</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    {{-- ==================== STATISTICS ==================== --}}
+    <section class="py-20 md:py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-emerald-50/60 via-green-50/40 to-teal-50/60"></div>
+        <div class="absolute top-0 left-0 w-72 h-72 bg-green-200/20 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-teal-200/20 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl"></div>
+
+        <div class="relative container mx-auto px-6">
+            <div class="text-center mb-14 reveal">
+                <span class="section-badge"><i class="fas fa-chart-simple text-[.65rem]"></i> Data Nyata</span>
+                <h2 class="section-title mt-2">Statistik Perpustakaan</h2>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
                 @php
                     $stats = [
-                        [
-                            'icon' => 'fa-book',
-                            'value' => $bookCount ?? 0,
-                            'label' => 'Judul Buku',
-                            'color' => 'text-green-500',
-                            'bgColor' => 'from-green-50 to-emerald-50',
-                            'delay' => 0.1,
-                        ],
-                        [
-                            'icon' => 'fa-users',
-                            'value' => $studentCount ?? 0,
-                            'label' => 'Siswa Terdaftar',
-                            'color' => 'text-teal-500',
-                            'bgColor' => 'from-teal-50 to-cyan-50',
-                            'delay' => 0.2,
-                        ],
-                        [
-                            'icon' => 'fa-exchange-alt',
-                            'value' => $borrowCount ?? 0,
-                            'label' => 'Peminjaman Bulan Ini',
-                            'color' => 'text-emerald-500',
-                            'bgColor' => 'from-emerald-50 to-green-50',
-                            'delay' => 0.3,
-                        ],
-                        [
-                            'icon' => 'fa-tags',
-                            'value' => $categoryCount ?? 0,
-                            'label' => 'Kategori Buku',
-                            'color' => 'text-lime-500',
-                            'bgColor' => 'from-lime-50 to-green-50',
-                            'delay' => 0.4,
-                        ],
+                        ['icon' => 'fa-book',       'value' => $bookCount ?? 0,     'label' => 'Judul Buku',           'color' => '#059669'],
+                        ['icon' => 'fa-users',      'value' => $studentCount ?? 0,  'label' => 'Siswa Terdaftar',      'color' => '#0d9488'],
+                        ['icon' => 'fa-arrow-right-arrow-left', 'value' => $borrowCount ?? 0, 'label' => 'Peminjaman Bulan Ini', 'color' => '#10b981'],
+                        ['icon' => 'fa-tags',       'value' => $categoryCount ?? 0, 'label' => 'Kategori Buku',        'color' => '#65a30d'],
                     ];
                 @endphp
-                @foreach ($stats as $stat)
-                    <div class="bg-gradient-to-br {{ $stat['bgColor'] }} p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 animate-on-scroll" 
-                         style="animation-delay: {{ $stat['delay'] }}s;">
-                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
-                            <i class="fas {{ $stat['icon'] }} text-xl {{ $stat['color'] }}"></i>
+                @foreach ($stats as $i => $s)
+                    <div class="stat-card reveal reveal-delay-{{ $i + 1 }}">
+                        <div class="stat-icon-ring">
+                            <i class="fas {{ $s['icon'] }} text-lg" style="color:{{ $s['color'] }}"></i>
                         </div>
-                        <div class="text-2xl font-bold text-gray-800 counter" data-target="{{ $stat['value'] }}">0</div>
-                        <p class="text-gray-600 text-sm mt-1">{{ $stat['label'] }}</p>
+                        <div class="stat-number counter" data-target="{{ $s['value'] }}">0</div>
+                        <p class="text-gray-500 text-sm mt-1 font-medium">{{ $s['label'] }}</p>
                     </div>
                 @endforeach
             </div>
         </div>
     </section>
 
-    {{-- Call-to-Action Section dengan Efek Hover --}}
-    <section class="py-16 bg-white">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-2xl font-bold text-gray-800 mb-10 animate-on-scroll">Mulai Perjalanan Literasi Anda</h2>
+    {{-- ==================== CTA ==================== --}}
+    <section class="py-20 md:py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-14 reveal">
+                <span class="section-badge"><i class="fas fa-rocket text-[.65rem]"></i> Mulai Sekarang</span>
+                <h2 class="section-title mt-2">Mulai Perjalanan Literasi Anda</h2>
+            </div>
+
             <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-                <a href="{{ route('books.index') }}"
-                    class="group bg-gradient-to-br from-green-600 to-emerald-600 text-white p-8 rounded-lg shadow-md hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col items-center justify-center animate-on-scroll"
-                    style="animation-delay: 0.1s;">
-                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:bg-white/30 transition-colors duration-300">
-                        <i class="fas fa-search text-3xl"></i>
+                <a href="{{ route('books.index') }}" class="cta-card reveal reveal-delay-1"
+                   style="background: linear-gradient(135deg, #059669, #047857, #0f766e);">
+                    <div class="cta-icon-wrap">
+                        <i class="fas fa-magnifying-glass text-2xl text-white"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Lihat Katalog Buku</h3>
-                    <p class="text-green-100 text-sm max-w-sm">Jelajahi dan temukan buku favorit Anda dari ribuan koleksi yang tersedia.</p>
+                    <h3 class="text-xl font-bold text-white mb-2">Lihat Katalog Buku</h3>
+                    <p class="text-green-100/80 text-sm leading-relaxed">Jelajahi dan temukan buku favorit Anda dari ribuan koleksi yang tersedia.</p>
+                    <span class="cta-arrow text-white">Jelajahi <i class="fas fa-arrow-right text-xs"></i></span>
                 </a>
-                <a href="{{ route('student.register.form') }}"
-                    class="group bg-gradient-to-br from-emerald-600 to-teal-600 text-white p-8 rounded-lg shadow-md hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col items-center justify-center animate-on-scroll"
-                    style="animation-delay: 0.2s;">
-                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 group-hover:bg-white/30 transition-colors duration-300">
-                        <i class="fas fa-user-graduate text-3xl"></i>
+
+                @unless (Auth::guard('student')->check())
+                <a href="{{ route('student.register.form') }}" class="cta-card reveal reveal-delay-2"
+                   style="background: linear-gradient(135deg, #0d9488, #0f766e, #115e59);">
+                    <div class="cta-icon-wrap">
+                        <i class="fas fa-user-graduate text-2xl text-white"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Daftar sebagai Siswa</h3>
-                    <p class="text-emerald-100 text-sm max-w-sm">Buat akun untuk mulai meminjam buku dan mengakses semua fitur perpustakaan.</p>
+                    <h3 class="text-xl font-bold text-white mb-2">Daftar sebagai Siswa</h3>
+                    <p class="text-teal-100/80 text-sm leading-relaxed">Buat akun untuk mulai meminjam buku dan mengakses semua fitur perpustakaan.</p>
+                    <span class="cta-arrow text-white">Daftar <i class="fas fa-arrow-right text-xs"></i></span>
                 </a>
+                @endunless
             </div>
         </div>
     </section>
 
-    <!-- Testimonial Section -->
-    <section class="py-16 bg-gradient-to-br from-green-50 to-emerald-50">
+    {{-- ==================== TESTIMONIALS ==================== --}}
+    <section class="py-20 md:py-24 bg-gradient-to-b from-gray-50/80 to-white">
         <div class="container mx-auto px-6">
-            <h2 class="text-2xl font-bold text-center text-gray-800 mb-10 animate-on-scroll">Apa Kata Mereka?</h2>
-            <div class="grid md:grid-cols-3 gap-6">
+            <div class="text-center mb-14 reveal">
+                <span class="section-badge"><i class="fas fa-quote-left text-[.65rem]"></i> Testimoni</span>
+                <h2 class="section-title mt-2">Apa Kata Mereka?</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
                 @php
-                    $testimonials = [
-                        [
-                            'name' => 'Ahmad Rizki',
-                            'role' => 'Siswa Kelas XII',
-                            'content' => 'Sistem perpustakaan online ini sangat membantu saya menemukan referensi untuk tugas sekolah. Mudah digunakan dan koleksinya lengkap!',
-                            'avatar' => 'https://picsum.photos/seed/user1/200/200.jpg',
-                            'rating' => 5,
-                            'delay' => 0.1,
-                        ],
-                        [
-                            'name' => 'Siti Nurhaliza',
-                            'role' => 'Siswa Kelas XI',
-                            'content' => 'Saya suka fitur notifikasi pengingat pengembalian buku. Tidak perlu khawatir lagi terlambat mengembalikan buku pinjaman.',
-                            'avatar' => 'https://picsum.photos/seed/user2/200/200.jpg',
-                            'rating' => 5,
-                            'delay' => 0.2,
-                        ],
-                        [
-                            'name' => 'Budi Santoso',
-                            'role' => 'Siswa Kelas X',
-                            'content' => 'Aplikasi perpustakaan ini sangat memudahkan saya untuk mencari dan meminjam buku kapan saja dan di mana saja.',
-                            'avatar' => 'https://picsum.photos/seed/user3/200/200.jpg',
-                            'rating' => 4,
-                            'delay' => 0.3,
-                        ],
-                    ];
+                    // Mengambil 3 testimoni yang sudah di-approve
+                    $approvedTestimonials = \App\Models\Testimonial::with('student')
+                        ->approved()
+                        ->latest()
+                        ->take(3)
+                        ->get();
                 @endphp
-                @foreach ($testimonials as $testimonial)
-                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll" 
-                         style="animation-delay: {{ $testimonial['delay'] }}s;">
-                        <div class="flex items-center mb-4">
-                            <img src="{{ $testimonial['avatar'] }}" alt="{{ $testimonial['name'] }}" 
-                                 class="w-12 h-12 rounded-full mr-3 object-cover">
+
+                @forelse ($approvedTestimonials as $i => $t)
+                    <div class="testimonial-card reveal reveal-delay-{{ $i + 1 }}">
+                        <div class="flex items-center gap-3 mb-4">
+                            @if($t->student->avatar)
+                                <img src="{{ asset('storage/' . $t->student->avatar) }}" alt="{{ $t->student->name }}" 
+                                    class="w-12 h-12 rounded-xl object-cover border-2 border-gray-100">
+                            @else
+                                {{-- Jika tidak ada avatar, tampilkan inisial nama --}}
+                                <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
+                                    <span class="text-emerald-600 font-bold">{{ strtoupper(substr($t->student->name, 0, 1)) }}</span>
+                                </div>
+                            @endif
                             <div>
-                                <h4 class="font-semibold text-gray-800">{{ $testimonial['name'] }}</h4>
-                                <p class="text-sm text-gray-600">{{ $testimonial['role'] }}</p>
+                                <h4 class="font-bold text-gray-800 text-sm">{{ $t->student->name }}</h4>
+                                <p class="text-xs text-gray-400">Siswa Perpustakaan</p>
                             </div>
                         </div>
-                        <div class="flex mb-3">
-                            @for ($i = 1; $i <= 5; $i++)
-                                <i class="fas fa-star {{ $i <= $testimonial['rating'] ? 'text-yellow-400' : 'text-gray-300' }}"></i>
+                        <div class="flex gap-0.5 mb-3">
+                            @for ($j = 1; $j <= 5; $j++)
+                                <i class="star fas fa-star {{ $j <= $t->rating ? 'text-amber-400' : 'text-gray-200' }}"></i>
                             @endfor
                         </div>
-                        <p class="text-gray-600 text-sm italic">"{{ $testimonial['content'] }}"</p>
+                        <p class="text-gray-500 text-sm italic leading-relaxed">"{{ $t->content }}"</p>
                     </div>
-                @endforeach
+                @empty
+                    <div class="col-span-3 text-center py-10 text-gray-400">
+                        <i class="fas fa-comments text-4xl mb-3 text-gray-200"></i>
+                        <p class="font-medium">Belum ada testimoni.</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>
-
-    <!-- Custom Styles and Scripts -->
-    
-    @section('scripts')
-    <script src="{{ asset('assets/js/script.js') }}"></script>
-    @stop
-
 @endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    /* ===== Scroll Reveal ===== */
+    const reveals = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => revealObserver.observe(el));
+
+    /* ===== Counter Animation ===== */
+    const counters = document.querySelectorAll('.counter');
+    const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                const target = parseInt(el.dataset.target) || 0;
+                if (target === 0) { el.textContent = '0'; return; }
+
+                const duration = 1800;
+                const startTime = performance.now();
+
+                function easeOutExpo(t) {
+                    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+                }
+
+                function updateCounter(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easedProgress = easeOutExpo(progress);
+                    const current = Math.round(easedProgress * target);
+                    el.textContent = current.toLocaleString('id-ID');
+                    if (progress < 1) {
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        el.textContent = target.toLocaleString('id-ID');
+                    }
+                }
+
+                requestAnimationFrame(updateCounter);
+                counterObserver.unobserve(el);
+            }
+        });
+    }, { threshold: 0.5 });
+    counters.forEach(el => counterObserver.observe(el));
+
+});
+</script>
+@stop

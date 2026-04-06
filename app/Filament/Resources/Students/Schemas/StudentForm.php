@@ -21,8 +21,8 @@ class StudentForm
                 TextInput::make('nis')
                     ->label('NIS')
                     // kalo sama gabisa dengan pesan custom 'NIS sudah terdaftar.'
-                    ->unique(table: 'students', column: 'nis', ignorable: fn ($record) => $record)
-                    ,
+                    ->unique(table: 'students', column: 'nis', ignorable: fn ($record) => $record),
+                
                 TextInput::make('class')
                     ->label('Kelas')
                     ->required(),

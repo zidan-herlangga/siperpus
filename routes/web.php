@@ -9,7 +9,8 @@ use App\Http\Controllers\StudentLoginController;
 use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\TestimonialController;
+use App\Http\Controllers\BookCommentController;
 
 use App\Models\Student;
 use Illuminate\Auth\Events\Verified;
@@ -54,6 +55,10 @@ Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.s
 Route::get('/books/{book:slug}/stock', [BookController::class, 'getStock'])->name('books.stock');
 // Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
 
+Route::post('/submit-testimonial', [TestimonialController::class, 'store'])
+    ->middleware('auth:student') // Cukup dilindungi login saja, tidak perlu verifikasi email
+    ->name('testimonial.store');
+
 // ==========================
 // RUTE YANG DILINDUNGI
 // ==========================
@@ -67,13 +72,7 @@ Route::middleware(['auth:student', 'verified'])->group(function () {
 
     // PEMINJAMAN BUKU
     Route::post('/borrow/{book}', [BorrowingController::class, 'store'])->name('books.borrow');
-
-    // Route::get('/chatbot', fn() => view('chatbot'))->name('student.chatbot');
-    // ==========================
-    // CHATBOT (POST)
-    // ==========================
-    Route::get('/chatbot', [ChatbotController::class, 'index']);
-    Route::post('/chatbot', [ChatbotController::class, 'chat'])->name('chat.send');
+    Route::post('/books/{book:id}/comment', [BookCommentController::class, 'store'])->name('books.comment.store');
 });
 
 // ==========================

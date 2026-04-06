@@ -1,49 +1,48 @@
+/* ==========================================
+   ANIMASI DASAR VERIFY EMAIL STYLES
+   ========================================== */
 
-    /* Animasi untuk elemen */
-    .animate-fade-in {
-        animation: fadeIn 0.5s ease-out;
+.animate-fade-in {
+    animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-slide-down {
+    animation: slideDown 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.98);
     }
-    
-    .animate-slide-down {
-        animation: slideDown 0.3s ease-out;
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
-    
-    .animate-bounce-slow {
-        animation: bounce 3s infinite;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
     }
-    
-    .animate-ping-slow {
-        animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes slideDown {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes bounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
-    
-    @keyframes ping {
-        75%, 100% {
-            transform: scale(2);
-            opacity: 0;
-        }
-    }
-    
-    /* Styling untuk tombol hover */
-    button:hover {
-        transform: translateY(-1px);
-    }
-    
-    /* Styling untuk card hover */
-    .bg-gray-50:hover {
-        background-color: #f9fafb;
-    }
+}
+
+/* ==========================================
+   GLOBAL ELEMENT STYLING
+   ========================================== */
+
+/* Menghilangkan outline default dan memberi efek halus */
+button {
+    outline: none;
+}
+
+/* Smooth transition untuk semua link */
+a {
+    text-decoration: none;
+    transition: all 0.2s ease;
+}

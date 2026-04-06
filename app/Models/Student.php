@@ -71,6 +71,16 @@ class Student extends Authenticatable implements MustVerifyEmail, CanResetPasswo
         return $this->hasMany(Borrowing::class);
     }
 
+    public function bookComments()
+    {
+        return $this->hasMany(BookComment::class);
+    }
+
+    public function testimonials()
+    {
+        return $this->hasMany(Testimonial::class);
+    }
+
     /**
      * Send the email verification notification.
      */

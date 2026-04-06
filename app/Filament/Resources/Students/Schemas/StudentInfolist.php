@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Students\Schemas;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
+
 class StudentInfolist
 {
     public static function configure(Schema $schema): Schema
@@ -13,6 +14,7 @@ class StudentInfolist
             ->components([
                 TextEntry::make('name')
                     ->label('Nama Siswa'),
+                
                 TextEntry::make('nis')
                     ->label('NIS')
                     ->formatStateUsing(fn ($state) => $state ?? '-'),

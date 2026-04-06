@@ -1,22 +1,33 @@
-.animate-fade-in { animation: fadeIn 0.5s ease-out; }
-.modal-content { animation: modalFadeIn 0.3s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes modalFadeIn { 
-	from { 
-	opacity: 0; 
-	transform: scale(0.9); 
-} to 
-	{ 
-	opacity: 1; 
-	transform: scale(1); 
-	} 
+/* ==========================================
+   SCROLL REVEAL ANIMATION SYSTEM
+   ========================================== */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+        opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.tab-btn.active { 
-	color: #059669; 
-	border-color: #059669; 
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.bg-green-600 { 
-	transition: width 1s ease-in-out; 
+/* ==========================================
+   UTILITY STYLES
+   ========================================== */
+
+.line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+/* Smooth global transition */
+a,
+button {
+    transition: all 0.2s ease;
 }

@@ -19,9 +19,8 @@ class StudentController extends Controller
     {
         $student = Auth::user();
 
-        $request->validate([
+        $validatedData = $request->validate([
             'name'    => ['required', 'string', 'max:255'],
-            'avatar'  => ['nullable', 'image', 'max:2048'],
             'email'   => [
                 'required', 
                 'string', 
@@ -29,15 +28,16 @@ class StudentController extends Controller
                 'max:255',
                 Rule::unique('students')->ignore($student->id),
             ],
-            'class'   => ['required', 'string', 'max:50'],
             'contact' => ['nullable', 'string', 'max:20'],
+            'avatar'  => ['nullable', 'image', 'max:2048'],
         ]);
 
-        $data = $request->only(['name', 'email', 'class', 'contact']);
+        $request->request->remove('nis');
+        $request->request->remove('class');
 
-        // Jika ada file avatar baru
+        $data = $validatedData; 
+
         if ($request->hasFile('avatar')) {
-
             $avatarPath = $request->file('avatar')->store('avatars', 'public');
 
             // Hapus avatar lama jika ada
@@ -48,9 +48,11 @@ class StudentController extends Controller
             $data['avatar'] = $avatarPath;
         }
 
-        // Update database
         $student->update($data);
 
-        return redirect()->route('student.edit')->with('success', 'Profile berhasil diperbarui!');
+        return response()->json([
+            'success' => 'Profil berhasil diperbarui.',
+            'avatar_url' => $student->avatar ? asset('storage/' . $student->avatar) : null
+        ]);
     }
 }

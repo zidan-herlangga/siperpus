@@ -40,7 +40,10 @@ class Book extends Model
         });
     }
 
-
+    public function comments()
+    {
+        return $this->hasMany(BookComment::class)->latest();
+    }
 
     /**
      * Kolom yang sering diambil bisa diset default select
