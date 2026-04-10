@@ -6,9 +6,13 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Notifications\NewBorrowingNotification;
+use Filament\Notifications\Notification;
+use Illuminate\Notifications\Notifiable;
 
 class Borrowing extends Model
 {
+    use Notifiable;
     use HasFactory;
 
     protected $fillable = [
@@ -35,6 +39,15 @@ class Borrowing extends Model
     // --- LOGIKA OTOMATIS UNTUK STOK BUKU + FINALISASI DENDA ---
     protected static function booted(): void
     {
+        static::created(function (Borrowing $borrowing) {
+            $admins = \App\Models\Admin::all();
+
+            Notification::make()
+                ->title('Peminjaman Buku Baru!')
+                ->body($borrowing->student->name . ' meminjam buku "' . $borrowing->book->title . '"')
+                ->sendToDatabase($admins);
+        });
+        
         static::updating(function (Borrowing $borrowing) {
             $originalStatus = $borrowing->getOriginal('status');
             $newStatus = $borrowing->status;

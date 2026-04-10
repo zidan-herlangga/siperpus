@@ -6,9 +6,14 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+
 use App\Notifications\CustomVerifyEmail;
 use App\Enums\StatusAktif;
+
+use Illuminate\Notifications\Notifiable;
+use App\Notifications\NewBorrowingNotification;
+use Filament\Notifications\Notification;
+
 
 // Reset Password
 use Illuminate\Contracts\Auth\CanResetPassword;
@@ -43,6 +48,18 @@ class Student extends Authenticatable implements MustVerifyEmail, CanResetPasswo
         'password',
         'remember_token',
     ];
+
+    protected static function booted(): void
+    {
+        static::created(function (Student $student) {
+            $admins = \App\Models\Admin::all();
+
+            Notification::make()
+                ->title('Siswa Baru Terdaftar!')
+                ->body($student->name . ' telah mendaftar sebagai siswa baru.')
+                ->sendToDatabase($admins);
+        });
+    }
 
     /**
      * Get the attributes that should be cast.

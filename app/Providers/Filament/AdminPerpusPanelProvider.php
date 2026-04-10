@@ -19,9 +19,11 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+
 use App\Filament\Widgets\BorrowedBooks;
 use App\Filament\Widgets\LibraryStatsOverview;
 use App\Filament\Widgets\AllBorrowingsReport;
+// use App\Filament\Pages\NotificationList;
 
 class AdminPerpusPanelProvider extends PanelProvider
 {
@@ -65,6 +67,7 @@ class AdminPerpusPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->databaseNotifications();
     }
 }

@@ -168,7 +168,7 @@
                                     class="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500 transition">
                                 <span class="text-gray-600 group-hover:text-gray-800 transition-colors">Ingat saya</span>
                             </label>
-                            <a href="{{ route('student.password.request') }}" class="text-emerald-600 hover:text-emerald-700 font-medium transition-colors">
+                            <a href="{{ route('student.password.request') }}" wire:navigate.prefetch="false" class="text-emerald-600 hover:text-emerald-700 font-medium transition-colors">
                                 Lupa password?
                             </a>
                         </div>
@@ -196,7 +196,7 @@
                         {{-- Link Register --}}
                         <p class="text-center text-sm text-gray-600">
                             Belum punya akun siswa? 
-                            <a href="{{ route('student.register.form') }}" class="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline transition-colors">
+                            <a href="{{ route('student.register.form') }}" wire:navigate.prefetch="false" class="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline transition-colors">
                                 Daftar Sekarang
                             </a>
                         </p>
@@ -206,7 +206,7 @@
         </div>
     </div>
 
-    {{-- Toast Notification --}}
+        {{-- Toast Notification --}}
     <div id="notification" class="toast-container fixed top-6 right-6 max-w-sm z-[100]">
         <div class="bg-white rounded-xl shadow-2xl border border-gray-100 p-4 flex items-start gap-3">
             <div id="notificationIcon" class="mt-0.5"></div>
@@ -221,10 +221,10 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // --- ELEMEN DOM ---
+        function initLoginScripts() {
             const loginForm = document.getElementById('loginForm');
+            if (!loginForm) return; 
+
             const passwordInput = document.getElementById('password');
             const togglePasswordBtn = document.getElementById('togglePasswordBtn');
             const passwordIcon = document.getElementById('password-icon');
@@ -232,34 +232,48 @@
             const buttonText = document.getElementById('buttonText');
             const buttonArrow = document.getElementById('buttonArrow');
             const buttonLoader = document.getElementById('buttonLoader');
+            const randomNumberInput = document.getElementById('randomNumberInput');
             
             let correctAnswer = generateMathQuestion();
 
-            // --- FUNGSI TOGGLE PASSWORD ---
-            togglePasswordBtn.addEventListener('click', function() {
-                const isPassword = passwordInput.type === 'password';
-                passwordInput.type = isPassword ? 'text' : 'password';
-                passwordIcon.classList.toggle('fa-eye', !isPassword);
-                passwordIcon.classList.toggle('fa-eye-slash', isPassword);
-            });
+            if (togglePasswordBtn) {
+                togglePasswordBtn.addEventListener('click', function() {
+                    const isPassword = passwordInput.type === 'password';
+                    passwordInput.type = isPassword ? 'text' : 'password';
+                    passwordIcon.classList.toggle('fa-eye', !isPassword);
+                    passwordIcon.classList.toggle('fa-eye-slash', isPassword);
+                });
+            }
 
-            // --- FUNGSI MATH CAPTCHA ---
             function generateMathQuestion() {
                 const num1 = Math.floor(Math.random() * 10) + 1;
                 const num2 = Math.floor(Math.random() * 10) + 1;
                 const sum = num1 + num2;
                 
-                document.getElementById('randomNumberDisplay').innerHTML = 
-                    `<i class="fas fa-shield-halved mr-1 text-emerald-600"></i> Berapa ${num1} + ${num2} = ?`;
-                
+                const displayEl = document.getElementById('randomNumberDisplay');
+                if(displayEl) {
+                    displayEl.innerHTML = `<i class="fas fa-shield-halved mr-1 text-emerald-600"></i> Berapa ${num1} + ${num2} = ?`;
+                }
                 return sum;
             }
 
-            // --- NOTIFIKASI TOAST ---
+            if (randomNumberInput) {
+                randomNumberInput.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9-]/g, '');
+                });
+            }
+
+            window.hideNotification = function() {
+                const notification = document.getElementById('notification');
+                if(notification) notification.classList.remove('show');
+            };
+
             function showNotification(title, message, type) {
                 const notification = document.getElementById('notification');
                 const iconEl = document.getElementById('notificationIcon');
                 
+                if (!notification) return;
+
                 if (type === 'error') {
                     iconEl.innerHTML = '<div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center"><i class="fas fa-xmark text-red-500 text-sm"></i></div>';
                 } else {
@@ -270,35 +284,32 @@
                 document.getElementById('notificationMessage').textContent = message;
                 
                 notification.classList.add('show');
-                
-                setTimeout(hideNotification, 4000);
+                setTimeout(window.hideNotification, 4000);
             }
 
-            function hideNotification() {
-                document.getElementById('notification').classList.remove('show');
-            }
-
-            // --- VALIDASI & SUBMIT FORM ---
             loginForm.addEventListener('submit', function(event) {
-                const userAnswer = parseInt(document.getElementById('randomNumberInput').value, 10);
+                const userInput = document.getElementById('randomNumberInput');
+                const rawAnswer = userInput.value.trim(); 
+                const userAnswer = parseInt(rawAnswer, 10);
                 
-                // Validasi Jawaban
                 if (isNaN(userAnswer) || userAnswer !== correctAnswer) {
                     event.preventDefault();
                     showNotification('Verifikasi Gagal', 'Jawaban matematika yang Anda masukkan salah.', 'error');
                     
                     correctAnswer = generateMathQuestion();
-                    document.getElementById('randomNumberInput').value = '';
-                    document.getElementById('randomNumberInput').focus();
+                    userInput.value = '';
+                    userInput.focus();
                     return;
                 }
 
-                // Jika Lolos, tampilkan loading state
                 submitButton.disabled = true;
                 buttonText.textContent = 'Memproses...';
-                buttonArrow.classList.add('hidden');
-                buttonLoader.classList.remove('hidden');
+                if(buttonArrow) buttonArrow.classList.add('hidden');
+                if(buttonLoader) buttonLoader.classList.remove('hidden');
             });
-        });
+        }
+
+        document.addEventListener('DOMContentLoaded', initLoginScripts);
+        // document.addEventListener('livewire:navigated', initLoginScripts);        
     </script>
 @endsection

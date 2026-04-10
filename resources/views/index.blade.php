@@ -72,11 +72,11 @@
             </p>
 
             <div class="hero-actions flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{{ route('books.index') }}" class="btn-primary">
+                <a href="{{ route('books.index') }}" wire:navigate.prefetch="false" class="btn-primary">
                     <i class="fas fa-search"></i> Jelajahi Koleksi
                 </a>
                 @unless (Auth::guard('student')->check())
-                <a href="{{ route('student.register.form') }}" class="btn-outline">
+                <a href="{{ route('student.register.form') }}" wire:navigate.prefetch="false" class="btn-outline">
                     <i class="fas fa-user-plus"></i> Daftar Sekarang
                 </a>
                 @endunless
@@ -156,7 +156,7 @@
             </div>
 
             <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-                <a href="{{ route('books.index') }}" class="cta-card reveal reveal-delay-1"
+                <a href="{{ route('books.index') }}" wire:navigate.prefetch="false" class="cta-card reveal reveal-delay-1"
                    style="background: linear-gradient(135deg, #059669, #047857, #0f766e);">
                     <div class="cta-icon-wrap">
                         <i class="fas fa-magnifying-glass text-2xl text-white"></i>
@@ -167,7 +167,7 @@
                 </a>
 
                 @unless (Auth::guard('student')->check())
-                <a href="{{ route('student.register.form') }}" class="cta-card reveal reveal-delay-2"
+                <a href="{{ route('student.register.form') }}" wire:navigate.prefetch="false" class="cta-card reveal reveal-delay-2"
                    style="background: linear-gradient(135deg, #0d9488, #0f766e, #115e59);">
                     <div class="cta-icon-wrap">
                         <i class="fas fa-user-graduate text-2xl text-white"></i>
@@ -234,57 +234,76 @@
 @endsection
 
 @section('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-
-    /* ===== Scroll Reveal ===== */
-    const reveals = document.querySelectorAll('.reveal');
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                revealObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-    reveals.forEach(el => revealObserver.observe(el));
-
-    /* ===== Counter Animation ===== */
-    const counters = document.querySelectorAll('.counter');
-    const counterObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const el = entry.target;
-                const target = parseInt(el.dataset.target) || 0;
-                if (target === 0) { el.textContent = '0'; return; }
-
-                const duration = 1800;
-                const startTime = performance.now();
-
-                function easeOutExpo(t) {
-                    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+    <script>
+    // Kita buat fungsi-fungsi animasinya menjadi terpisah agar bisa dipanggil ulang
+    function initScrollReveal() {
+        const reveals = document.querySelectorAll('.reveal:not(.visible)');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
                 }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+        
+        reveals.forEach(el => revealObserver.observe(el));
+    }
 
-                function updateCounter(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const easedProgress = easeOutExpo(progress);
-                    const current = Math.round(easedProgress * target);
-                    el.textContent = current.toLocaleString('id-ID');
-                    if (progress < 1) {
-                        requestAnimationFrame(updateCounter);
-                    } else {
-                        el.textContent = target.toLocaleString('id-ID');
+    function initCounterAnimation() {
+        const counters = document.querySelectorAll('.counter:not(.counted)'); // Tambahkan class 'counted' agar tidak diulang
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    el.classList.add('counted'); // Tandai sudah pernah dihitung
+                    const target = parseInt(el.dataset.target) || 0;
+                    if (target === 0) { el.textContent = '0'; return; }
+
+                    const duration = 1800;
+                    const startTime = performance.now();
+
+                    function easeOutExpo(t) {
+                        return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
                     }
+
+                    function updateCounter(currentTime) {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const easedProgress = easeOutExpo(progress);
+                        const current = Math.round(easedProgress * target);
+                        el.textContent = current.toLocaleString('id-ID');
+                        if (progress < 1) {
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            el.textContent = target.toLocaleString('id-ID');
+                        }
+                    }
+
+                    requestAnimationFrame(updateCounter);
+                    counterObserver.unobserve(el);
                 }
+            });
+        }, { threshold: 0.5 });
+        
+        counters.forEach(el => counterObserver.observe(el));
+    }
 
-                requestAnimationFrame(updateCounter);
-                counterObserver.unobserve(el);
-            }
-        });
-    }, { threshold: 0.5 });
-    counters.forEach(el => counterObserver.observe(el));
+    // 1. Jalankan saat pertama kali halaman dibuka (Normal Load)
+    document.addEventListener('DOMContentLoaded', () => {
+        initScrollReveal();
+        initCounterAnimation();
+    });
 
-});
-</script>
+    // 2. Jalankan ULANG setiap kali Livewire melakukan update DOM (Ini yang bikin realtime tidak error)
+    document.addEventListener('livewire:initialized', () => {
+        initScrollReveal();
+        initCounterAnimation();
+    });
+
+    document.addEventListener('livewire:update', () => {
+        initScrollReveal();
+        // Counter tidak perlu di-init ulang saat update Livewire agar angka tidak loncat-loncat
+    });
+    </script>
 @stop

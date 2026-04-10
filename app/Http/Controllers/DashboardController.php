@@ -19,12 +19,14 @@ class DashboardController extends Controller
         $borrowings = $student->borrowings()->with('book')->latest()->get();
 
         // Pisahkan antara buku yang sedang dipinjam dan yang sudah dikembalikan
+        $pendingBorrowings = $borrowings->where('status', 'Pending');
         $currentBorrowings = $borrowings->where('status', 'Dipinjam');
         $returnedBorrowings = $borrowings->where('status', 'Dikembalikan');
         $ipAddress = file_get_contents('https://api.ipify.org');
 
         return view('student.dashboard', [
             'student' => $student,
+            'pendingBorrowings' => $pendingBorrowings,
             'currentBorrowings' => $currentBorrowings,
             'returnedBorrowings' => $returnedBorrowings,
             'ipAddress' => $ipAddress,

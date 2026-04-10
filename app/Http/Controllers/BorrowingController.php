@@ -17,48 +17,49 @@ class BorrowingController extends Controller
     {
         // Ambil user yang sedang login
         $student = Auth::guard('student')->user();
-
+        
         // --- VALIDASI: Cek Apakah Siswa Login dan Aktif ---
-        // Menggunakan is_active_flag sesuai dengan yang ada di file blade
         if (!$student || !$student->is_active_flag) {
             return response()->json([
+                'success' => false,
                 'message' => 'Akun Anda tidak aktif. Silakan hubungi administrator.',
                 'errors' => ['account' => 'Akun Anda tidak aktif.']
             ], 403);
         }
         
         // --- VALIDASI: Cek Jam Operasional ---
-        if (! AppServiceProvider::isLibraryOpen()) {
+        if (!AppServiceProvider::isLibraryOpen()) {
             return response()->json([
+                'success' => false,
                 'message' => 'Peminjaman hanya dapat dilakukan pada jam operasional perpustakaan.',
                 'errors' => ['borrow' => 'Peminjaman hanya dapat dilakukan pada jam operasional.']
             ], 403);
         }
         
         // --- VALIDASI: Cek apakah siswa sudah pernah meminjam atau mengajukan peminjaman buku ini ---
-        // Logika ini akan mencegah peminjaman ganda jika statusnya 'Pending' atau 'Dipinjam'
         $existingBorrowing = Borrowing::where('student_id', $student->id)
             ->where('book_id', $book->id)
             ->whereIn('status', ['Pending', 'Dipinjam'])
             ->first();
 
         if ($existingBorrowing) {
-            // Berikan pesan error yang berbeda berdasarkan status yang ada
             if ($existingBorrowing->status === 'Pending') {
                 $errorMessage = 'Anda sudah mengajukan peminjaman untuk buku ini. Silakan tunggu konfirmasi dari admin.';
-            } else { // Statusnya 'Dipinjam'
+            } else { 
                 $errorMessage = 'Anda sedang meminjam buku ini dan belum mengembalikannya.';
             }
 
             return response()->json([
+                'success' => false,
                 'message' => $errorMessage,
                 'errors' => ['borrow' => $errorMessage]
-            ], 409); // 409 Conflict adalah kode status yang tepat untuk kondisi ini
+            ], 409); 
         }
 
         // --- VALIDASI: Pastikan stok buku masih tersedia ---
         if ($book->stock < 1) {
             return response()->json([
+                'success' => false,
                 'message' => 'Maaf, stok buku ini sudah habis.',
                 'errors' => ['stock' => 'Maaf, stok buku ini sudah habis.']
             ], 400);
@@ -70,23 +71,25 @@ class BorrowingController extends Controller
             'book_id' => $book->id,
             'borrow_date' => now(),
             'due_date' => now()->addDays(7),
-            'status' => 'Pending', // Status awal adalah Pending
+            'status' => 'Pending', 
         ]);
 
-        // Kurangi stok buku
-        $book->decrement('stock');
+        // DIPERBAIKI: JANGAN kurangi stok di sini karena statusnya masih "Pending" (menunggu admin).
+        // Stok sebaiknya dikurangi saat admin menekan tombol "Setujui/Dipinjam" menggunakan Observer atau logic lainnya.
+        // $book->decrement('stock'); 
 
-        // --- BATAL: Jika Admin tolak buku, kembalikan stok buku ---
-        if ($borrowing->status === 'Batal') {
-            $book->increment('stock');
-        }
+        // KODE DI BAWAH INI DIHAPUS KARENA TIDAK LOGIS (status barusan dibuat 'Pending', bukan 'Batal')
+        // if ($borrowing->status === 'Batal') {
+        //     $book->increment('stock');
+        // }
 
         // --- RESPONSE: Kembalikan respons JSON sukses ---
+        // DIPERBAIKI: Menambahkan 'success' => true dan 'borrow_id' agar modal tiket bisa muncul
         return response()->json([
+            'success' => true,
+            'borrow_id' => $borrowing->id, // Dikirim agar muncul ID di Tiket
             'message' => 'Permintaan peminjaman buku "' . $book->title . '" berhasil diajukan! Menunggu persetujuan admin.',
             'redirect_url' => route('books.show', $book)
         ], 200);
-
-
     }
 }

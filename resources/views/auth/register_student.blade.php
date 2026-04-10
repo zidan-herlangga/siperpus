@@ -298,7 +298,7 @@
                         
                         <p class="text-center text-sm text-gray-600">
                             Sudah punya akun? 
-                            <a href="{{ route('student.login.form') }}" class="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline transition-colors">
+                            <a href="{{ route('student.login.form') }}" wire:navigate.prefetch="false" class="font-semibold text-emerald-600 hover:text-emerald-700 hover:underline transition-colors">
                                 Login di sini
                             </a>
                         </p>
@@ -324,151 +324,157 @@
 
     {{-- JAVASCRIPT --}}
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('registrationForm');
-        const submitBtn = document.getElementById('submitButton');
-        const btnText = document.getElementById('buttonText');
-        const btnArrow = document.getElementById('buttonArrow');
-        const btnLoader = document.getElementById('buttonLoader');
-        const passInput = document.getElementById('password');
-        const strengthBar = document.getElementById('strength-bar');
-        const strengthText = document.getElementById('strength-text');
+        function initRegisterScripts() {
+            const form = document.getElementById('registrationForm');
+            if (!form) return; // Hanya jalan jika ada form register
 
-        // --- 1. Toggle Password Visibility ---
-        document.querySelectorAll('.toggle-pass').forEach(button => {
-            button.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-                const icon = this.querySelector('i');
-                
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-        });
-
-        // --- 2. Password Strength Logic ---
-        passInput.addEventListener('input', function() {
-            const val = this.value;
-            let score = 0;
-            if (val.length >= 8) score++;
-            if (/[A-Z]/.test(val)) score++;
-            if (/[0-9]/.test(val)) score++;
-            if (/[^A-Za-z0-9]/.test(val)) score++;
-
-            const levels = [
-                { width: '0%', color: '#e5e7eb', text: '', textClass: 'text-gray-400' },
-                { width: '25%', color: '#ef4444', text: 'Lemah', textClass: 'text-red-500' },
-                { width: '50%', color: '#f59e0b', text: 'Cukup', textClass: 'text-amber-500' },
-                { width: '75%', color: '#3b82f6', text: 'Kuat', textClass: 'text-blue-500' },
-                { width: '100%', color: '#10b981', text: 'Sangat Kuat', textClass: 'text-emerald-500' }
-            ];
-
-            const level = val.length === 0 ? levels[0] : levels[score];
+            const submitBtn = document.getElementById('submitButton');
+            const btnText = document.getElementById('buttonText');
+            const btnArrow = document.getElementById('buttonArrow');
+            const btnLoader = document.getElementById('buttonLoader');
+            const passInput = document.getElementById('password');
+            const strengthBar = document.getElementById('strength-bar');
+            const strengthText = document.getElementById('strength-text');
             
-            strengthBar.style.width = level.width;
-            strengthBar.style.backgroundColor = level.color;
-            strengthText.textContent = level.text;
-            strengthText.className = `text-xs font-semibold ${level.textClass}`;
-        });
+            const sections = document.querySelectorAll('.form-section');
+            const steps = document.querySelectorAll('.step-indicator');
 
-        // --- 3. Progress Step Tracker Logic ---
-        const sections = document.querySelectorAll('.form-section');
-        const steps = document.querySelectorAll('.step-indicator');
+            // --- 1. Toggle Password Visibility ---
+            document.querySelectorAll('.toggle-pass').forEach(button => {
+                // Mencegah duplikat event listener
+                if (button.hasAttribute('data-bound')) return;
+                button.setAttribute('data-bound', 'true');
 
-        function updateProgress() {
-            let allFilled = true;
-            
-            sections.forEach((section, index) => {
-                const inputs = section.querySelectorAll('input[required], select[required]');
-                let sectionFilled = true;
-
-                inputs.forEach(input => {
-                    if (!input.value.trim()) {
-                        sectionFilled = false;
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const input = document.getElementById(targetId);
+                    const icon = this.querySelector('i');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
                     }
                 });
-
-                const step = steps[index];
-                const stepNum = step.querySelector('.step-number');
-                
-                if (sectionFilled) {
-                    step.classList.add('completed');
-                    step.classList.remove('active');
-                    stepNum.innerHTML = '<i class="fas fa-check text-xs"></i>';
-                } else {
-                    step.classList.remove('completed');
-                    if (allFilled) {
-                        step.classList.add('active');
-                    } else {
-                        step.classList.remove('active');
-                    }
-                    stepNum.textContent = index + 1;
-                }
-
-                if (!sectionFilled) allFilled = false;
             });
 
-            // Jika semua step sebelumnya sudah terisi, aktifkan step berikutnya
-            if(!allFilled) {
-                for (let i = 0; i < sections.length; i++) {
-                    const inputs = sections[i].querySelectorAll('input[required], select[required]');
-                    let isEmpty = false;
-                    inputs.forEach(inp => { if(!inp.value.trim()) isEmpty = true; });
+            // --- 2. Password Strength Logic ---
+            if (passInput) {
+                passInput.addEventListener('input', function() {
+                    const val = this.value;
+                    let score = 0;
+                    if (val.length >= 8) score++;
+                    if (/[A-Z]/.test(val)) score++;
+                    if (/[0-9]/.test(val)) score++;
+                    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+                    const levels = [
+                        { width: '0%', color: '#e5e7eb', text: '', textClass: 'text-gray-400' },
+                        { width: '25%', color: '#ef4444', text: 'Lemah', textClass: 'text-red-500' },
+                        { width: '50%', color: '#f59e0b', text: 'Cukup', textClass: 'text-amber-500' },
+                        { width: '75%', color: '#3b82f6', text: 'Kuat', textClass: 'text-blue-500' },
+                        { width: '100%', color: '#10b981', text: 'Sangat Kuat', textClass: 'text-emerald-500' }
+                    ];
+
+                    const level = val.length === 0 ? levels[0] : levels[score];
                     
-                    if (isEmpty) {
-                        steps[i].classList.add('active');
-                        steps[i].classList.remove('completed');
-                        steps[i].querySelector('.step-number').textContent = i + 1;
-                        break;
+                    strengthBar.style.width = level.width;
+                    strengthBar.style.backgroundColor = level.color;
+                    strengthText.textContent = level.text;
+                    strengthText.className = `text-xs font-semibold ${level.textClass}`;
+                });
+            }
+
+            // --- 3. Progress Step Tracker Logic ---
+            function updateProgress() {
+                if(!sections.length || !steps.length) return;
+
+                let allFilled = true;
+                sections.forEach((section, index) => {
+                    const inputs = section.querySelectorAll('input[required], select[required]');
+                    let sectionFilled = true;
+                    inputs.forEach(input => { if (!input.value.trim()) sectionFilled = false; });
+
+                    const step = steps[index];
+                    const stepNum = step.querySelector('.step-number');
+                    
+                    if (sectionFilled) {
+                        step.classList.add('completed');
+                        step.classList.remove('active');
+                        stepNum.innerHTML = '<i class="fas fa-check text-xs"></i>';
                     } else {
-                        steps[i].classList.remove('active');
-                        steps[i].classList.add('completed');
-                        steps[i].querySelector('.step-number').innerHTML = '<i class="fas fa-check text-xs"></i>';
+                        step.classList.remove('completed');
+                        if (allFilled) step.classList.add('active');
+                        else step.classList.remove('active');
+                        stepNum.textContent = index + 1;
+                    }
+                    if (!sectionFilled) allFilled = false;
+                });
+
+                if(!allFilled) {
+                    for (let i = 0; i < sections.length; i++) {
+                        const inputs = sections[i].querySelectorAll('input[required], select[required]');
+                        let isEmpty = false;
+                        inputs.forEach(inp => { if(!inp.value.trim()) isEmpty = true; });
+                        
+                        if (isEmpty) {
+                            steps[i].classList.add('active');
+                            steps[i].classList.remove('completed');
+                            steps[i].querySelector('.step-number').textContent = i + 1;
+                            break;
+                        } else {
+                            steps[i].classList.remove('active');
+                            steps[i].classList.add('completed');
+                            steps[i].querySelector('.step-number').innerHTML = '<i class="fas fa-check text-xs"></i>';
+                        }
                     }
                 }
             }
+
+            form.addEventListener('input', updateProgress);
+            form.addEventListener('change', updateProgress);
+            updateProgress(); 
+
+            // --- 4. Form Submit & Loading State ---
+            form.addEventListener('submit', function() {
+                submitBtn.disabled = true;
+                btnText.textContent = 'Memproses Pendaftaran...';
+                if(btnArrow) btnArrow.classList.add('hidden');
+                if(btnLoader) btnLoader.classList.remove('hidden');
+            });
+
+            // --- 5. Toast Notification ---
+            window.hideNotification = function() {
+                const notification = document.getElementById('notification');
+                if(notification) notification.classList.remove('show');
+            };
+
+            window.showNotification = function(title, message, type) {
+                const notification = document.getElementById('notification');
+                const iconEl = document.getElementById('notificationIcon');
+                if (!notification) return;
+
+                if (type === 'error') {
+                    iconEl.innerHTML = '<div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center"><i class="fas fa-xmark text-red-500 text-sm"></i></div>';
+                } else {
+                    iconEl.innerHTML = '<div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center"><i class="fas fa-check text-emerald-500 text-sm"></i></div>';
+                }
+                
+                document.getElementById('notificationTitle').textContent = title;
+                document.getElementById('notificationMessage').textContent = message;
+                notification.classList.add('show');
+                setTimeout(window.hideNotification, 4000);
+            };
         }
 
-        // Panggil saat ada perubahan di input manapun
-        form.addEventListener('input', updateProgress);
-        form.addEventListener('change', updateProgress);
-        updateProgress(); // Initial check
+        // Jalankan saat pertama kali load
+        document.addEventListener('DOMContentLoaded', initRegisterScripts);
 
-        // --- 4. Form Submit & Loading State ---
-        form.addEventListener('submit', function() {
-            submitBtn.disabled = true;
-            btnText.textContent = 'Memproses Pendaftaran...';
-            btnArrow.classList.add('hidden');
-            btnLoader.classList.remove('hidden');
-        });
-
-        // --- 5. Toast Notification Function ---
-        window.showNotification = function(title, message, type) {
-            const notification = document.getElementById('notification');
-            const iconEl = document.getElementById('notificationIcon');
-            
-            if (type === 'error') {
-                iconEl.innerHTML = '<div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center"><i class="fas fa-xmark text-red-500 text-sm"></i></div>';
-            } else {
-                iconEl.innerHTML = '<div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center"><i class="fas fa-check text-emerald-500 text-sm"></i></div>';
-            }
-            
-            document.getElementById('notificationTitle').textContent = title;
-            document.getElementById('notificationMessage').textContent = message;
-            notification.classList.add('show');
-            setTimeout(hideNotification, 4000);
-        };
-
-        window.hideNotification = function() {
-            document.getElementById('notification').classList.remove('show');
-        };
-    });
+        // Jalankan ULANG setiap kali navigasi Livewire berhasil
+        document.addEventListener('livewire:navigated', initRegisterScripts);
     </script>
 @endsection

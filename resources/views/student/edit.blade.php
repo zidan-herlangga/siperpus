@@ -1,364 +1,503 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
 
-@section('title', 'Edit Profil Siswa - ' . config('app.name'))
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#065f46">
+    <meta name="description" content="Aplikasi Peminjaman Buku Online Perpustakaan SMK Karya Guna 2 Bekasi">
+    
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://testing.zidanherlangga.my.id/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ELibrary SMK Karya Guna 2">
+    <meta property="og:description" content="Aplikasi Peminjaman Buku Online Perpustakaan SMK Karya Guna 2 Bekasi">
+    <meta property="og:image" content="https://ogcdn.net/ad84de55-98c4-4cbb-9d40-76165cdc1c86/v1/https%3A%2F%2Ftesting.zidanherlangga.my.id%2Fassets%2Fimage%2FSMK-Karya-Guna-2-Bekasi.svg/Perpustakaan%20Digital%20Aktif/ELibrary%20SMK%0AKarya%20Guna%202/Aplikasi%20Peminjaman%20Buku%20Online%20Perpustakaan%20SMK%20Karya%20Guna%202%20Bekasi/Jelajahi%20Koleksi/https%3A%2F%2Ftesting.zidanherlangga.my.id%2Fassets%2Fimage%2Flogo-smk.png/25%2B%20Judul%20Buku%20Tersedia/og.png">
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="testing.zidanherlangga.my.id">
+    <meta property="twitter:url" content="https://testing.zidanherlangga.my.id/">
+    <meta name="twitter:title" content="ELibrary SMK Karya Guna 2">
+    <meta name="twitter:description" content="Aplikasi Peminjaman Buku Online Perpustakaan SMK Karya Guna 2 Bekasi">
+    <meta name="twitter:image" content="https://ogcdn.net/ad84de55-98c4-4cbb-9d40-76165cdc1c86/v1/https%3A%2F%2Ftesting.zidanherlangga.my.id%2Fassets%2Fimage%2FSMK-Karya-Guna-2-Bekasi.svg/Perpustakaan%20Digital%20Aktif/ELibrary%20SMK%0AKarya%20Guna%202/Aplikasi%20Peminjaman%20Buku%20Online%20Perpustakaan%20SMK%20Karya%20Guna%202%20Bekasi/Jelajahi%20Koleksi/https%3A%2F%2Ftesting.zidanherlangga.my.id%2Fassets%2Fimage%2Flogo-smk.png/25%2B%20Judul%20Buku%20Tersedia/og.png">
 
-@section('styles')
-    <style>
-        .bg-mesh {
-            background-color: #f0fdf4;
-            background-image: 
-                radial-gradient(at 20% 20%, rgba(52, 211, 153, 0.15) 0px, transparent 50%),
-                radial-gradient(at 80% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
-                radial-gradient(at 0% 80%, rgba(167, 243, 208, 0.15) 0px, transparent 50%),
-                radial-gradient(at 80% 80%, rgba(52, 211, 153, 0.1) 0px, transparent 50%);
-        }
-        .card-glass {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), 0 4px 20px -5px rgba(0, 0, 0, 0.03);
-        }
-        .input-modern {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1.5px solid #e5e7eb;
-        }
-        .input-modern:hover:not(:disabled):not([readonly]) { border-color: #d1d5db; }
-        .input-modern:focus {
-            border-color: #10b981;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-        }
-        .input-modern:disabled, .input-modern[readonly] {
-            background-color: #f3f4f6;
-            color: #6b7280;
-            cursor: not-allowed;
-        }
-        .input-modern.border-red-400 { border-color: #f87171; }
-        .input-modern.border-red-400:focus { box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.1); border-color: #f87171; }
-        .input-icon { transition: color 0.3s ease; }
-        .input-group:focus-within .input-icon { color: #059669; }
-        
-        .upload-area { border: 2px dashed #e5e7eb; transition: all 0.3s ease; }
-        .upload-area:hover { border-color: #10b981; background-color: #f0fdf4; }
-        
-        .btn-cancel { transition: all 0.3s ease; }
-        .btn-cancel:hover { background-color: #e5e7eb; }
-        .btn-save {
-            background: linear-gradient(135deg, #059669, #047857);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-save:hover:not(:disabled) {
-            background: linear-gradient(135deg, #047857, #065f46);
-            box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.4);
-        }
-        .btn-save:disabled { opacity: 0.7; cursor: not-allowed; }
-    </style>
-@stop
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
-@section('content')
-    <div class="min-h-screen bg-mesh flex items-center justify-center px-4 py-12">
-        <div class="w-full max-w-3xl">
-            <div class="card-glass rounded-2xl overflow-hidden animate-fade-in">
-                
-                {{-- Header --}}
-                <div class="bg-gradient-to-br from-emerald-600 to-green-700 text-white p-10 text-center relative">
-                    <div class="absolute inset-0 bg-black/5"></div>
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
-                            <i class="fas fa-user-pen text-2xl"></i>
-                        </div>
-                        <h1 class="text-2xl font-bold tracking-tight mb-1">Edit Profil Siswa</h1>
-                        <p class="text-green-100 text-sm">Perbarui informasi akun Anda di bawah ini.</p>
-                    </div>
-                </div>
+    <!-- PWA  -->
+    <link rel="apple-touch-icon" href="{{ asset('assets/image/favicon.png') }}">
+    <link rel="manifest" href="{{ asset('/manifest.json') }}">
 
-                {{-- Form Area --}}
-                <div class="p-8">
-                    <!-- Container untuk pesan Sukses/Error dari AJAX -->
-                    <div id="alertContainer"></div>
+    {{-- ENV --}}
+    <title>@yield('title', config('app.name'))</title>
 
-                    <form id="editProfileForm" action="{{ route('student.update') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+    <link rel="icon" href="{{ asset('assets/image/favicon.png') }}" type="image/png">
+    <link rel="stylesheet" href="{{ asset('assets/css/layout.css') }}">
+    @yield('styles')
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Tailwind CSS CDN & JS -->
+    <script src="https://cdn.tailwindcss.com/3.4.17" defer></script>
+
+    <!-- DITAMBAHKAN LIVEWIRE 1: Styles Livewire v3 -->
+    <livewire:styles />
+</head>
+
+<body class="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
+    {{-- HEADER --}}
+    <header id="mainHeader" class="hidden lg:flex md:flex gradient-bg text-white shadow-lg sticky top-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+
+            {{-- LOGO --}}
+            <a href="{{ route('homepage') }}" wire:navigate.prefetch="false" class="flex items-center space-x-2 smooth-transition hover:scale-105">
+                <img src="{{ asset('assets/image/SMK-Karya-Guna-2-Bekasi.svg') }}" alt="Logo SMK Karya Guna 2 Bekasi"
+                    class="w-auto h-10 md:h-12">
+            </a>
+
+            {{-- NAVIGASI DESKTOP --}}
+            <nav class="hidden md:flex items-center gap-2 font-medium">
+                @auth('student')
+                    <a href="{{ route('student.dashboard') }}" wire:navigate.prefetch="false"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition {{ request()->routeIs('student.dashboard') ? 'bg-white/20 text-yellow-300' : 'text-white/90 hover:bg-white/10' }}" style="color: #006638">
+                        <i class="fas fa-tachometer-alt text-sm"></i>
+                        Dashboard
+                    </a>
+
+                    <a href="{{ route('books.index') }}" wire:navigate.prefetch="false"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition {{ request()->routeIs('books.*') ? 'bg-white/20 text-yellow-300' : 'text-white/90 hover:bg-white/10' }}" style="color: #006638">
+                        <i class="fas fa-book text-sm"></i>
+                        Katalog
+                    </a>
+
+                    {{-- ★ MENU RIWAYAT DESKTOP ★ --}}
+                    <a href="{{ route('student.history') }}" wire:navigate.prefetch="false"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition {{ request()->routeIs('student.history') ? 'bg-white/20 text-yellow-300' : 'text-white/90 hover:bg-white/10' }}" style="color: #006638">
+                        <i class="fas fa-clock-rotate-left text-sm"></i>
+                        Riwayat
+                    </a>
+
+                    <button onclick="openBorrowGuideModal()"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition text-white/90 hover:bg-white/10" style="color: #006638">
+                        <i class="fas fa-circle-info text-sm"></i>
+                        Petunjuk
+                    </button>
+
+                    <form action="{{ route('student.logout') }}" method="POST" class="inline ml-2">
                         @csrf
-                        {{-- CATATAN: Jika route kamu memakai PUT/PATCH, biarkan @method('PUT') di bawah ini. 
-                                     Jika route kamu memakai POST, hapus baris @method di bawah ini. --}}
+                        <button type="submit"
+                            class="flex items-center gap-2 bg-red-500/80 backdrop-blur-sm text-white px-4 py-2 rounded-lg shadow smooth-transition hover:bg-red-600 btn-hover-effect">
+                            <i class="fas fa-right-from-bracket text-sm"></i>
+                            Keluar
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('books.index') }}" wire:navigate.prefetch="false" 
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition {{ request()->routeIs('books.*') ? 'bg-white/20 text-yellow-300' : 'text-white/90 hover:bg-white/10' }}" style="color: #006638">
+                        <i class="fas fa-book text-sm"></i>
+                        Katalog
+                    </a>
 
-                        {{-- === Informasi Pribadi === --}}
-                        <div>
-                            <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs"><i class="fas fa-user"></i></div>
-                                Informasi Pribadi
-                            </h3>
-                            <div class="grid md:grid-cols-2 gap-5">
-                                <div>
-                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap</label>
-                                    <div class="relative input-group">
-                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <i class="fas fa-user input-icon text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input type="text" name="name" id="name" value="{{ old('name', $student->name) }}" required
-                                            class="input-modern w-full pl-11 pr-4 py-3 rounded-xl bg-white outline-none text-gray-800 placeholder-gray-400"
-                                            placeholder="Masukkan nama lengkap">
-                                    </div>
-                                </div>
+                    <button onclick="openBorrowGuideModal()"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition text-white/90 hover:bg-white/10" style="color: #006638">
+                        <i class="fas fa-circle-info text-sm"></i>
+                        Petunjuk
+                    </button>
 
-                                {{-- NIS (DIBUAT READONLY) --}}
-                                <div>
-                                    <label for="nis" class="block text-sm font-medium text-gray-700 mb-1.5">NIS <span class="text-gray-400 font-normal">(Tidak dapat diubah)</span></label>
-                                    <div class="relative input-group">
-                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <i class="fas fa-id-card input-icon text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input type="text" name="nis" id="nis" value="{{ $student->nis }}" readonly
-                                            class="input-modern w-full pl-11 pr-4 py-3 rounded-xl outline-none"
-                                            placeholder="Contoh: 20250001">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- PWA Install Button -->
+                    <button id="pwa-install-btn"
+                        class="flex items-center gap-2 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-lg shadow smooth-transition btn-hover-effect" style="display:none; background: #006638 !important;">
+                        <i class="fas fa-download text-sm"></i>
+                        Install App
+                    </button>
 
-                        {{-- === Sekolah & Kontak === --}}
-                        <div>
-                            <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs"><i class="fas fa-school"></i></div>
-                                Sekolah & Kontak
-                            </h3>
-                            <div class="grid md:grid-cols-2 gap-5">
-                                
-                                {{-- KELAS (DIBUAT READONLY) --}}
-                                <div>
-                                    <label for="class" class="block text-sm font-medium text-gray-700 mb-1.5">Kelas <span class="text-gray-400 font-normal">(Tidak dapat diubah)</span></label>
-                                    <div class="relative input-group">
-                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <i class="fas fa-graduation-cap input-icon text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input type="text" name="class" id="class" value="{{ $student->class }}" readonly 
-                                            class="input-modern w-full pl-11 pr-4 py-3 rounded-xl outline-none"
-                                            placeholder="Contoh: XII Akuntansi">
-                                    </div>
-                                </div>
+                    {{-- Dropdown Akun --}}
+                    <div class="relative ml-2">
+                        <button id="dropdownToggle"
+                            class="flex items-center gap-2 bg-yellow-400 text-gray-900 font-semibold px-4 py-2 rounded-lg shadow-md smooth-transition hover:bg-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-200 btn-hover-effect">
+                            <i class="fas fa-user text-sm"></i>
+                            <span>Akun</span>
+                            <i id="dropdownArrow" class="fas fa-chevron-down ml-1 text-xs smooth-transition"></i>
+                        </button>
 
-                                <div>
-                                    <label for="contact" class="block text-sm font-medium text-gray-700 mb-1.5">Nomor Telepon / WA</label>
-                                    <div class="relative input-group">
-                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <i class="fas fa-phone input-icon text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input type="tel" name="contact" id="contact" value="{{ old('contact', $student->contact) }}"
-                                            class="input-modern w-full pl-11 pr-4 py-3 rounded-xl bg-white outline-none text-gray-800 placeholder-gray-400"
-                                            placeholder="081234567890">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- === Informasi Akun === --}}
-                        <div>
-                            <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xs"><i class="fas fa-shield-halved"></i></div>
-                                Informasi Akun
-                            </h3>
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
-                                <div class="relative input-group">
-                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <i class="fas fa-at input-icon text-gray-400 text-sm"></i>
-                                    </div>
-                                    <input type="email" name="email" id="email" value="{{ old('email', $student->email) }}" required
-                                        class="input-modern w-full pl-11 pr-4 py-3 rounded-xl bg-white outline-none text-gray-800 placeholder-gray-400"
-                                        placeholder="nama@email.com">
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- === Upload Avatar === --}}
-                        <div>
-                            <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-xs"><i class="fas fa-camera"></i></div>
-                                Foto Profil
-                            </h3>
-                            <div class="flex flex-col sm:flex-row gap-5 items-start">
-                                <div class="flex-shrink-0">
-                                    <div id="avatarPreviewContainer" class="w-28 h-28 rounded-xl bg-gray-100 border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden relative">
-                                        @if ($student->avatar)
-                                            <img src="{{ asset('storage/' . $student->avatar) }}" alt="Avatar" class="w-full h-full object-cover" id="currentAvatar">
-                                        @else
-                                            <div class="text-center text-gray-400">
-                                                <i class="fas fa-user text-2xl mb-1"></i>
-                                                <p class="text-[10px]">Belum ada foto</p>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="flex-1 w-full">
-                                    <div class="upload-area rounded-xl p-4 text-center cursor-pointer relative">
-                                        <input type="file" name="avatar" id="avatar" accept="image/png,image/jpeg,image/gif" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                                        <div class="pointer-events-none">
-                                            <i class="fas fa-cloud-arrow-up text-gray-400 text-xl mb-2"></i>
-                                            <p class="text-sm text-gray-600 font-medium">Klik untuk pilih foto</p>
-                                            <p class="text-xs text-gray-400 mt-1">PNG, JPG, atau GIF (Maks. 2MB)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- === Tombol Aksi === --}}
-                        <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-100 mt-2">
-                            <a href="{{ route('student.dashboard') }}"
-                                class="btn-cancel w-full sm:w-1/2 bg-gray-100 text-gray-600 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm border border-gray-200">
-                                <i class="fas fa-arrow-left text-xs"></i>
-                                Batal
+                        <div id="dropdownMenu"
+                            class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl opacity-0 invisible smooth-transition transform origin-top-right z-50 border border-gray-100">
+                            <a href="{{ route('student.login.form') }}" wire:navigate.prefetch="false"
+                                class="flex items-center gap-3 px-4 py-3 text-gray-700 smooth-transition hover:bg-gray-50 rounded-t-xl">
+                                <i class="fas fa-right-to-bracket text-green-600"></i>
+                                <span class="text-sm font-medium">Login</span>
                             </a>
-                            <button type="submit" id="submitButton"
-                                class="btn-save w-full sm:w-1/2 text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm">
-                                <i class="fas fa-floppy-disk text-xs" id="btnIcon"></i>
-                                <span id="btnText">Simpan Perubahan</span>
-                                <div id="buttonLoader" class="hidden">
-                                    <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                </div>
-                            </button>
+                            <div class="border-t border-gray-100"></div>
+                            <a href="{{ route('student.register.form') }}" wire:navigate.prefetch="false"
+                                class="flex items-center gap-3 px-4 py-3 text-gray-700 smooth-transition hover:bg-gray-50 rounded-b-xl">
+                                <i class="fas fa-user-plus text-green-600"></i>
+                                <span class="text-sm font-medium">Daftar</span>
+                            </a>
                         </div>
+                    </div>
+                @endauth
+            </nav>
+
+            {{-- TOMBOL MENU MOBILE --}}
+            <button id="menuToggle" class="md:hidden text-white text-xl focus:outline-none smooth-transition hover:scale-110 w-10 h-10 flex items-center justify-center rounded-lg bg-white/10">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    {{-- OFFCANVAS MODERN --}}
+    <div id="offcanvasOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 opacity-0 invisible smooth-transition cursor-pointer"></div>
+    
+    <div id="offcanvas" class="offcanvas fixed top-0 left-0 w-72 h-full z-40 transform -translate-x-full smooth-transition shadow-2xl bg-white">
+        <div class="flex justify-between items-center p-5 border-b border-green-100">
+            <h2 class="text-lg font-bold text-green-800">Menu Utama</h2>
+            <button id="closeOffcanvas" class="text-gray-400 hover:text-red-500 smooth-transition text-lg w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+        <div class="flex flex-col flex-grow p-4 space-y-1">
+            @auth('student')
+                <a href="{{ route('student.dashboard') }}" wire:navigate.prefetch="false" class="offcanvas-link">
+                    <i class="fas fa-tachometer-alt w-5 text-center"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ route('books.index') }}" wire:navigate.prefetch="false" class="offcanvas-link">
+                    <i class="fas fa-book w-5 text-center"></i>
+                    <span>Katalog Buku</span>
+                </a>
+                {{-- ★ MENU RIWAYAT OFFCANVAS ★ --}}
+                <a href="{{ route('student.history') }}" wire:navigate.prefetch="false" class="offcanvas-link">
+                    <i class="fas fa-clock-rotate-left w-5 text-center"></i>
+                    <span>Riwayat Peminjaman</span>
+                </a>
+                <button onclick="openBorrowGuideModal(); closeMenu();" class="offcanvas-link text-left w-full">
+                    <i class="fas fa-circle-info w-5 text-center"></i>
+                    <span>Petunjuk</span>
+                </button>
+                
+                <div class="flex-grow"></div>
+                
+                <div class="border-t border-gray-100 pt-4 mt-4">
+                    <form action="{{ route('student.logout') }}" method="POST" class="w-full">
+                        @csrf
+                        <button type="submit" class="flex items-center gap-3 w-full text-left text-red-500 font-semibold py-3 px-3 smooth-transition hover:bg-red-50 rounded-lg">
+                            <i class="fas fa-right-from-bracket w-5 text-center"></i>
+                            <span>Keluar</span>
+                        </button>
                     </form>
                 </div>
+            @else
+                <a href="{{ route('homepage') }}" wire:navigate.prefetch="false" class="offcanvas-link">
+                    <i class="fas fa-house w-5 text-center"></i>
+                    <span>Beranda</span>
+                </a>
+                <a href="{{ route('books.index') }}" wire:navigate.prefetch="false" class="offcanvas-link">
+                    <i class="fas fa-book w-5 text-center"></i>
+                    <span>Katalog Buku</span>
+                </a>
+                <button onclick="openBorrowGuideModal(); closeMenu();" class="offcanvas-link text-left w-full">
+                    <i class="fas fa-circle-info w-5 text-center"></i>
+                    <span>Petunjuk</span>
+                </button>
+                
+                <div class="flex-grow"></div>
+                
+                <div class="border-t border-gray-100 pt-4 mt-4 space-y-1">
+                    <a href="{{ route('student.register.form') }}" class="offcanvas-link font-medium text-green-700" wire:navigate.prefetch="false">
+                        <i class="fas fa-user-plus w-5 text-center"></i>
+                        <span>Daftar Akun</span>
+                    </a>
+                    <a href="{{ route('student.login.form') }}" class="offcanvas-link font-medium" wire:navigate.prefetch="false">
+                        <i class="fas fa-right-to-bracket w-5 text-center"></i>
+                        <span>Login</span>
+                    </a>
+                </div>
+            @endauth
+        </div>
+    </div>
+
+    <!-- DITAMBAHKAN LIVEWIRE 2: Wadah Notifikasi Realtime -->
+    <div id="livewire-notification-container" class="fixed top-20 right-4 z-[90] space-y-3 w-80 pointer-events-none">
+        {{-- Disinilah popup notifikasi akan muncul nanti --}}
+    </div>
+
+    {{-- MAIN CONTENT --}}
+    <main class="flex-grow">
+        @yield('content')
+    </main>
+
+    {{-- BOTTOM NAVIGATION MOBILE --}}
+    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-40 md:hidden">
+        <div class="bg-white/95 backdrop-blur-xl border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] px-2 py-2 pb-[env(safe-area-inset-bottom)]">
+            <div class="flex items-center justify-around">
+                
+                @auth('student')
+                    <a href="{{ route('homepage') }}" wire:navigate.prefetch="false" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all text-gray-400 active-nav-item group {{ request()->routeIs('homepage') ? 'text-emerald-600' : '' }}">
+                        <div class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 group-[.text-emerald-600]:bg-emerald-100 transition-colors mb-1">
+                            <i class="fas fa-house text-xs"></i>
+                        </div>
+                        <span class="text-[10px] font-semibold">Beranda</span>
+                    </a>
+
+                    {{-- Menu Dashboard --}}
+                    <a href="{{ route('student.dashboard') }}" wire:navigate.prefetch="false" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all group {{ request()->routeIs('student.dashboard') ? 'text-emerald-600' : 'text-gray-400 active-nav-item' }}">
+                        <div class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 group-[.text-emerald-600]:bg-emerald-100 transition-colors mb-1">
+                            <i class="fas fa-user text-xs"></i>
+                        </div>
+                        <span class="text-[10px] font-semibold">Dashboard</span>
+                    </a>
+
+                    {{-- ★ MENU RIWAYAT BOTTOM NAV ★ --}}
+                    <a href="{{ route('student.history') }}" wire:navigate.prefetch="false" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all group {{ request()->routeIs('student.history') ? 'text-emerald-600' : 'text-gray-400 active-nav-item' }}">
+                        <div class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 group-[.text-emerald-600]:bg-emerald-100 transition-colors mb-1">
+                            <i class="fas fa-clock-rotate-left text-xs"></i>
+                        </div>
+                        <span class="text-[10px] font-semibold">Riwayat</span>
+                    </a>
+                @else
+                    {{-- Menu Beranda --}}
+                    <a href="{{ route('homepage') }}" wire:navigate.prefetch="false" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all text-gray-400 active-nav-item group {{ request()->routeIs('homepage') ? 'text-emerald-600' : '' }}">
+                        <div class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 group-[.text-emerald-600]:bg-emerald-100 transition-colors mb-1">
+                            <i class="fas fa-house text-xs"></i>
+                        </div>
+                        <span class="text-[10px] font-semibold">Beranda</span>
+                    </a>
+                @endauth
+
+                {{-- Menu Katalog --}}
+                <a href="{{ route('books.index') }}" wire:navigate.prefetch="false" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all text-gray-400 active-nav-item group {{ request()->routeIs('books.*') ? 'text-emerald-600' : '' }}">
+                    <div class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 group-[.text-emerald-600]:bg-emerald-100 transition-colors mb-1">
+                        <i class="fas fa-book-open text-xs"></i>
+                    </div>
+                    <span class="text-[10px] font-semibold">Katalog</span>
+                </a>
+
+                {{-- Menu Petunjuk --}}
+                <button onclick="openBorrowGuideModal()" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all text-gray-400 active-nav-item group">
+                    <div class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 group-hover:bg-blue-100 transition-colors mb-1">
+                        <i class="fas fa-circle-info text-xs"></i>
+                    </div>
+                    <span class="text-[10px] font-semibold">Info</span>
+                </button>
+
+                {{-- Menu Akun (Login/Daftar/Keluar) --}}
+                @auth('student')
+                    <form action="{{ route('student.logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all text-red-500 group w-full">
+                            <div class="w-7 h-7 flex items-center justify-center rounded-lg bg-red-100 group-hover:bg-red-200 transition-colors mb-1">
+                                <i class="fas fa-right-from-bracket text-xs"></i>
+                            </div>
+                            <span class="text-[10px] font-semibold">Keluar</span>
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('student.login.form') }}" wire:navigate.prefetch="false" class="flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all text-gray-400 active-nav-item group">
+                        <div class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 group-hover:bg-amber-100 transition-colors mb-1">
+                            <i class="fas fa-right-to-bracket text-xs"></i>
+                        </div>
+                        <span class="text-[10px] font-semibold">Masuk</span>
+                    </a>
+                @endauth
+
+            </div>
+        </div>
+    </nav>
+
+    {{-- FOOTER --}}
+    <footer class="hidden lg:flex md:flex footer text-white py-8 mt-12 md:mt-12 mb-20 md:mb-0">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex items-center justify-center gap-2 mb-3 opacity-70">
+                <i class="fas fa-book-open text-sm"></i>
+                <span class="text-sm font-medium">Perpustakaan Digital</span>
+            </div>
+            <p class="text-sm text-white/60">© {{ date('Y') }} SMK Karya Guna 2 Bekasi. Hak Cipta Dilindungi.</p>
+        </div>
+    </footer>
+
+    {{-- MODAL PETUNJUK --}}
+    <div id="borrowGuideModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-[60] opacity-0 invisible smooth-transition">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full transform scale-95 smooth-transition border border-gray-100" id="modalContent">
+            <div class="flex justify-between items-center mb-5">
+                <h2 class="text-lg font-bold text-green flex items-center gap-2">
+                    <i class="fas fa-book-open-reader text-emerald-500"></i>
+                    Petunjuk Peminjaman
+                </h2>
+                <button onclick="closeBorrowGuideModal()" class="text-gray-300 hover:text-red-500 smooth-transition text-lg w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+            <ol class="list-decimal list-inside space-y-3 text-gray-600 text-sm leading-relaxed">
+                <li><strong class="text-gray-800">Daftar/Login:</strong> Pastikan Anda sudah memiliki akun dan dalam keadaan login.</li>
+                <li><strong class="text-gray-800">Cari Buku:</strong> Jelajahi katalog untuk menemukan buku yang ingin Anda pinjam.</li>
+                <li><strong class="text-gray-800">Klik Pinjam:</strong> Pada halaman detail buku, klik tombol "Pinjam Buku".</li>
+                <li><strong class="text-gray-800">Konfirmasi:</strong> Setujui syarat dan ketentuan pada modal konfirmasi.</li>
+                <li><strong class="text-gray-800">Selesai:</strong> Buku berhasil dipinjam! Cek Dashboard untuk detailnya.</li>
+            </ol>
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeBorrowGuideModal()" class="bg-green text-white px-5 py-2.5 rounded-lg smooth-transition hover:bg-dark-green btn-hover-effect font-medium text-sm shadow-md">
+                    Mengerti
+                </button>
             </div>
         </div>
     </div>
-@endsection
 
-@section('scripts')
+    @yield('scripts')
+
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const avatarInput = document.getElementById('avatar');
-        const previewContainer = document.getElementById('avatarPreviewContainer');
-        const form = document.getElementById('editProfileForm');
-        const submitBtn = document.getElementById('submitButton');
-        const btnText = document.getElementById('btnText');
-        const btnIcon = document.getElementById('btnIcon');
-        const btnLoader = document.getElementById('buttonLoader');
-        const alertContainer = document.getElementById('alertContainer');
+        // === BOTTOM NAVIGATION MOBILE LOGIC ===
+        function handleBottomNavVisibility() {
+            const bottomNav = document.getElementById('bottomNav');
+            const mainContent = document.querySelector('main');
+            
+            if (!bottomNav) return;
 
-        // --- Preview Avatar Logic ---
-        avatarInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                if (file.size > 2 * 1024 * 1024) {
-                    alert('Ukuran foto maksimal adalah 2MB.');
-                    this.value = '';
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewContainer.innerHTML = `
-                        <img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover">
-                        <button type="button" id="removeAvatar" class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs shadow-md hover:bg-red-600 transition-colors z-20">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    `;
-                    document.getElementById('removeAvatar').addEventListener('click', function() {
-                        resetPreview();
-                    });
-                }
-                reader.readAsDataURL(file);
+            if (window.innerWidth < 768) {
+                bottomNav.classList.add('show-nav');
+                if(mainContent) mainContent.style.paddingBottom = '5rem';
             } else {
-                resetPreview();
+                bottomNav.classList.remove('show-nav');
+                if(mainContent) mainContent.style.paddingBottom = '0';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', handleBottomNavVisibility);
+        window.addEventListener('resize', handleBottomNavVisibility);
+
+        // === HEADER SCROLL EFFECT ===
+        window.addEventListener('scroll', () => {
+            const mainHeader = document.getElementById('mainHeader');
+            if (!mainHeader) return;
+            if (window.scrollY > 10) {
+                mainHeader.classList.add('header-scrolled');
+            } else {
+                mainHeader.classList.remove('header-scrolled');
             }
         });
 
-        function resetPreview() {
-            avatarInput.value = '';
-            @if ($student->avatar)
-                previewContainer.innerHTML = `<img src="{{ asset('storage/' . $student->avatar) }}" alt="Avatar" class="w-full h-full object-cover">`;
-            @else
-                previewContainer.innerHTML = `
-                    <div class="text-center text-gray-400">
-                        <i class="fas fa-user text-2xl mb-1"></i>
-                        <p class="text-[10px]">Belum ada foto</p>
-                    </div>`;
-            @endif
-        }
+        // === DROPDOWN DESKTOP LOGIC ===
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownToggle = document.getElementById('dropdownToggle');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            const dropdownArrow = document.getElementById('dropdownArrow');
 
-        // --- Form Submit AJAX (Tanpa Refresh & Aman dari Hack) ---
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Cegah reload
-
-            // Bersihkan alert sebelumnya
-            alertContainer.innerHTML = '';
-
-            // Ubah tombol jadi loading
-            submitBtn.disabled = true;
-            btnIcon.classList.add('hidden');
-            btnLoader.classList.remove('hidden');
-            btnText.textContent = 'Menyimpan...';
-
-            const formData = new FormData(form);
-                fetch(form.action, { 
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'X-Requested-With': 'XMLHttpRequest'
+            if (dropdownToggle) {
+                dropdownToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = !dropdownMenu.classList.contains('invisible');
+                    if (isOpen) { closeDropdown(); } 
+                    else {
+                        dropdownMenu.classList.remove('invisible', 'opacity-0');
+                        dropdownMenu.classList.add('opacity-100', 'visible');
+                        dropdownArrow.style.transform = 'rotate(180deg)';
                     }
-                })
-                .then(response => {
-                    // PAKSA cetak status HTTP untuk debugging
-                    console.log("Status HTTP dari Server:", response.status, response.statusText);
-                    
-                    // Ambil teks mentah dari response
-                    return response.text().then(text => {
-                        console.log("Response Mentah dari Server:", text);
-                        
-                        // Coba ubah teks menjadi JSON jika memungkinkan
-                        try {
-                            let data = JSON.parse(text);
-                            if (response.ok) {
-                                return data; // Lanjut ke blok .then() sukses
-                            } else {
-                                throw data;   // Lempar ke blok .catch() jika ada error validasi dsb
-                            }
-                        } catch (e) {
-                            // Jika teks bukan JSON (biasanya error HTML 500 dari Laravel)
-                            throw { message: text }; 
-                        }
-                    });
-                })
-                .then(data => {
-                    if (data.success) {
-                        alertContainer.innerHTML = `
-                            <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm p-4 rounded-xl flex items-start mb-6 animate-slide-down">
-                                <i class="fas fa-check-circle mr-3 mt-0.5 text-emerald-500"></i>
-                                <span>${data.success}</span>
-                            </div>`;
-                        
-                        if(data.avatar_url) {
-                            previewContainer.innerHTML = `<img src="${data.avatar_url}" alt="Avatar" class="w-full h-full object-cover">`;
-                            avatarInput.value = '';
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error("Data Error Ditolak:", error);
-                    
-                    if (error.errors) {
-                        let errorMessages = Object.values(error.errors).map(err => `<li>${err[0]}</li>`).join('');
-                        alertContainer.innerHTML = `
-                            <div class="bg-red-50 border border-red-200 text-red-600 text-sm p-4 rounded-xl flex items-start mb-6 animate-slide-down">
-                                <i class="fas fa-exclamation-triangle mr-3 mt-0.5 text-red-500"></i>
-                                <div>
-                                    <p class="font-medium mb-1">Gagal menyimpan:</p>
-                                    <ul class="list-disc list-inside space-y-0.5 text-red-500">${errorMessages}</ul>
-                                </div>
-                            </div>`;
-                    } else {
-                        alert('Terjadi kesalahan. Buka Tab Console (F12) untuk lihat detailnya.');
-                    }
-                })
-                .finally(() => {
-                    submitBtn.disabled = false;
-                    btnIcon.classList.remove('hidden');
-                    btnLoader.classList.add('hidden');
-                    btnText.textContent = 'Simpan Perubahan';
                 });
+
+                document.addEventListener('click', (e) => {
+                    if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) { closeDropdown(); }
+                });
+            }
+
+            function closeDropdown() {
+                if(dropdownMenu) {
+                    dropdownMenu.classList.add('invisible', 'opacity-0');
+                    dropdownMenu.classList.remove('opacity-100', 'visible');
+                    dropdownArrow.style.transform = 'rotate(0deg)';
+                }
+            }
+
+            // === OFFCANVAS LOGIC ===
+            const menuToggle = document.getElementById('menuToggle');
+            const offcanvas = document.getElementById('offcanvas');
+            const offcanvasOverlay = document.getElementById('offcanvasOverlay');
+            const closeOffcanvas = document.getElementById('closeOffcanvas');
+
+            if (menuToggle) menuToggle.addEventListener('click', openMenu);
+            if (closeOffcanvas) closeOffcanvas.addEventListener('click', closeMenu);
+            if (offcanvasOverlay) offcanvasOverlay.addEventListener('click', closeMenu);
+
+            function openMenu() {
+                if(!offcanvas) return;
+                offcanvas.classList.remove('-translate-x-full');
+                offcanvasOverlay.classList.remove('opacity-0', 'invisible');
+                offcanvasOverlay.classList.add('opacity-100', 'visible');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMenu() {
+                if(!offcanvas) return;
+                offcanvas.classList.add('-translate-x-full');
+                offcanvasOverlay.classList.add('opacity-0', 'invisible');
+                offcanvasOverlay.classList.remove('opacity-100', 'visible');
+                document.body.style.overflow = '';
+            }
+
+            window.closeMenu = closeMenu;
+            window.openMenu = openMenu;
+
+            // === MODAL LOGIC (Layout Utama) ===
+            const borrowGuideModal = document.getElementById('borrowGuideModal');
+            const modalContent = document.getElementById('modalContent');
+
+            window.openBorrowGuideModal = function() {
+                if(!borrowGuideModal) return;
+                borrowGuideModal.classList.remove('opacity-0', 'invisible');
+                borrowGuideModal.classList.add('opacity-100', 'visible');
+                if(modalContent) modalContent.style.transform = 'scale(1)';
+                document.body.style.overflow = 'hidden';
+                closeMenu(); 
+            }
+
+            window.closeBorrowGuideModal = function() {
+                if(!borrowGuideModal) return;
+                borrowGuideModal.classList.add('opacity-0', 'invisible');
+                borrowGuideModal.classList.remove('opacity-100', 'visible');
+                if(modalContent) modalContent.style.transform = 'scale(0.95)';
+                document.body.style.overflow = '';
+            }
+
+            if(borrowGuideModal) {
+                borrowGuideModal.addEventListener('click', (e) => {
+                    if (e.target === borrowGuideModal) window.closeBorrowGuideModal();
+                });
+            }
+
+            // === PWA INSTALLATION ===
+            let deferredPrompt;
+            const pwaInstallBtn = document.getElementById('pwa-install-btn');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                if (pwaInstallBtn) pwaInstallBtn.style.display = 'flex';
+            });
+
+            if (pwaInstallBtn) {
+                pwaInstallBtn.addEventListener('click', async () => {
+                    if (!deferredPrompt) return;
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    deferredPrompt = null;
+                    pwaInstallBtn.style.display = 'none';
+                });
+            }
         });
-    });
+
+        // === SERVICE WORKER ===
+        if ("serviceWorker" in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register("/sw.js")
+                    .then(reg => console.log("SW registered:", reg.scope))
+                    .catch(err => console.error("SW failed:", err));
+            });
+        }
     </script>
-@stop
+
+    <!-- DITAMBAHKAN LIVEWIRE 3: Script Inti Livewire v3 -->
+    <livewire:scripts />
+</body>
+</html>

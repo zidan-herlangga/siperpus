@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\BorrowingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StudentController;
@@ -29,17 +30,10 @@ Route::middleware('guest:student')->group(function () {
     Route::get('/login-student', [StudentLoginController::class, 'showLoginForm'])->name('student.login.form');
     Route::post('/login-student', [StudentLoginController::class, 'authenticate'])->name('student.login.auth');
 
-    Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
-        ->name('student.password.request');
-
-    Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
-        ->name('password.email');
-
-    Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
-        ->name('password.reset');
-
-    Route::post('reset-password', [ResetPasswordController::class, 'reset'])
-        ->name('password.update');
+    Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('student.password.request');
+    Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
 
 // Logout
@@ -48,27 +42,26 @@ Route::post('/logout', [StudentLoginController::class, 'logout'])
     ->name('student.logout');
 
 // ==========================
-// RUTE PUBLIK
+// RUTE PUBLIK (DITAMBAHKAN wire:navigate)
 // ==========================
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
 Route::get('/books/{book:slug}/stock', [BookController::class, 'getStock'])->name('books.stock');
-// Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
 
 Route::post('/submit-testimonial', [TestimonialController::class, 'store'])
-    ->middleware('auth:student') // Cukup dilindungi login saja, tidak perlu verifikasi email
+    ->middleware('auth:student')
     ->name('testimonial.store');
 
 // ==========================
-// RUTE YANG DILINDUNGI
+// RUTE YANG DILINDUNGI SISWA (DITAMBAHKAN wire:navigate)
 // ==========================
 Route::middleware(['auth:student', 'verified'])->group(function () {
-    // DASHBOARD STUDENT
+    
+    // DASHBOARD & PROFILE
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
-
-    // PROFILE STUDENT
     Route::get('/dashboard/edit-profile', [StudentController::class, 'index'])->name('student.edit');
     Route::post('/dashboard/edit-profile', [StudentController::class, 'update'])->name('student.update');
+    Route::get('/history', [HistoryController::class, 'index'])->name('student.history');
 
     // PEMINJAMAN BUKU
     Route::post('/borrow/{book}', [BorrowingController::class, 'store'])->name('books.borrow');
