@@ -5,6 +5,9 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +32,28 @@ class AppServiceProvider extends ServiceProvider
                 }
             };
         });
+
+        // REKAM PENGUNJUNG HARI INI
+        try {
+            $ip = request()->ip();
+            $today = Carbon::today()->toDateString();
+
+            // Cek apakah IP ini sudah tercatat hari ini
+            $exists = DB::table('visitors')
+                        ->where('ip_address', $ip)
+                        ->whereDate('created_at', $today)
+                        ->exists();
+
+            // Jika belum tercatat, masukkan ke database
+            if (!$exists) {
+                DB::table('visitors')->insert([
+                    'ip_address' => $ip,
+                    'created_at' => Carbon::now()
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Biarkan silent, agar tidak error saat migrasi atau saat database belum terbentuk
+        }
     }
 
     public static function isLibraryOpen(): bool

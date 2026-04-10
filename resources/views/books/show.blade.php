@@ -221,380 +221,394 @@
 @endsection
 
 @section('scripts')
-    {{-- Elemen Loading di luar Shadow Dom --}}
-    <div id="loadingState" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center">
-        <div class="bg-white p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-3">
-            <div class="w-10 h-10 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
-            <p class="text-sm font-semibold text-gray-700">Memproses Peminjaman...</p>
-        </div>
+{{-- Elemen Loading di luar Shadow Dom --}}
+<div id="loadingState" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center">
+    <div class="bg-white p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-3">
+        <div class="w-10 h-10 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
+        <p class="text-sm font-semibold text-gray-700">Memproses Peminjaman...</p>
     </div>
+</div>
 
-    {{-- Library html2canvas untuk fitur download tiket --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+{{-- Library html2canvas untuk fitur download tiket --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <script>
-    // TEKNIK SHADOW DOM: Menyuntikkan Modal agar aman dari Livewire Navigate
-    (function() {
-        const host = document.getElementById('book-show-shadow-host');
-        if (!host) return;
+<script>
+// AMBIL DATA USER DARI LUAR SHADOW DOM (AGAR TIDAK NULL)
+window.studentData = {
+    name: "{{ auth('student')->check() ? auth('student')->user()->name : 'Tamu' }}",
+    kelas: "{{ auth('student')->check() ? (auth('student')->user()->kelas ?? '-') : '-' }}",
+    nis: "{{ auth('student')->check() ? (auth('student')->user()->nis ?? '-') : '-' }}"
+};
 
-        const shadow = host.attachShadow({ mode: 'open' });
-        
-        shadow.innerHTML = `
-            <style>
-                /* CSS Modal Konfirmasi Pinjam */
-                .modal-backdrop { opacity: 0; visibility: hidden; transition: all 0.3s ease; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 9999; }
-                .modal-backdrop.show { opacity: 1; visibility: visible; }
-                .modal-box { transform: scale(0.95) translateY(10px); transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1); background: white; border-radius: 1rem; max-width: 28rem; width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid #f3f4f6; overflow: hidden; }
-                .modal-backdrop.show .modal-box { transform: scale(1) translateY(0); }
+// TEKNIK SHADOW DOM: Menyuntikkan Modal agar aman dari Livewire Navigate
+(function() {
+    const host = document.getElementById('book-show-shadow-host');
+    if (!host) return;
 
-                /* CSS Modal Tiket Sukses (DESAIN FLAT & CLEAN) */
-                .ticket-backdrop { opacity: 0; visibility: hidden; transition: all 0.4s ease; position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 10000; }
-                .ticket-backdrop.show { opacity: 1; visibility: visible; }
-                
-                .ticket-card {
-                    background: #ffffff;
-                    width: 100%;
-                    max-width: 380px;
-                    border-radius: 0px; /* Flat tanpa lengkungan agar screenshot rapi */
-                    box-shadow: 0 0 0 0 transparent; /* Menghilangkan shadow saat render */
-                    overflow: hidden;
-                    transform: scale(0.8) translateY(30px);
-                    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-                    font-family: system-ui, -apple-system, sans-serif;
-                    border: 4px solid #000000; /* Border tegas agar tiket terlihat jelas */
-                }
-                .ticket-backdrop.show .ticket-card { transform: scale(1) translateY(0); }
-                
-                .ticket-header {
-                    background-color: #047857; /* Warna solid, bukan gradient */
-                    padding: 1.5rem;
-                    text-align: center;
-                    color: white;
-                    border-bottom: 4px solid #000000;
-                }
+    const shadow = host.attachShadow({ mode: 'open' });
+    
+    shadow.innerHTML = `
+        <style>
+            /* CSS Modal Konfirmasi Pinjam */
+            .modal-backdrop { opacity: 0; visibility: hidden; transition: all 0.3s ease; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 9999; }
+            .modal-backdrop.show { opacity: 1; visibility: visible; }
+            .modal-box { transform: scale(0.95) translateY(10px); transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1); background: white; border-radius: 1rem; max-width: 28rem; width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid #f3f4f6; overflow: hidden; }
+            .modal-backdrop.show .modal-box { transform: scale(1) translateY(0); }
 
-                .ticket-body { padding: 1.5rem; }
-                
-                .ticket-divider {
-                    border: none;
-                    border-top: 2px dashed #9ca3af; /* Garis putus-putus standar */
-                    margin: 1.25rem 0;
-                }
+            /* CSS Modal Tiket Sukses */
+            .ticket-backdrop { opacity: 0; visibility: hidden; transition: all 0.4s ease; position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 10000; }
+            .ticket-backdrop.show { opacity: 1; visibility: visible; }
+            
+            .ticket-card {
+                background: #ffffff;
+                width: 100%;
+                max-width: 380px;
+                border-radius: 0px; 
+                box-shadow: 0 0 0 0 transparent; 
+                overflow: hidden;
+                transform: scale(0.8) translateY(30px);
+                transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+                font-family: system-ui, -apple-system, sans-serif;
+                border: 4px solid #000000; 
+            }
+            .ticket-backdrop.show .ticket-card { transform: scale(1) translateY(0); }
+            
+            .ticket-header {
+                background-color: #047857; 
+                padding: 1.5rem;
+                text-align: center;
+                color: white;
+                border-bottom: 4px solid #000000;
+            }
 
-                .info-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.875rem; }
-                .info-label { color: #374151; }
-                .info-value { color: #111827; font-weight: 700; text-align: right; max-width: 60%; }
+            .ticket-body { padding: 1.5rem; }
+            
+            .ticket-divider {
+                border: none;
+                border-top: 2px dashed #9ca3af; 
+                margin: 1.25rem 0;
+            }
 
-                .ticket-actions { padding: 0 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
-                
-                .btn-save {
-                    background: #111827;
-                    color: white;
-                    padding: 0.875rem;
-                    border-radius: 0.5rem;
-                    font-weight: 700;
-                    font-size: 0.875rem;
-                    border: none;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 0.5rem;
-                    transition: background 0.2s;
-                }
-                .btn-save:hover { background: #000000; }
-                
-                .btn-close-ticket {
-                    background: transparent;
-                    color: #6b7280;
-                    padding: 0.75rem;
-                    border-radius: 0.5rem;
-                    font-weight: 600;
-                    font-size: 0.875rem;
-                    border: 1px solid #d1d5db;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                }
-                .btn-close-ticket:hover { background: #f9fafb; color: #374151; }
-            </style>
+            .info-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.875rem; }
+            .info-label { color: #374151; }
+            .info-value { color: #111827; font-weight: 700; text-align: right; max-width: 60%; }
 
-            <!-- MODAL KONFIRMASI PINJAM -->
-            <div id="borrowModalShadow" class="modal-backdrop">
-                <div class="modal-box">
-                    <div style="background:linear-gradient(135deg,#059669,#047857);padding:1.25rem;color:white;">
-                        <div style="display:flex;align-items:center;gap:0.75rem;">
-                            <div style="width:2.5rem;height:2.5rem;background:rgba(255,255,255,0.2);border-radius:0.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-hand-holding-heart"></i></div>
-                            <div><h3 style="font-weight:700;font-size:1.125rem;">Pinjam Buku</h3><p style="font-size:0.75rem;color:#a7f3d0;">Konfirmasi peminjaman Anda</p></div>
-                        </div>
+            .ticket-actions { padding: 0 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+            
+            .btn-save {
+                background: #111827;
+                color: white;
+                padding: 0.875rem;
+                border-radius: 0.5rem;
+                font-weight: 700;
+                font-size: 0.875rem;
+                border: none;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                transition: background 0.2s;
+            }
+            .btn-save:hover { background: #000000; }
+            
+            .btn-close-ticket {
+                background: transparent;
+                color: #6b7280;
+                padding: 0.75rem;
+                border-radius: 0.5rem;
+                font-weight: 600;
+                font-size: 0.875rem;
+                border: 1px solid #d1d5db;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .btn-close-ticket:hover { background: #f9fafb; color: #374151; }
+        </style>
+
+        <!-- MODAL KONFIRMASI PINJAM -->
+        <div id="borrowModalShadow" class="modal-backdrop">
+            <div class="modal-box">
+                <div style="background:linear-gradient(135deg,#059669,#047857);padding:1.25rem;color:white;">
+                    <div style="display:flex;align-items:center;gap:0.75rem;">
+                        <div style="width:2.5rem;height:2.5rem;background:rgba(255,255,255,0.2);border-radius:0.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-hand-holding-heart"></i></div>
+                        <div><h3 style="font-weight:700;font-size:1.125rem;">Pinjam Buku</h3><p style="font-size:0.75rem;color:#a7f3d0;">Konfirmasi peminjaman Anda</p></div>
                     </div>
-                    <div style="padding:1.5rem;">
-                        <div style="display:flex;align-items:center;gap:1rem;padding:1rem;background:#f9fafb;border-radius:0.75rem;margin-bottom:1.25rem;">
-                            <div style="width:3.5rem;height:5rem;background:white;border-radius:0.375rem;overflow:hidden;flex-shrink:0;border:1px solid #f3f4f6;">
-                                @if (filter_var($book->cover_image, FILTER_VALIDATE_URL))
-                                    <img src="{{ $book->cover_image }}" style="width:100%;height:100%;object-fit:cover;" crossorigin="anonymous">
-                                @elseif ($book->cover_image)
-                                    <img src="{{ asset('storage/' . $book->cover_image) }}" style="width:100%;height:100%;object-fit:cover;">
-                                @else
-                                    <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f3f4f6;"><i class="fas fa-book" style="color:#d1d5db;"></i></div>
-                                @endif
-                            </div>
-                            <div style="min-width:0;">
-                                <h4 style="font-weight:700;font-size:0.875rem;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $book->title }}</h4>
-                                <p style="font-size:0.75rem;color:#6b7280;">oleh {{ $book->author }}</p>
-                            </div>
-                        </div>
-                        @auth('student')
-                            @if (Auth::guard('student')->user()->is_active)
-                                <form id="borrowFormShadow" action="{{ route('books.borrow', $book) }}" method="POST">
-                                    @csrf
-                                    <div style="margin-bottom:1rem;background:#ecfdf5;border:1px solid #d1fae5;border-radius:0.75rem;padding:1rem;font-size:0.875rem;">
-                                        <div style="display:flex;justify-content:space-between;margin-bottom:0.625rem;"><span style="color:#6b7280;">Peminjam</span><span style="font-weight:600;color:#1f2937;">{{ Auth::guard('student')->user()->name }}</span></div>
-                                        <div style="display:flex;justify-content:space-between;margin-bottom:0.625rem;"><span style="color:#6b7280;">Tgl Pinjam</span><span style="font-weight:600;color:#1f2937;">{{ now()->format('d M Y') }}</span></div>
-                                        <div style="display:flex;justify-content:space-between;padding-top:0.625rem;border-top:1px solid #a7f3d0;"><span style="color:#6b7280;">Jatuh Tempo</span><span style="font-weight:700;color:#059669;">{{ now()->addDays(7)->format('d M Y') }}</span></div>
-                                    </div>
-                                    <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;padding:0.75rem;background:#eff6ff;border-radius:0.75rem;border:1px solid #bfdbfe;margin-bottom:1rem;">
-                                        <input type="checkbox" name="terms" required style="margin-top:2px; width:18px; height:18px; accent-color:#059669;">
-                                        <span style="font-size:0.75rem;color:#1d4ed8;line-height:1.5;">Saya setuju mengembalikan buku tepat waktu dan menjaga kondisinya dengan baik.</span>
-                                    </label>
-                                    <button type="submit" style="background:linear-gradient(135deg,#059669,#047857);width:100%;color:white;padding:0.75rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);"> <i class="fas fa-check-circle" style="font-size:0.75rem;"></i> Konfirmasi Peminjaman </button>
-                                </form>
+                </div>
+                <div style="padding:1.5rem;">
+                    <div style="display:flex;align-items:center;gap:1rem;padding:1rem;background:#f9fafb;border-radius:0.75rem;margin-bottom:1.25rem;">
+                        <div style="width:3.5rem;height:5rem;background:white;border-radius:0.375rem;overflow:hidden;flex-shrink:0;border:1px solid #f3f4f6;">
+                            @if (filter_var($book->cover_image, FILTER_VALIDATE_URL))
+                                <img src="{{ $book->cover_image }}" style="width:100%;height:100%;object-fit:cover;" crossorigin="anonymous">
+                            @elseif ($book->cover_image)
+                                <img src="{{ asset('storage/' . $book->cover_image) }}" style="width:100%;height:100%;object-fit:cover;">
                             @else
-                                <div style="text-align:center;padding:1rem;"><div style="width:4rem;height:4rem;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-user-slash" style="color:#ef4444;font-size:1.25rem;"></i></div><p style="color:#374151;font-size:0.875rem;font-weight:700;margin-bottom:0.25rem;">Akun Nonaktif</p><p style="color:#9ca3af;font-size:0.75rem;">Hubungi administrator.</p></div>
+                                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f3f4f6;"><i class="fas fa-book" style="color:#d1d5db;"></i></div>
                             @endif
+                        </div>
+                        <div style="min-width:0;">
+                            <h4 style="font-weight:700;font-size:0.875rem;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $book->title }}</h4>
+                            <p style="font-size:0.75rem;color:#6b7280;">oleh {{ $book->author }}</p>
+                        </div>
+                    </div>
+                    @auth('student')
+                        @if (Auth::guard('student')->user()->is_active)
+                            <form id="borrowFormShadow" action="{{ route('books.borrow', $book) }}" method="POST">
+                                @csrf
+                                <div style="margin-bottom:1rem;background:#ecfdf5;border:1px solid #d1fae5;border-radius:0.75rem;padding:1rem;font-size:0.875rem;">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:0.625rem;"><span style="color:#6b7280;">Peminjam</span><span style="font-weight:600;color:#1f2937;">{{ auth('student')->user()->name }}</span></div>
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:0.625rem;"><span style="color:#6b7280;">Tgl Pinjam</span><span style="font-weight:600;color:#1f2937;">{{ now()->format('d M Y') }}</span></div>
+                                    <div style="display:flex;justify-content:space-between;padding-top:0.625rem;border-top:1px solid #a7f3d0;"><span style="color:#6b7280;">Jatuh Tempo</span><span style="font-weight:700;color:#059669;">{{ now()->addDays(7)->format('d M Y') }}</span></div>
+                                </div>
+                                <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;padding:0.75rem;background:#eff6ff;border-radius:0.75rem;border:1px solid #bfdbfe;margin-bottom:1rem;">
+                                    <input type="checkbox" name="terms" required style="margin-top:2px; width:18px; height:18px; accent-color:#059669;">
+                                    <span style="font-size:0.75rem;color:#1d4ed8;line-height:1.5;">Saya setuju mengembalikan buku tepat waktu dan menjaga kondisinya dengan baik.</span>
+                                </label>
+                                <button type="submit" style="background:linear-gradient(135deg,#059669,#047857);width:100%;color:white;padding:0.75rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);"> <i class="fas fa-check-circle" style="font-size:0.75rem;"></i> Konfirmasi Peminjaman </button>
+                            </form>
                         @else
-                            <div style="text-align:center;padding:0.5rem;"><p style="color:#6b7280;font-size:0.875rem;margin-bottom:1rem;">Silakan login atau daftar untuk meminjam buku ini.</p><div style="display:flex;gap:0.5rem;"><a href="{{ route('student.login.form') }}" style="flex:1;background:#059669;color:white;padding:0.625rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;text-align:center;text-decoration:none;">Login</a><a href="{{ route('student.register.form') }}" style="flex:1;background:white;border:1px solid #e5e7eb;color:#374151;padding:0.625rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;text-align:center;text-decoration:none;">Daftar</a></div></div>
-                        @endauth
-                    </div>
+                            <div style="text-align:center;padding:1rem;"><div style="width:4rem;height:4rem;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-user-slash" style="color:#ef4444;font-size:1.25rem;"></i></div><p style="color:#374151;font-size:0.875rem;font-weight:700;margin-bottom:0.25rem;">Akun Nonaktif</p><p style="color:#9ca3af;font-size:0.75rem;">Hubungi administrator.</p></div>
+                        @endif
+                    @else
+                        <div style="text-align:center;padding:0.5rem;"><p style="color:#6b7280;font-size:0.875rem;margin-bottom:1rem;">Silakan login atau daftar untuk meminjam buku ini.</p><div style="display:flex;gap:0.5rem;"><a href="{{ route('student.login.form') }}" style="flex:1;background:#059669;color:white;padding:0.625rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;text-align:center;text-decoration:none;">Login</a><a href="{{ route('student.register.form') }}" style="flex:1;background:white;border:1px solid #e5e7eb;color:#374151;padding:0.625rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;text-align:center;text-decoration:none;">Daftar</a></div></div>
+                    @endauth
                 </div>
             </div>
+        </div>
 
-            <!-- MODAL TIKET SUKSES (DESAIN BARU) -->
-            <div id="ticketModalShadow" class="ticket-backdrop">
-                <div class="ticket-card" id="ticketCaptureArea">
-                    
-                    <div class="ticket-header">
-                        <div style="font-size:0.8rem; font-weight:600; letter-spacing:2px; opacity:0.9; margin-bottom:0.5rem;">PERPUSTAKAAN DIGITAL</div>
-                        <h2 style="font-size:1.3rem;font-weight:800;margin:0;">BUKTI PEMINJAMAN</h2>
-                        <p style="font-size:0.75rem;opacity:0.8;margin-top:0.5rem;">Tunjukkan bukti ini saat pengambilan buku</p>
-                    </div>
-
-                    <div class="ticket-body">
-                        <div style="display:flex; gap:1rem; margin-bottom:1.25rem;">
-                            <div style="width:60px;height:85px;background:#f3f4f6;border-radius:4px;overflow:hidden;flex-shrink:0;border:1px solid #e5e7eb;">
-                                @if (filter_var($book->cover_image, FILTER_VALIDATE_URL))
-                                    <img src="{{ $book->cover_image }}" style="width:100%;height:100%;object-fit:cover;" crossorigin="anonymous">
-                                @elseif ($book->cover_image)
-                                    <img src="{{ asset('storage/' . $book->cover_image) }}" style="width:100%;height:100%;object-fit:cover;">
-                                @else
-                                    <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-book" style="color:#d1d5db;font-size:18px;"></i></div>
-                                @endif
-                            </div>
-                            <div style="flex:1; min-width:0;">
-                                <h3 style="font-weight:800;color:#111827;font-size:0.95rem;margin:0 0 0.25rem 0; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">{{ $book->title }}</h3>
-                                <p style="color:#6b7280;font-size:0.8rem;margin:0;">{{ $book->author }}</p>
-                                <p style="color:#059669;font-size:0.75rem;margin-top:0.25rem;font-weight:600;">{{ $book->category }}</p>
-                            </div>
-                        </div>
-
-                        <hr class="ticket-divider">
-
-                        <div class="info-row">
-                            <span class="info-label">ID Peminjaman</span>
-                            <span class="info-value" id="ticketBorrowId" style="color:#047857;">Menunggu...</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Nama Peminjam</span>
-                            <span class="info-value">{{ auth('student')->user()->name }}</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Kelas / NIS</span>
-                            {{-- [SESUAIKAN] Ganti 'kelas' dan 'nis' dibawah sesuai nama kolom di tabel students --}}
-                            <span class="info-value">{{ auth('student')->user()->kelas ?? '-' }} / {{ auth('student')->user()->nis ?? '-' }}</span>
-                        </div>
-                        
-                        <hr class="ticket-divider">
-
-                        <div style="display:flex; justify-content:space-between; gap:1rem;">
-                            <div style="flex:1; background:#f9fafb; padding:0.75rem; border-radius:6px;">
-                                <div style="font-size:0.7rem; color:#6b7280; margin-bottom:0.25rem;">TGL. PINJAM</div>
-                                <div style="font-size:0.85rem; font-weight:800; color:#111827;">{{ now()->format('d M Y') }}</div>
-                            </div>
-                            <div style="flex:1; background:#fef2f2; padding:0.75rem; border-radius:6px;">
-                                <div style="font-size:0.7rem; color:#6b7280; margin-bottom:0.25rem;">JATUH TEMPO</div>
-                                <div style="font-size:0.85rem; font-weight:800; color:#dc2626;">{{ now()->addDays(7)->format('d M Y') }}</div>
-                            </div>
-                        </div>
-
-                        <div style="margin-top:1rem; font-size:0.75rem; color:#6b7280; background:#fffbeb; padding:0.75rem; border-radius:6px; border:1px dashed #fbbf24; text-align:center;">
-                            <i class="fas fa-triangle-exclamation" style="color:#d97706; margin-right:4px;"></i> Denda keterlambatan <strong>Rp 1.000/hari</strong>
-                        </div>
-                    </div>
-                    
-                    <!-- Tombol Aksi (Tidak ikut ter-screenshot) -->
-                    <div class="ticket-actions">
-                        <button class="btn-save" id="btnSaveTicket">
-                            <i class="fas fa-download"></i> Simpan Sebagai Gambar
-                        </button>
-                        <button class="btn-close-ticket" id="btnCloseTicket">
-                            Kembali ke Katalog
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Inisialisasi Elemen di dalam Shadow DOM
-        const modal = shadow.getElementById('borrowModalShadow');
-        const ticketModal = shadow.getElementById('ticketModalShadow');
-        const form = shadow.getElementById('borrowFormShadow');
-        const btnSaveTicket = shadow.getElementById('btnSaveTicket');
-        const btnCloseTicket = shadow.getElementById('btnCloseTicket');
-
-        // Fungsi Buka Modal Konfirmasi
-        window.showBorrowModal = function() {
-            modal.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        };
-
-        function closeBorrowModal() {
-            modal.classList.remove('show');
-            document.body.style.overflow = '';
-        }
-
-        // Klik luar modal untuk tutup
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeBorrowModal();
-        });
-
-        // PROSES SUBMIT FORM PINJAM
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault(); 
-                closeBorrowModal();
+        <!-- MODAL TIKET SUKSES -->
+        <div id="ticketModalShadow" class="ticket-backdrop">
+            <div class="ticket-card" id="ticketCaptureArea">
                 
-                // Tampilkan loading
-                const loading = document.getElementById('loadingState');
-                if(loading) loading.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
+                <div class="ticket-header">
+                    <div style="font-size:0.8rem; font-weight:600; letter-spacing:2px; opacity:0.9; margin-bottom:0.5rem;">PERPUSTAKAAN DIGITAL</div>
+                    <h2 style="font-size:1.3rem;font-weight:800;margin:0;">BUKTI PEMINJAMAN</h2>
+                    <p style="font-size:0.75rem;opacity:0.8;margin-top:0.5rem;">Tunjukkan bukti ini saat pengambilan buku</p>
+                </div>
 
-                fetch(this.action, {
-                    method: 'POST',
-                    body: new FormData(this),
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if(loading) loading.classList.add('hidden');
+                <div class="ticket-body">
+                    <div style="display:flex; gap:1rem; margin-bottom:1.25rem;">
+                        <div style="width:60px;height:85px;background:#f3f4f6;border-radius:4px;overflow:hidden;flex-shrink:0;border:1px solid #e5e7eb;">
+                            @if (filter_var($book->cover_image, FILTER_VALIDATE_URL))
+                                <img src="{{ $book->cover_image }}" style="width:100%;height:100%;object-fit:cover;" crossorigin="anonymous">
+                            @elseif ($book->cover_image)
+                                <img src="{{ asset('storage/' . $book->cover_image) }}" style="width:100%;height:100%;object-fit:cover;">
+                            @else
+                                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-book" style="color:#d1d5db;font-size:18px;"></i></div>
+                            @endif
+                        </div>
+                        <div style="flex:1; min-width:0;">
+                            <h3 style="font-weight:800;color:#111827;font-size:0.95rem;margin:0 0 0.25rem 0; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">{{ $book->title }}</h3>
+                            <p style="color:#6b7280;font-size:0.8rem;margin:0;">{{ $book->author }}</p>
+                            <p style="color:#059669;font-size:0.75rem;margin-top:0.25rem;font-weight:600;">{{ $book->category }}</p>
+                        </div>
+                    </div>
+
+                    <hr class="ticket-divider">
+
+                    <div class="info-row">
+                        <span class="info-label">ID Peminjaman</span>
+                        <span class="info-value" id="ticketBorrowId" style="color:#047857;">Menunggu...</span>
+                    </div>
                     
-                    if(data.success) {
-                        // Set ID Peminjaman dari response controller
-                        if(data.borrow_id) {
-                            shadow.getElementById('ticketBorrowId').innerText = "#PMB-" + data.borrow_id;
-                        } else {
-                            shadow.getElementById('ticketBorrowId').innerText = "#VERIFIED";
-                        }
-                        
-                        // Tampilkan Modal Tiket Sukses
-                        ticketModal.classList.add('show');
-                        document.body.style.overflow = 'hidden';
-                    } else { 
-                        document.body.style.overflow = '';
-                        alert(data.message || 'Gagal meminjam buku.'); 
+                    {{-- PERBAIKAN: DATA DIISI OLEH JAVASCRIPT DARI LUAR SHADOW DOM --}}
+                    <div class="info-row">
+                        <span class="info-label">Nama Peminjam</span>
+                        <span class="info-value" id="ticketStudentName">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Kelas / NIS</span>
+                        <span class="info-value" id="ticketStudentNis">-</span>
+                    </div>
+                    
+                    <hr class="ticket-divider">
+
+                    <div style="display:flex; justify-content:space-between; gap:1rem;">
+                        <div style="flex:1; background:#f9fafb; padding:0.75rem; border-radius:6px;">
+                            <div style="font-size:0.7rem; color:#6b7280; margin-bottom:0.25rem;">TGL. PINJAM</div>
+                            <div style="font-size:0.85rem; font-weight:800; color:#111827;">{{ now()->format('d M Y') }}</div>
+                        </div>
+                        <div style="flex:1; background:#fef2f2; padding:0.75rem; border-radius:6px;">
+                            <div style="font-size:0.7rem; color:#6b7280; margin-bottom:0.25rem;">JATUH TEMPO</div>
+                            <div style="font-size:0.85rem; font-weight:800; color:#dc2626;">{{ now()->addDays(7)->format('d M Y') }}</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:1rem; font-size:0.75rem; color:#6b7280; background:#fffbeb; padding:0.75rem; border-radius:6px; border:1px dashed #fbbf24; text-align:center;">
+                        <i class="fas fa-triangle-exclamation" style="color:#d97706; margin-right:4px;"></i> Denda keterlambatan <strong>Rp 1.000/hari</strong>
+                    </div>
+                </div>
+                
+                <!-- Tombol Aksi (Tidak ikut ter-screenshot) -->
+                <div class="ticket-actions">
+                    <button class="btn-save" id="btnSaveTicket">
+                        <i class="fas fa-download"></i> Simpan Sebagai Gambar
+                    </button>
+                    <button class="btn-close-ticket" id="btnCloseTicket">
+                        Kembali ke Katalog
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Inisialisasi Elemen di dalam Shadow DOM
+    const modal = shadow.getElementById('borrowModalShadow');
+    const ticketModal = shadow.getElementById('ticketModalShadow');
+    const form = shadow.getElementById('borrowFormShadow');
+    const btnSaveTicket = shadow.getElementById('btnSaveTicket');
+    const btnCloseTicket = shadow.getElementById('btnCloseTicket');
+
+    // MASUKKAN DATA USER KE DALAM TIKET (MENGHINDARI ERROR NULL)
+    if (window.studentData) {
+        shadow.getElementById('ticketStudentName').innerText = window.studentData.name;
+        shadow.getElementById('ticketStudentNis').innerText = window.studentData.kelas + ' / ' + window.studentData.nis;
+    }
+
+    // Fungsi Buka Modal Konfirmasi
+    window.showBorrowModal = function() {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    };
+
+    function closeBorrowModal() {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    // Klik luar modal untuk tutup
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeBorrowModal();
+    });
+
+    // PROSES SUBMIT FORM PINJAM
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            closeBorrowModal();
+            
+            // Tampilkan loading
+            const loading = document.getElementById('loadingState');
+            if(loading) loading.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            fetch(this.action, {
+                method: 'POST',
+                body: new FormData(this),
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(loading) loading.classList.add('hidden');
+                
+                if(data.success) {
+                    // Set ID Peminjaman dari response controller
+                    if(data.borrow_id) {
+                        shadow.getElementById('ticketBorrowId').innerText = "#PMB-" + data.borrow_id;
+                    } else {
+                        shadow.getElementById('ticketBorrowId').innerText = "#VERIFIED";
                     }
-                })
-                .catch(() => {
-                    if(loading) loading.classList.add('hidden');
-                    document.body.style.overflow = '';
-                    alert('Terjadi kesalahan jaringan.');
-                });
-            });
-        }
-
-        // Tombol Kembali ke Katalog
-        if(btnCloseTicket) {
-            btnCloseTicket.addEventListener('click', () => {
-                window.location.href = '{{ route("books.index") }}';
-            });
-        }
-
-        // LOGIKA DOWNLOAD TIKET MENJADI JPG
-        if(btnSaveTicket) {
-            btnSaveTicket.addEventListener('click', async () => {
-                btnSaveTicket.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Membuat Gambar...';
-                btnSaveTicket.disabled = true;
-
-                try {
-                    // Sembunyikan tombol sementara saat foto
-                    const actionsDiv = shadow.querySelector('.ticket-actions');
-                    actionsDiv.style.display = 'none';
-
-                    const ticketEl = shadow.getElementById('ticketCaptureArea');
                     
-                    // Proses Screenshot (OPTIMASI UNTUK HASIL CLEAN)
-                    const canvas = await html2canvas(ticketEl, {
-                        backgroundColor: "#ffffff",
-                        scale: 2, // Resolusi tinggi agar tidak pecah
-                        useCORS: true,
-                        logging: false,
-                        allowTaint: true,
-                        removeContainer: true // Membersihkan elemen sementara html2canvas
-                    });
+                    // Tampilkan Modal Tiket Sukses
+                    ticketModal.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                } else { 
+                    document.body.style.overflow = '';
+                    alert(data.message || 'Gagal meminjam buku.'); 
+                }
+            })
+            .catch(() => {
+                if(loading) loading.classList.add('hidden');
+                document.body.style.overflow = '';
+                alert('Terjadi kesalahan jaringan.');
+            });
+        });
+    }
 
-                    // Kembalikan tombol
-                    actionsDiv.style.display = 'flex';
+    // Tombol Kembali ke Katalog
+    if(btnCloseTicket) {
+        btnCloseTicket.addEventListener('click', () => {
+            window.location.href = '{{ route("books.index") }}';
+        });
+    }
 
-                    // Trigger download file
-                    const link = document.createElement('a');
-                    link.download = 'Tiket_Peminjaman_{{ Str::slug($book->title) }}.jpg';
-                    link.href = canvas.toDataURL('image/jpeg', 0.98); // Kualitas gambar 98%
-                    link.click();
+    // LOGIKA DOWNLOAD TIKET MENJADI JPG
+    if(btnSaveTicket) {
+        btnSaveTicket.addEventListener('click', async () => {
+            btnSaveTicket.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Membuat Gambar...';
+            btnSaveTicket.disabled = true;
 
-                    // Ubah teks tombol jadi "Tersimpan"
-                    btnSaveTicket.innerHTML = '<i class="fas fa-check"></i> Tersimpan!';
-                    setTimeout(() => {
-                        btnSaveTicket.innerHTML = '<i class="fas fa-download"></i> Simpan Sebagai Gambar';
-                        btnSaveTicket.disabled = false;
-                    }, 2000);
+            try {
+                // Sembunyikan tombol sementara saat foto
+                const actionsDiv = shadow.querySelector('.ticket-actions');
+                actionsDiv.style.display = 'none';
 
-                } catch (err) {
-                    console.error(err);
-                    const actionsDiv = shadow.querySelector('.ticket-actions');
-                    actionsDiv.style.display = 'flex';
-                    alert('Gagal membuat gambar. Pastikan koneksi stabil.');
+                const ticketEl = shadow.getElementById('ticketCaptureArea');
+                
+                // Proses Screenshot 
+                const canvas = await html2canvas(ticketEl, {
+                    backgroundColor: "#ffffff",
+                    scale: 2, 
+                    useCORS: true,
+                    logging: false,
+                    allowTaint: true,
+                    removeContainer: true 
+                });
+
+                // Kembalikan tombol
+                actionsDiv.style.display = 'flex';
+
+                // Trigger download file
+                const link = document.createElement('a');
+                link.download = 'Tiket_Peminjaman_{{ Str::slug($book->title) }}.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 0.98); 
+                link.click();
+
+                // Ubah teks tombol jadi "Tersimpan"
+                btnSaveTicket.innerHTML = '<i class="fas fa-check"></i> Tersimpan!';
+                setTimeout(() => {
                     btnSaveTicket.innerHTML = '<i class="fas fa-download"></i> Simpan Sebagai Gambar';
                     btnSaveTicket.disabled = false;
-                }
-            });
-        }
-    })();
+                }, 2000);
 
-    // Logika Tabs biasa 
-    document.addEventListener('DOMContentLoaded', function() {
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-                btn.classList.add('active');
-                const target = document.getElementById(btn.dataset.tab);
-                if(target) target.classList.remove('hidden');
-            });
+            } catch (err) {
+                console.error(err);
+                const actionsDiv = shadow.querySelector('.ticket-actions');
+                actionsDiv.style.display = 'flex';
+                alert('Gagal membuat gambar. Pastikan koneksi stabil.');
+                btnSaveTicket.innerHTML = '<i class="fas fa-download"></i> Simpan Sebagai Gambar';
+                btnSaveTicket.disabled = false;
+            }
         });
+    }
+})();
 
-        // Animasi reveal saat scroll
-        const revealEl = document.querySelector('.reveal:not(.visible)');
-        if(revealEl) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => { 
-                    if (entry.isIntersecting) { 
-                        entry.target.classList.add('visible'); 
-                        observer.unobserve(entry.target); 
-                    } 
-                });
-            }, { threshold: 0.1 });
-            observer.observe(revealEl);
-        }
+// Logika Tabs biasa 
+document.addEventListener('DOMContentLoaded', function() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            btn.classList.add('active');
+            const target = document.getElementById(btn.dataset.tab);
+            if(target) target.classList.remove('hidden');
+        });
     });
-    </script>
+
+    // Animasi reveal saat scroll
+    const revealEl = document.querySelector('.reveal:not(.visible)');
+    if(revealEl) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { 
+                if (entry.isIntersecting) { 
+                    entry.target.classList.add('visible'); 
+                    observer.unobserve(entry.target); 
+                } 
+            });
+        }, { threshold: 0.1 });
+        observer.observe(revealEl);
+    }
+});
+</script>
 @endsection

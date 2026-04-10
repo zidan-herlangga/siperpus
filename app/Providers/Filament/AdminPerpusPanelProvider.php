@@ -23,6 +23,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Widgets\BorrowedBooks;
 use App\Filament\Widgets\LibraryStatsOverview;
 use App\Filament\Widgets\AllBorrowingsReport;
+use App\Filament\Widgets\VisitorTodayStats;
 // use App\Filament\Pages\NotificationList;
 
 class AdminPerpusPanelProvider extends PanelProvider
@@ -32,8 +33,8 @@ class AdminPerpusPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->sidebarFullyCollapsibleOnDesktop()
-            ->id('admin-perpus')
-            ->path('adminperpustakaan')
+            ->id('admin')
+            ->path('admin')
             // ->brandName('')
             // ->registrationRouteSlug('register')
             ->login()
@@ -51,6 +52,7 @@ class AdminPerpusPanelProvider extends PanelProvider
                 BorrowedBooks::class,
                 LibraryStatsOverview::class,
                 AllBorrowingsReport::class,
+                VisitorTodayStats::class,
                 // AccountWidget::class,
                 // FilamentInfoWidget::class,
             ])

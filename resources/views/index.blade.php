@@ -14,31 +14,26 @@
         
         <div class="hidden md:block absolute bottom-0 right-0 w-[340px] lg:w-[400px] z-10 translate-x-10 translate-y-5 opacity-80 hero-mascot-float">
             <svg viewBox="0 0 300 450" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full drop-shadow-2xl">
-                <!-- Buku -->
                 <rect x="100" y="180" width="100" height="140" rx="5" fill="#facc15" transform="rotate(-5 150 250)"/>
                 <rect x="105" y="185" width="90" height="130" rx="3" fill="#fffbeb" transform="rotate(-5 150 250)"/>
-                <!-- Garis halaman buku -->
                 <line x1="115" y1="205" x2="185" y2="205" stroke="#d1d5db" stroke-width="2" transform="rotate(-5 150 250)"/>
                 <line x1="115" y1="220" x2="185" y2="220" stroke="#d1d5db" stroke-width="2" transform="rotate(-5 150 250)"/>
                 <line x1="115" y1="235" x2="175" y2="235" stroke="#d1d5db" stroke-width="2" transform="rotate(-5 150 250)"/>
             </svg>
         </div>
 
-        {{-- Ikon Buku Melayang (Kiri Atas) --}}
         <div class="hidden lg:block absolute top-16 left-10 z-10 opacity-30 hero-icon-spin-slow">
             <div class="w-24 h-24 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/10 shadow-xl">
                 <i class="fas fa-book-open text-4xl text-white"></i>
             </div>
         </div>
 
-        {{-- Ikon Globe Melayang (Kanan Atas) --}}
         <div class="hidden lg:block absolute top-24 right-[340px] z-10 opacity-20 hero-mascot-float-reverse">
             <div class="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/10 shadow-xl">
                 <i class="fas fa-globe text-3xl text-white"></i>
             </div>
         </div>
 
-        {{-- 4. Elemen Geometris Kaca (Kiri Bawah) --}}
         <div class="hidden md:block absolute bottom-10 left-10 z-10 opacity-40 -rotate-12">
             <div class="w-32 h-32 border-2 border-white/20 rounded-3xl backdrop-blur-sm"></div>
         </div>
@@ -46,14 +41,12 @@
             <div class="w-20 h-20 bg-white/10 rounded-2xl backdrop-blur-sm"></div>
         </div>
 
-        {{-- Elemen Titik-titik Dekoratif --}}
         <div class="hidden lg:flex absolute top-32 right-20 z-10 gap-3 opacity-30">
             <div class="w-2.5 h-2.5 bg-yellow-300 rounded-full"></div>
             <div class="w-2.5 h-2.5 bg-yellow-300 rounded-full"></div>
             <div class="w-2.5 h-2.5 bg-yellow-300 rounded-full"></div>
         </div>
 
-        {{-- === KONTEN UTAMA HERO === --}}
         <div class="relative z-20 container mx-auto px-6 text-center text-white py-20 md:py-28 max-w-4xl">
             <div class="hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-green-100 mb-6">
                 <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
@@ -125,21 +118,32 @@
                 <h2 class="section-title mt-2">Statistik Perpustakaan</h2>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 lg:gap-6">
                 @php
                     $stats = [
-                        ['icon' => 'fa-book',       'value' => $bookCount ?? 0,     'label' => 'Judul Buku',           'color' => '#059669'],
-                        ['icon' => 'fa-users',      'value' => $studentCount ?? 0,  'label' => 'Siswa Terdaftar',      'color' => '#0d9488'],
-                        ['icon' => 'fa-arrow-right-arrow-left', 'value' => $borrowCount ?? 0, 'label' => 'Peminjaman Bulan Ini', 'color' => '#10b981'],
-                        ['icon' => 'fa-tags',       'value' => $categoryCount ?? 0, 'label' => 'Kategori Buku',        'color' => '#65a30d'],
+                        ['icon' => 'fa-eye', 'value' => 0, 'label' => 'Pengunjung Hari Ini', 'color' => '#047857', 'is_realtime' => true], 
+                        ['icon' => 'fa-book', 'value' => $bookCount ?? 0, 'label' => 'Judul Buku', 'color' => '#059669', 'is_realtime' => false],
+                        ['icon' => 'fa-users', 'value' => $studentCount ?? 0, 'label' => 'Siswa Terdaftar', 'color' => '#0d9488', 'is_realtime' => false],
+                        ['icon' => 'fa-arrow-right-arrow-left', 'value' => $borrowCount ?? 0, 'label' => 'Peminjaman Bulan Ini', 'color' => '#10b981', 'is_realtime' => false],
+                        ['icon' => 'fa-tags', 'value' => $categoryCount ?? 0, 'label' => 'Kategori Buku', 'color' => '#65a30d', 'is_realtime' => false],
                     ];
                 @endphp
                 @foreach ($stats as $i => $s)
                     <div class="stat-card reveal reveal-delay-{{ $i + 1 }}">
-                        <div class="stat-icon-ring">
+                        <div class="stat-icon-ring relative">
                             <i class="fas {{ $s['icon'] }} text-lg" style="color:{{ $s['color'] }}"></i>
+                            @if ($s['is_realtime'])
+                                <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                                </span>
+                            @endif
                         </div>
-                        <div class="stat-number counter" data-target="{{ $s['value'] }}">0</div>
+                        <div class="stat-number counter {{ $s['is_realtime'] ? 'realtime-counter' : '' }}" 
+                            id="{{ $s['is_realtime'] ? 'live-visitor-count' : '' }}" 
+                            data-target="{{ $s['value'] }}">
+                            0
+                        </div>
                         <p class="text-gray-500 text-sm mt-1 font-medium">{{ $s['label'] }}</p>
                     </div>
                 @endforeach
@@ -190,7 +194,6 @@
             </div>
             <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
                 @php
-                    // Mengambil 3 testimoni yang sudah di-approve
                     $approvedTestimonials = \App\Models\Testimonial::with('student')
                         ->approved()
                         ->latest()
@@ -205,7 +208,6 @@
                                 <img src="{{ asset('storage/' . $t->student->avatar) }}" alt="{{ $t->student->name }}" 
                                     class="w-12 h-12 rounded-xl object-cover border-2 border-gray-100">
                             @else
-                                {{-- Jika tidak ada avatar, tampilkan inisial nama --}}
                                 <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
                                     <span class="text-emerald-600 font-bold">{{ strtoupper(substr($t->student->name, 0, 1)) }}</span>
                                 </div>
@@ -231,11 +233,16 @@
             </div>
         </div>
     </section>
+
 @endsection
 
 @section('scripts')
-    <script>
-    // Kita buat fungsi-fungsi animasinya menjadi terpisah agar bisa dipanggil ulang
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // ==========================================
+    // 1. SCROLL REVEAL ANIMATION
+    // ==========================================
     function initScrollReveal() {
         const reveals = document.querySelectorAll('.reveal:not(.visible)');
         const revealObserver = new IntersectionObserver((entries) => {
@@ -250,19 +257,30 @@
         reveals.forEach(el => revealObserver.observe(el));
     }
 
-    function initCounterAnimation() {
-        const counters = document.querySelectorAll('.counter:not(.counted)'); // Tambahkan class 'counted' agar tidak diulang
+    // ==========================================
+    // 2. COUNTER ANIMASI (UNTUK DATA STATIS)
+    // ==========================================
+    function initStaticCounterAnimation() {
+        // Hanya ambil elemen counter yang BUKAN realtime
+        const counters = document.querySelectorAll('.counter:not(.realtime-counter):not(.counted)');
+        
         const counterObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const el = entry.target;
-                    el.classList.add('counted'); // Tandai sudah pernah dihitung
+                    el.classList.add('counted'); // Tandai sudah pernah dihitung agar tidak diulang
                     const target = parseInt(el.dataset.target) || 0;
-                    if (target === 0) { el.textContent = '0'; return; }
+                    
+                    if (target === 0) { 
+                        el.textContent = '0'; 
+                        counterObserver.unobserve(el);
+                        return; 
+                    }
 
-                    const duration = 1800;
+                    const duration = 1800; // Durasi animasi dalam ms
                     const startTime = performance.now();
 
+                    // Fungsi matematika agar animasi numbering terasa halus (ease-out)
                     function easeOutExpo(t) {
                         return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
                     }
@@ -272,7 +290,9 @@
                         const progress = Math.min(elapsed / duration, 1);
                         const easedProgress = easeOutExpo(progress);
                         const current = Math.round(easedProgress * target);
+                        
                         el.textContent = current.toLocaleString('id-ID');
+                        
                         if (progress < 1) {
                             requestAnimationFrame(updateCounter);
                         } else {
@@ -289,21 +309,83 @@
         counters.forEach(el => counterObserver.observe(el));
     }
 
-    // 1. Jalankan saat pertama kali halaman dibuka (Normal Load)
-    document.addEventListener('DOMContentLoaded', () => {
-        initScrollReveal();
-        initCounterAnimation();
-    });
+    // ==========================================
+    // 3. REALTIME VISITOR COUNTER (POLLING)
+    // ==========================================
+    function initRealtimeVisitor() {
+        const liveCounter = document.getElementById('live-visitor-count');
+        if (!liveCounter) return;
 
-    // 2. Jalankan ULANG setiap kali Livewire melakukan update DOM (Ini yang bikin realtime tidak error)
+        // Fungsi untuk mengambil data dari server
+        const fetchVisitorCount = () => {
+            fetch('{{ route("visitors.today") }}')
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.count !== undefined) {
+                        const currentVal = parseInt(liveCounter.innerText.replace(/\D/g, '')) || 0;
+                        
+                        // Hanya animasikan jika angka berubah
+                        if (currentVal !== data.count) {
+                            animateRealtimeValue(liveCounter, currentVal, data.count);
+                        }
+                    }
+                })
+                .catch(err => console.log('Gagal fetch visitor:', err));
+        };
+
+        // Fungsi animasi transisi angka (lembut untuk realtime)
+        const animateRealtimeValue = (el, start, end) => {
+            const duration = 600; 
+            const range = end - start;
+            let startTime = null;
+            
+            const step = (timestamp) => {
+                if (!startTime) startTime = timestamp;
+                const progress = Math.min((timestamp - startTime) / duration, 1);
+                // Animasi ease-out sederhana
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+                el.innerText = Math.floor(easedProgress * range + start).toLocaleString('id-ID');
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    el.innerText = end.toLocaleString('id-ID');
+                }
+            };
+            window.requestAnimationFrame(step);
+        };
+
+        // Fetch pertama kali saat halaman dimuat
+        fetchVisitorCount();
+
+        // Polling setiap 15 detik untuk cek pengunjung baru
+        setInterval(fetchVisitorCount, 15000); 
+    }
+
+    // ==========================================
+    // INISIALISASI AWAL
+    // ==========================================
+    initScrollReveal();
+    initStaticCounterAnimation();
+    initRealtimeVisitor();
+
+    // ==========================================
+    // INISIALISASI ULANG SAAT LIVEWIRE UPDATE
+    // (Agar animasi tidak rusak saat navigasi SPA)
+    // ==========================================
     document.addEventListener('livewire:initialized', () => {
         initScrollReveal();
-        initCounterAnimation();
     });
 
     document.addEventListener('livewire:update', () => {
         initScrollReveal();
-        // Counter tidak perlu di-init ulang saat update Livewire agar angka tidak loncat-loncat
+        // Counter tidak perlu di-init ulang saat Livewire update agar angka statis tidak loncat-loncat
+        // Visitor juga tidak perlu di-init ulang karena sudah dihandle setInterval
     });
-    </script>
+
+});
+</script>
 @stop

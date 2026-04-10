@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\BookCommentController;
+use App\Http\Controllers\VisitorController;
 
 use App\Models\Student;
 use Illuminate\Auth\Events\Verified;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 // Halaman Beranda
 Route::get('/', [HomeController::class, 'index'])->name('homepage');
+Route::get('/api/visitors-today', [VisitorController::class, 'getTodayCount'])->name('visitors.today');
 
 // ==========================
 // RUTE UNTUK TAMU (GUEST)
