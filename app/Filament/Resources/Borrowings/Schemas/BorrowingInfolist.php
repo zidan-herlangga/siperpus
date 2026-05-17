@@ -3,7 +3,9 @@
 namespace App\Filament\Resources\Borrowings\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Carbon;
 
 class BorrowingInfolist
 {
@@ -11,57 +13,102 @@ class BorrowingInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('student.name')
-                    ->label('Nama Siswa'),
-                TextEntry::make('book.title')
-                    ->label('Judul Buku'),
-                TextEntry::make('borrow_date')
-                    ->label('Tanggal Pinjam')
-                    ->date(),
-                TextEntry::make('due_date')
-                    ->label('Jatuh Tempo')
-                    ->date(),
-                TextEntry::make('return_date')
-                    ->label('Tanggal Kembali')
-                    ->date()
-                    ->placeholder('-'),
-                TextEntry::make('fine')
-                    ->label('Denda')
-                    ->state(function ($record) {
-                        if (!$record->due_date) return 0;
 
-                        // Jika sudah dikembalikan, gunakan nilai tetap dari DB
-                        if ($record->status === 'Dikembalikan') {
-                            return $record->fine ?? 0;
-                        }
+                Section::make('Informasi Peminjaman')
+                    ->columns(2)
+                    ->schema([
 
-                        // Hitung denda hanya jika sudah lewat jatuh tempo
-                        if (now()->gt($record->due_date)) {
-                            $daysLate = $record->due_date->diffInDays(now()); // ← arah dibalik
-                            return $daysLate * 1000;
-                        }
+                        TextEntry::make('student.name')
+                            ->label('Nama Siswa'),
 
-                        return 0;
-                    })
-                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
-                TextEntry::make('status')
-                    ->label('Status')
-                    ->color(fn ($state) => match($state) {
-                        'Pending' => 'gray',
-                        'Dipinjam' => 'yellow',
-                        'Dikembalikan' => 'green',
-                        'Batal' => 'red',
-                        default => 'primary',
-                    })
-                    ->badge(),
-                TextEntry::make('created_at')
-                    ->label('Dibuat Pada')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->label('Diperbarui Pada')
-                    ->dateTime()
-                    ->placeholder('-'),
+                        TextEntry::make('book.title')
+                            ->label('Judul Buku'),
+
+                        TextEntry::make('borrow_date')
+                            ->label('Tanggal Pinjam')
+                            ->date(),
+
+                        TextEntry::make('due_date')
+                            ->label('Jatuh Tempo')
+                            ->date()
+                            ->color(fn ($record) =>
+                                $record->status === 'Dipinjam' && $record->due_date < now()
+                                    ? 'danger'
+                                    : null
+                            ),
+
+                        TextEntry::make('return_date')
+                            ->label('Tanggal Kembali')
+                            ->date()
+                            ->placeholder('-'),
+                    ]),
+
+                Section::make('Status & Denda')
+                    ->columns(2)
+                    ->schema([
+
+                        // 🔹 STATUS CERDAS
+                        TextEntry::make('status')
+                            ->label('Status')
+                            ->badge()
+                            ->formatStateUsing(function ($record) {
+                                if ($record->status === 'Dipinjam' && $record->due_date < now()) {
+                                    return 'Terlambat';
+                                }
+                                return $record->status;
+                            })
+                            ->color(function ($record) {
+                                if ($record->status === 'Dipinjam' && $record->due_date < now()) {
+                                    return 'danger';
+                                }
+
+                                return match ($record->status) {
+                                    'Pending' => 'gray',
+                                    'Dipinjam' => 'warning',
+                                    'Dikembalikan' => 'success',
+                                    'Batal' => 'danger',
+                                    default => 'primary',
+                                };
+                            }),
+
+                        // 🔹 DENDA KONSISTEN
+                        TextEntry::make('fine')
+                            ->label('Denda')
+                            ->state(function ($record) {
+
+                                if (!$record->due_date) return 0;
+
+                                // tentukan pembanding waktu
+                                $endDate = $record->return_date ?? now();
+
+                                if ($endDate <= $record->due_date) {
+                                    return 0;
+                                }
+
+                                $daysLate = Carbon::parse($record->due_date)
+                                    ->diffInDays($endDate);
+
+                                return $daysLate * 1000;
+                            })
+                            ->formatStateUsing(fn ($state) =>
+                                'Rp ' . number_format($state, 0, ',', '.')
+                            ),
+                    ]),
+
+                Section::make('Metadata')
+                    ->columns(2)
+                    ->schema([
+
+                        TextEntry::make('created_at')
+                            ->label('Dibuat')
+                            ->dateTime()
+                            ->placeholder('-'),
+
+                        TextEntry::make('updated_at')
+                            ->label('Diperbarui')
+                            ->dateTime()
+                            ->placeholder('-'),
+                    ]),
             ]);
     }
 }

@@ -7,46 +7,57 @@ use App\Models\Borrowing;
 use App\Models\Student;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Cache;
 
 class LibraryStatsOverview extends BaseWidget
 {
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 2;
+
     protected function getStats(): array
     {
+        $data = Cache::remember('widget.library_stats', 60, function () {
+            $stats = Borrowing::selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'Pending' THEN 1 ELSE 0 END) as pending,
+                SUM(CASE WHEN status = 'Dipinjam' THEN 1 ELSE 0 END) as borrowed,
+                SUM(CASE WHEN status = 'Batal' THEN 1 ELSE 0 END) as canceled,
+                SUM(CASE WHEN status = 'Dipinjam' AND due_date < NOW() THEN 1 ELSE 0 END) as overdue
+            ")->first();
+
+            return [
+                'books' => Book::count(),
+                'students' => Student::count(),
+                'pending' => $stats->pending,
+                'borrowed' => $stats->borrowed,
+                'canceled' => $stats->canceled,
+                'overdue' => $stats->overdue,
+            ];
+        });
+
         return [
-            // Kartu 1: Total Judul Buku
-            Stat::make('Total Judul Buku', Book::count())
-                ->description('Jumlah semua judul buku di perpustakaan')
+            Stat::make('Total Judul Buku', $data['books'])
+                ->description('Jumlah semua judul buku')
                 ->icon('heroicon-o-book-open')
                 ->color('success'),
 
-            // Kartu 2: Total Siswa Terdaftar
-            Stat::make('Total Siswa Terdaftar', Student::count())
-                ->description('Jumlah siswa yang memiliki akun')
+            Stat::make('Total Siswa', $data['students'])
+                ->description('Jumlah siswa terdaftar')
                 ->icon('heroicon-o-users')
                 ->color('info'),
 
-            // Kartu 3: Buku yang Pending
-            Stat::make('Buku Sedang Pending', Borrowing::where('status', 'Pending')->count())
-                ->description('Jumlah buku yang pending')
-                ->icon('heroicon-o-arrows-right-left')
+            Stat::make('Pending', $data['pending'])
+                ->icon('heroicon-o-clock')
                 ->color('gray'),
-            
-            // Kartu 4: Buku Sedang Dipinjam
-            Stat::make('Buku Sedang Dipinjam', Borrowing::where('status', 'Dipinjam')->count())
-                ->description('Jumlah buku yang belum dikembalikan')
-                ->icon('heroicon-o-arrows-right-left')
+
+            Stat::make('Dipinjam', $data['borrowed'])
+                ->icon('heroicon-o-bookmark')
                 ->color('warning'),
 
-            // Kartu 5: Buku Batal
-            Stat::make('Batal Dipinjam', Borrowing::where('status', 'Batal')->count())
-                ->description('Jumlah peminjaman yang dibatalkan')
+            Stat::make('Batal', $data['canceled'])
                 ->icon('heroicon-o-x-circle')
                 ->color('danger'),
 
-            // Kartu 5: Buku Terlambat
-            Stat::make('Buku Terlambat', Borrowing::where('status', 'Dipinjam')->where('due_date', '<', now())->count())
-                ->description('Jumlah buku yang melewati jatuh tempo')
+            Stat::make('Terlambat', $data['overdue'])
                 ->icon('heroicon-o-exclamation-triangle')
                 ->color('danger'),
         ];

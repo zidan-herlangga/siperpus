@@ -5,8 +5,8 @@ namespace App\Filament\Resources\Testimonials\Schemas;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Placeholder;
 use Filament\Schemas\Schema;
-
 
 class TestimonialForm
 {
@@ -14,23 +14,29 @@ class TestimonialForm
     {
         return $schema
             ->components([
-                // TextInput::make('student_id')
-                //     ->label('ID Siswa')
-                //     ->required()
-                //     ->disabled()
-                //     ->numeric(),
+
+                // 🔹 Info siswa (readonly)
+                Placeholder::make('student')
+                    ->label('Dikirim oleh')
+                    ->content(fn ($record) => $record?->student?->name ?? '-'),
+
+                // 🔹 Isi testimoni (readonly)
                 Textarea::make('content')
                     ->label('Testimoni')
-                    ->required()
                     ->disabled()
+                    ->dehydrated(false)
                     ->columnSpanFull(),
+
+                // 🔹 Rating (readonly)
                 TextInput::make('rating')
-                    ->required()
-                    ->numeric()
-                    ->default(5),
+                    ->label('Rating')
+                    ->disabled()
+                    ->dehydrated(false),
+
+                // 🔹 Approval
                 Toggle::make('is_approved')
+                    ->label('Setujui Testimoni')
                     ->default(false)
-                    ->live()
                     ->required(),
             ]);
     }

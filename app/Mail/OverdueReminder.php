@@ -19,7 +19,7 @@ class OverdueReminder extends Mailable
     {
         // Hitung denda saat ini
         $lateDays = $this->borrowing->due_date->diffInDays(now());
-        $this->fine = $lateDays * 1000;
+        $this->fine = $lateDays * (int) config('library.fine_per_day', 1000);
     }
 
     public function envelope(): Envelope

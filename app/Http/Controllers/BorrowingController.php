@@ -64,13 +64,36 @@ class BorrowingController extends Controller
                 'errors' => ['stock' => 'Maaf, stok buku ini sudah habis.']
             ], 400);
         }
+
+        // --- VALIDASI: Pastikan kondisi buku baik ---
+        if ($book->condition !== 'Baik') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Maaf, buku ini sedang dalam kondisi ' . $book->condition . ' dan tidak dapat dipinjam.',
+                'errors' => ['condition' => 'Buku tidak dalam kondisi baik.']
+            ], 403);
+        }
+
+        // --- VALIDASI: Batas maksimal peminjaman per siswa ---
+        $maxBorrow = (int) config('library.max_borrow_per_student', 3);
+        $activeBorrowCount = Borrowing::where('student_id', $student->id)
+            ->whereIn('status', ['Pending', 'Dipinjam'])
+            ->count();
+
+        if ($activeBorrowCount >= $maxBorrow) {
+            return response()->json([
+                'success' => false,
+                'message' => "Anda sudah mencapai batas maksimal peminjaman ({$maxBorrow} buku). Silakan kembalikan buku terlebih dahulu.",
+                'errors' => ['borrow' => "Batas maksimal peminjaman adalah {$maxBorrow} buku."]
+            ], 403);
+        }
         
         // --- PROSES: Buat data peminjaman baru dengan status 'Pending' ---
         $borrowing = Borrowing::create([
             'student_id' => $student->id,
             'book_id' => $book->id,
             'borrow_date' => now(),
-            'due_date' => now()->addDays(7),
+            'due_date' => now()->addDays((int) config('library.borrow_duration_days', 7)),
             'status' => 'Pending', 
         ]);
 

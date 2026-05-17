@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Borrowing;
+use App\Models\Category;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -23,7 +24,7 @@ class HomeController extends Controller
                                 ->whereYear('borrow_date', now()->year)
                                 ->count();
                                 
-        $categoryCount = Book::distinct()->count('category');
+        $categoryCount = Category::count();
 
         // Mengirim semua data statistik ke view 'index'
         return view('index', [

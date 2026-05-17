@@ -23,6 +23,7 @@ class Admin extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -37,7 +38,12 @@ class Admin extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return match ($panel->getId()) {
+            'admin' => $this->role === 'admin',
+            'staff' => $this->role === 'staff',
+            'kepsek' => $this->role === 'kepsek',
+            default => false,
+        };
     }
 
     /**
@@ -50,6 +56,32 @@ class Admin extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => 'string',
         ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->role === 'staff';
+    }
+
+    public function isKepsek(): bool
+    {
+        return $this->role === 'kepsek';
+    }
+
+    public function getRoleLabelAttribute(): string
+    {
+        return match ($this->role) {
+            'admin' => 'Administrator',
+            'staff' => 'Petugas Perpustakaan',
+            'kepsek' => 'Kepala Sekolah',
+            default => 'Unknown',
+        };
     }
 }

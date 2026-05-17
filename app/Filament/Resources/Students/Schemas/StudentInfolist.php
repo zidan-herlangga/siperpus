@@ -3,8 +3,9 @@
 namespace App\Filament\Resources\Students\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-
 
 class StudentInfolist
 {
@@ -12,39 +13,77 @@ class StudentInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('name')
-                    ->label('Nama Siswa'),
-                
-                TextEntry::make('nis')
-                    ->label('NIS')
-                    ->formatStateUsing(fn ($state) => $state ?? '-'),
-                TextEntry::make('class')
-                    ->label('Kelas'),
-                TextEntry::make('contact')
-                    ->label('No. Telp')
-                    ->placeholder('-'),
-                TextEntry::make('email')
-                    ->label('Email'),
-                TextEntry::make('email_verified_at')
-                    ->label('Email Terverifikasi Pada')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('is_active')
-                    ->label('Status')
-                    ->color(fn ($state) => match($state) {
-                        'Aktif' => 'green',
-                        'Nonaktif' => 'red',
-                        default => 'primary',
-                    })
-                    ->badge(),
-                TextEntry::make('created_at')
-                    ->label('Dibuat Pada')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->label('Terakhir Diperbarui')
-                    ->dateTime()
-                    ->placeholder('-'),
+
+                // 🔹 Profil
+                Section::make('Profil Siswa')
+                    ->columns(2)
+                    ->schema([
+
+                        ImageEntry::make('avatar')
+                            ->label('Foto')
+                            ->circular()
+                            ->defaultImageUrl(url('/images/default-avatar.png')),
+
+                        TextEntry::make('name')
+                            ->label('Nama')
+                            ->weight('bold'),
+
+                        TextEntry::make('nis')
+                            ->label('NIS')
+                            ->placeholder('-'),
+
+                        TextEntry::make('class')
+                            ->label('Kelas')
+                            ->badge()
+                            ->color('info'),
+                    ]),
+
+                // 🔹 Kontak
+                Section::make('Kontak')
+                    ->columns(2)
+                    ->schema([
+
+                        TextEntry::make('contact')
+                            ->label('No. Telp')
+                            ->formatStateUsing(fn ($state) => $state ? '+62 ' . $state : '-'),
+
+                        TextEntry::make('email')
+                            ->label('Email'),
+                    ]),
+
+                // 🔹 Status
+                Section::make('Status')
+                    ->columns(2)
+                    ->schema([
+
+                        TextEntry::make('email_verified_at')
+                            ->label('Verifikasi Email')
+                            ->badge()
+                            ->formatStateUsing(fn ($state) => $state ? 'Terverifikasi' : 'Belum')
+                            ->color(fn ($state) => $state ? 'success' : 'warning'),
+
+                        TextEntry::make('is_active')
+                            ->label('Status Akun')
+                            ->badge()
+                            ->formatStateUsing(fn ($state) => $state ? 'Aktif' : 'Nonaktif')
+                            ->color(fn ($state) => $state ? 'success' : 'danger'),
+                    ]),
+
+                // 🔹 Metadata
+                Section::make('Metadata')
+                    ->columns(2)
+                    ->schema([
+
+                        TextEntry::make('created_at')
+                            ->label('Dibuat')
+                            ->dateTime()
+                            ->placeholder('-'),
+
+                        TextEntry::make('updated_at')
+                            ->label('Diperbarui')
+                            ->dateTime()
+                            ->placeholder('-'),
+                    ]),
             ]);
     }
 }

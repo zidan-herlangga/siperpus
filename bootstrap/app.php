@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->appendToGroup('web', [
             // \App\Http\Middleware\CheckOperatingDays::class,
         ]);
+
+        $middleware->alias([
+            'role' => \App\Http\Middleware\CheckAdminRole::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

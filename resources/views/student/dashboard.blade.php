@@ -183,7 +183,6 @@
                             <div class="flex items-center gap-3 bg-gray-50 p-2.5 rounded-lg"><i class="fas fa-id-badge text-blue-400 w-4 text-center text-xs"></i><span class="truncate text-xs">{{ $student->nis ?? 'Tidak ada NIS' }}</span></div>
                             <div class="flex items-center gap-3 bg-gray-50 p-2.5 rounded-lg"><i class="fas fa-envelope text-purple-400 w-4 text-center text-xs"></i><span class="truncate text-xs">{{ $student->email }}</span></div>
                             <div class="flex items-center gap-3 bg-gray-50 p-2.5 rounded-lg"><i class="fas fa-graduation-cap text-amber-400 w-4 text-center text-xs"></i><span class="truncate text-xs">{{ $student->class }}</span></div>
-                            <div class="flex items-center gap-3 bg-gray-50 p-2.5 rounded-lg"><i class="fas fa-wifi text-green-400 w-4 text-center text-xs"></i><span class="truncate text-xs">{{ $ipAddress }}</span></div>
                         </div>
                     </div>
 

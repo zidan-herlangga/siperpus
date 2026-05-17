@@ -109,7 +109,7 @@
 
                     <!-- PWA Install Button -->
                     <button id="pwa-install-btn"
-                        class="flex items-center gap-2 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-lg shadow smooth-transition  btn-hover-effect" style="display:none; background: #006638 !important;>
+                        class="flex items-center gap-2 backdrop-blur-sm border border-white/20 text-white px-4 py-2 rounded-lg shadow smooth-transition btn-hover-effect" style="display: none; background: #006638 !important;">
                         <i class="fas fa-download text-sm"></i>
                         Install App
                     </button>

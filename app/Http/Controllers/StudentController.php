@@ -11,13 +11,13 @@ class StudentController extends Controller
 {
     public function index()
     {
-        $student = Auth::user();
+        $student = Auth::guard('student')->user();
         return view('student.edit', compact('student'));
     }
 
     public function update(Request $request)
     {
-        $student = Auth::user();
+        $student = Auth::guard('student')->user();
 
         $validatedData = $request->validate([
             'name'    => ['required', 'string', 'max:255'],
@@ -29,7 +29,7 @@ class StudentController extends Controller
                 Rule::unique('students')->ignore($student->id),
             ],
             'contact' => ['nullable', 'string', 'max:20'],
-            'avatar'  => ['nullable', 'image', 'max:2048'],
+            'avatar'  => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
         ]);
 
         $request->request->remove('nis');

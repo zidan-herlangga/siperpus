@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use App\Notifications\CustomVerifyEmail;
-use App\Enums\StatusAktif;
+use App\Enums\StudentStatus;
 
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\NewBorrowingNotification;
@@ -49,6 +49,10 @@ class Student extends Authenticatable implements MustVerifyEmail, CanResetPasswo
         'remember_token',
     ];
 
+    protected $attributes = [
+        'avatar' => '',
+    ];
+
     protected static function booted(): void
     {
         static::created(function (Student $student) {
@@ -71,13 +75,18 @@ class Student extends Authenticatable implements MustVerifyEmail, CanResetPasswo
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_active' => StatusAktif::class,
+            'is_active' => StudentStatus::class,
         ];
     }
 
     public function getIsActiveFlagAttribute(): bool
     {
-        return $this->is_active === StatusAktif::Aktif;
+        return $this->is_active === StudentStatus::Aktif;
+    }
+
+    public function getAvatarAttribute($value): string
+    {
+        return $value ?: 'default-avatar.png';
     }
     
     /**

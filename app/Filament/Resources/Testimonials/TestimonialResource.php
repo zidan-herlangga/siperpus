@@ -7,6 +7,7 @@ use App\Filament\Resources\Testimonials\Pages\EditTestimonial;
 use App\Filament\Resources\Testimonials\Pages\ListTestimonials;
 use App\Filament\Resources\Testimonials\Schemas\TestimonialForm;
 use App\Filament\Resources\Testimonials\Tables\TestimonialsTable;
+use App\Filament\Resources\Concerns\HasRoleBasedAccess;
 use App\Models\Testimonial;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class TestimonialResource extends Resource
 {
+    use HasRoleBasedAccess;
+
     protected static ?string $model = Testimonial::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

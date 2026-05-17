@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Book;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 
 class BookSeeder extends Seeder
@@ -312,8 +313,31 @@ class BookSeeder extends Seeder
             ],
         ];
 
-        foreach ($books as $book) {
-            Book::create($book);
+        $categoryMap = [
+            'Novel' => 'Fiksi',
+            'Novel Inspiratif' => 'Fiksi',
+            'Sastra' => 'Fiksi',
+            'Religi' => 'Agama',
+            'Novel Romantis' => 'Fiksi',
+            'Kumpulan Cerita' => 'Fiksi',
+            'Novel Remaja' => 'Fiksi',
+            'Fiksi Ilmiah' => 'Fiksi',
+            'Fiksi Aksi' => 'Fiksi',
+            'Fantasi' => 'Fiksi',
+            'Filosofi' => 'Non-Fiksi',
+            'Motivasi' => 'Non-Fiksi',
+            'Bisnis' => 'Non-Fiksi',
+            'Pengembangan Diri' => 'Non-Fiksi',
+            'Teknologi' => 'Teknologi',
+            'Pemrograman' => 'Teknologi',
+        ];
+
+        foreach ($books as $item) {
+            $categoryName = $categoryMap[$item['category']] ?? 'Fiksi';
+            $category = Category::where('name', $categoryName)->first();
+            $item['category_id'] = $category?->id ?? 1;
+            unset($item['category']);
+            Book::create($item);
         }
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamp('due_soon_sent_at')->nullable();
             $table->timestamp('last_reminder_sent_at')->nullable();
             $table->date('return_date')->nullable();
-            $table->decimal('fine', 10, 2)->default(0);
+            $table->decimal('fine', 10, 2)->default(0)->nullable();
             $table->enum('status', ['Pending', 'Dipinjam', 'Dikembalikan', 'Batal'])->default('Pending');
             $table->timestamps();
         });

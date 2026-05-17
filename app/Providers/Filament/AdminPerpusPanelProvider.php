@@ -23,6 +23,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Widgets\BorrowedBooks;
 use App\Filament\Widgets\LibraryStatsOverview;
 use App\Filament\Widgets\AllBorrowingsReport;
+use App\Filament\Widgets\VisitorMonthlyChart;
 use App\Filament\Widgets\VisitorTodayStats;
 // use App\Filament\Pages\NotificationList;
 
@@ -49,6 +50,7 @@ class AdminPerpusPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
+                VisitorMonthlyChart::class,
                 BorrowedBooks::class,
                 LibraryStatsOverview::class,
                 AllBorrowingsReport::class,

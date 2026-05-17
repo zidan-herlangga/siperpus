@@ -87,9 +87,9 @@
                         <div class="book-cover-wrapper flex-shrink-0 mx-auto md:mx-0">
                             <div class="book-cover w-36 h-52 md:w-44 md:h-64 bg-white rounded-xl overflow-hidden">
                                 @if (filter_var($book->cover_image, FILTER_VALIDATE_URL))
-                                    <img src="{{ $book->cover_image }}" class="w-full h-full object-cover" alt="{{ $book->title }}">
+                                    <img src="{{ $book->cover_image }}" class="w-full h-full object-cover" alt="{{ $book->title }}" loading="lazy">
                                 @elseif ($book->cover_image)
-                                    <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
+                                    <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }}" class="w-full h-full object-cover" loading="lazy">
                                 @else
                                     <div class="w-full h-full bg-gray-100 flex items-center justify-center">
                                         <i class="fas fa-book-open text-4xl text-gray-300"></i>
@@ -106,7 +106,7 @@
                                 @else
                                     <span class="bg-red-500/20 backdrop-blur-sm text-red-200 px-3 py-1.5 rounded-lg text-xs font-semibold border border-red-400/20 flex items-center gap-1.5"><i class="fas fa-circle text-[6px] text-red-300"></i>Stok Habis</span>
                                 @endif
-                                <span class="bg-white/15 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/10 flex items-center gap-1.5"><i class="fas fa-layer-group text-[10px]"></i>{{ $book->category }}</span>
+                                <span class="bg-white/15 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/10 flex items-center gap-1.5"><i class="fas fa-layer-group text-[10px]"></i>{{ $book->category->name ?? '-' }}</span>
                                 <span class="bg-white/15 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/10 flex items-center gap-1.5"><i class="fas fa-location-dot text-[10px]"></i>Rak {{ $book->shelf_code }}</span>
                             </div>
                         </div>
@@ -358,7 +358,7 @@ window.studentData = {
                                 <div style="margin-bottom:1rem;background:#ecfdf5;border:1px solid #d1fae5;border-radius:0.75rem;padding:1rem;font-size:0.875rem;">
                                     <div style="display:flex;justify-content:space-between;margin-bottom:0.625rem;"><span style="color:#6b7280;">Peminjam</span><span style="font-weight:600;color:#1f2937;">{{ auth('student')->user()->name }}</span></div>
                                     <div style="display:flex;justify-content:space-between;margin-bottom:0.625rem;"><span style="color:#6b7280;">Tgl Pinjam</span><span style="font-weight:600;color:#1f2937;">{{ now()->format('d M Y') }}</span></div>
-                                    <div style="display:flex;justify-content:space-between;padding-top:0.625rem;border-top:1px solid #a7f3d0;"><span style="color:#6b7280;">Jatuh Tempo</span><span style="font-weight:700;color:#059669;">{{ now()->addDays(7)->format('d M Y') }}</span></div>
+                                    <div style="display:flex;justify-content:space-between;padding-top:0.625rem;border-top:1px solid #a7f3d0;"><span style="color:#6b7280;">Jatuh Tempo</span>                                        <span style="font-weight:700;color:#059669;">{{ now()->addDays((int) config('library.borrow_duration_days', 7))->format('d M Y') }}</span></div>
                                 </div>
                                 <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;padding:0.75rem;background:#eff6ff;border-radius:0.75rem;border:1px solid #bfdbfe;margin-bottom:1rem;">
                                     <input type="checkbox" name="terms" required style="margin-top:2px; width:18px; height:18px; accent-color:#059669;">
@@ -400,7 +400,7 @@ window.studentData = {
                         <div style="flex:1; min-width:0;">
                             <h3 style="font-weight:800;color:#111827;font-size:0.95rem;margin:0 0 0.25rem 0; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">{{ $book->title }}</h3>
                             <p style="color:#6b7280;font-size:0.8rem;margin:0;">{{ $book->author }}</p>
-                            <p style="color:#059669;font-size:0.75rem;margin-top:0.25rem;font-weight:600;">{{ $book->category }}</p>
+                            <p style="color:#059669;font-size:0.75rem;margin-top:0.25rem;font-weight:600;">{{ $book->category->name ?? '-' }}</p>
                         </div>
                     </div>
 
@@ -430,7 +430,7 @@ window.studentData = {
                         </div>
                         <div style="flex:1; background:#fef2f2; padding:0.75rem; border-radius:6px;">
                             <div style="font-size:0.7rem; color:#6b7280; margin-bottom:0.25rem;">JATUH TEMPO</div>
-                            <div style="font-size:0.85rem; font-weight:800; color:#dc2626;">{{ now()->addDays(7)->format('d M Y') }}</div>
+                                    <div style="font-size:0.85rem; font-weight:800; color:#dc2626;">{{ now()->addDays((int) config('library.borrow_duration_days', 7))->format('d M Y') }}</div>
                         </div>
                     </div>
 

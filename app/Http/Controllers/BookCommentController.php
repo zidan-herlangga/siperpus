@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\BookComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,12 +14,17 @@ class BookCommentController extends Controller
         $student = Auth::guard('student')->user();
 
         // --- VALIDASI: Cek Apakah Siswa Login dan Aktif ---
-        // Menggunakan is_active_flag sesuai dengan yang ada di file blade
         if (!$student || !$student->is_active_flag) {
             return response()->json([
                 'message' => 'Akun Anda tidak aktif. Silakan hubungi administrator.',
                 'errors' => ['account' => 'Akun Anda tidak aktif.']
             ], 403);
+        }
+
+        // --- VALIDASI: Cek apakah buku ada ---
+        $book = Book::find($bookId);
+        if (!$book) {
+            return back()->with('error_comment', 'Buku tidak ditemukan.');
         }
 
         $request->validate([
@@ -30,7 +36,7 @@ class BookCommentController extends Controller
 
         BookComment::create([
             'book_id'   => $bookId,
-            'student_id' => Auth::guard('student')->id(),
+            'student_id' => $student->id,
             'content'   => $request->content,
         ]);
 

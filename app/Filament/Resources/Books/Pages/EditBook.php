@@ -15,7 +15,7 @@ class EditBook extends EditRecord
     {
         return [
             ViewAction::make()
-                ->label('Edit Buku')
+                ->label('Lihat Buku')
                 ->url($this->getResource()::getUrl('view', ['record' => $this->record])),
             DeleteAction::make()
                 ->label('Hapus Buku'),

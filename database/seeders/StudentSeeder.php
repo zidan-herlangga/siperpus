@@ -14,11 +14,10 @@ class StudentSeeder extends Seeder
             'name' => 'Zidan Herlangga',
             'nis' => '1001',
             'class' => 'XII TKJ 1',
-            'avatar' => null,
             'contact' => '085161334009',
-            'email' => 'zidanherlangga24@gmail.com', // Ganti dengan email valid untuk tes
+            'email' => 'zidanherlangga24@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'), 
+            'password' => Hash::make('password'),
             'is_active' => 'Aktif',
         ]);
 
@@ -26,11 +25,10 @@ class StudentSeeder extends Seeder
             'name' => 'Gustiar Ilham',
             'nis' => '1002',
             'class' => 'XII TKJ 1',
-            'avatar' => null,
             'contact' => '085156428541',
-            'email' => 'kachishiro78@gmail.com', // Ganti dengan email valid untuk tes
+            'email' => 'kachishiro78@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'), // Password default
+            'password' => Hash::make('password'),
             'is_active' => 'Aktif',
         ]);
 
@@ -38,11 +36,10 @@ class StudentSeeder extends Seeder
             'name' => 'Rival Rivaldy',
             'nis' => '1003',
             'class' => 'XII TKJ 1',
-            'avatar' => null,
             'contact' => '082122527889',
-            'email' => 'zaky.hart17@gmail.com', // Ganti dengan email valid untuk tes
+            'email' => 'zaky.hart17@gmail.com',
             'email_verified_at' => null,
-            'password' => Hash::make('password'), // Password default
+            'password' => Hash::make('password'),
             'is_active' => 'Aktif',
         ]);
 
@@ -50,11 +47,10 @@ class StudentSeeder extends Seeder
             'name' => 'Naufal Rafly S',
             'nis' => '1004',
             'class' => 'XII TKJ 1',
-            'avatar' => null,
             'email' => 'naufalraflybaru@gmail.com',
-            'contact' => '089516150350', // Ganti dengan email valid untuk tes
+            'contact' => '089516150350',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'), // Password default
+            'password' => Hash::make('password'),
             'is_active' => 'Aktif',
         ]);
 
@@ -62,11 +58,10 @@ class StudentSeeder extends Seeder
             'name' => 'Andre Budi Setiyawan',
             'nis' => '1005',
             'class' => 'XII TKJ 1',
-            'avatar' => null,
             'contact' => '085156134050',
-            'email' => 'alsyacallysta15@gmail.com', // Ganti dengan email valid untuk tes
+            'email' => 'alsyacallysta15@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'), // Password default
+            'password' => Hash::make('password'),
             'is_active' => 'Aktif',
         ]);
     }

@@ -11,17 +11,23 @@ class ListReminders extends ListRecords
 {
     protected static string $resource = ReminderResource::class;
 
-    public function getTitle(): string 
+    public function getTitle(): string
     {
-        return 'Kirim Pengingat Manual';
+        return 'Kirim Pengingat';
     }
 
     protected function getTableQuery(): ?Builder
     {
-        // Menyesuaikan status dengan model: 'Dipinjam'
         return Borrowing::query()
             ->with(['student', 'book'])
-            ->where('status', 'Dipinjam');
+            ->needReminder()
+            ->orderByRaw("
+                CASE 
+                    WHEN due_date < NOW() THEN 0
+                    ELSE 1
+                END
+            ")
+            ->orderBy('due_date', 'asc');
     }
 
     protected function getHeaderActions(): array

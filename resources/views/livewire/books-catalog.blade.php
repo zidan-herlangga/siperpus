@@ -19,8 +19,8 @@
                 <select wire:model.live="category"
                     class="input-modern w-full px-4 py-2.5 rounded-xl bg-white outline-none text-gray-800 text-sm appearance-none cursor-pointer">
                     <option value="">Semua</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category }}">{{ $category }}</option>
+                    @foreach ($categories as $id => $name)
+                        <option value="{{ $id }}">{{ $name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -67,9 +67,9 @@
             @endif
             @if ($category)
                 di kategori 
-                <span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1 border border-emerald-100">
-                    <i class="fas fa-tag text-[10px]"></i>{{ $category }}
-                </span>
+                    <span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1 border border-emerald-100">
+                        <i class="fas fa-tag text-[10px]"></i>{{ $selectedCategory }}
+                    </span>
             @endif
         </div>
     @endif
@@ -80,8 +80,13 @@
             @foreach ($books as $book)
                 <div class="book-card">
                     {{-- Cover Area --}}
-                    <div class="relative bg-gradient-to-br from-gray-50 to-emerald-50/50 h-44 flex items-center justify-center p-4">
-                        <i class="fas fa-book-open book-cover-icon text-5xl text-emerald-300"></i>
+                    <div class="relative bg-gradient-to-br from-gray-50 to-emerald-50/50 h-48 flex items-center justify-center p-4">
+                        {{-- <i class="fas fa-book-open book-cover-icon text-5xl text-emerald-300"></i> --}}
+                        @if (filter_var($book->cover_image, FILTER_VALIDATE_URL))
+                            <img src="{{ $book->cover_image }}" class="h-48 w-96 object-cover" alt="{{ $book->title }}" loading="lazy">
+                        @elseif ($book->cover_image)
+                            <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }}" class="h-48 w-96 object-cover" loading="lazy">
+                        @endif
                         
                         <div class="absolute top-3 left-3">
                             <span class="bg-white/90 backdrop-blur-sm text-gray-600 text-[10px] font-bold px-2 py-1 rounded-md shadow-sm border border-gray-100">
@@ -114,7 +119,7 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-layer-group w-3 text-center text-blue-400"></i>
-                                <span class="truncate">{{ $book->category }}</span>
+                                <span class="truncate">{{ $book->category->name ?? '-' }}</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-calendar w-3 text-center text-orange-400"></i>

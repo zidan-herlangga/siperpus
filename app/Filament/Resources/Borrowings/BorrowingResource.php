@@ -9,6 +9,7 @@ use App\Filament\Resources\Borrowings\Pages\ViewBorrowing;
 use App\Filament\Resources\Borrowings\Tables\BorrowingsTable;
 use App\Filament\Resources\Borrowings\Schemas\BorrowingForm;
 use App\Filament\Resources\Borrowings\Schemas\BorrowingInfolist;
+use App\Filament\Resources\Concerns\HasRoleBasedAccess;
 use App\Models\Borrowing;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -18,6 +19,8 @@ use BackedEnum;
 
 class BorrowingResource extends Resource
 {
+    use HasRoleBasedAccess;
+
     protected static ?string $model = Borrowing::class;
 
     protected static ?string $label = 'Peminjaman';

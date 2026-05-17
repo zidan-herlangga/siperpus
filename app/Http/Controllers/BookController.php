@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -21,8 +22,7 @@ class BookController extends Controller
 
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'LIKE', "%{$search}%")
-                  ->orWhere('author', 'LIKE', "%{$search}%")
-                  ->orWhere('category', 'LIKE', "%{$search}%");
+                  ->orWhere('author', 'LIKE', "%{$search}%");
             });
         }
 
@@ -32,7 +32,7 @@ class BookController extends Controller
          * =========================
          */
         if ($request->filled('category')) {
-            $query->where('category', $request->category);
+            $query->where('category_id', $request->category);
         }
 
         /**
@@ -72,11 +72,7 @@ class BookController extends Controller
          * CATEGORY LIST
          * =========================
          */
-        $categories = Book::query()
-            ->whereNotNull('category')
-            ->distinct()
-            ->orderBy('category')
-            ->pluck('category');
+        $categories = Category::orderBy('name')->pluck('name', 'id');
 
         return view('books.index', compact('books', 'categories'));
     }
@@ -86,7 +82,7 @@ class BookController extends Controller
         $book = Book::where('slug', $slug)->firstOrFail();
 
         $relatedBooks = Book::query()
-            ->where('category', $book->category)
+            ->where('category_id', $book->category_id)
             ->whereKeyNot($book->id)
             ->inRandomOrder()
             ->limit(4)

@@ -9,6 +9,7 @@ use App\Filament\Resources\Books\Pages\ViewBook;
 use App\Filament\Resources\Books\Schemas\BookForm;
 use App\Filament\Resources\Books\Schemas\BookInfolist;
 use App\Filament\Resources\Books\Tables\BooksTable;
+use App\Filament\Resources\Concerns\HasRoleBasedAccess;
 use App\Models\Book;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -20,6 +21,8 @@ use UnitEnum;
 
 class BookResource extends Resource
 {
+    use HasRoleBasedAccess;
+
     protected static ?string $model = Book::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'Perpustakaan';

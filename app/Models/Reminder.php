@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 
 class Reminder extends Model
@@ -14,12 +15,12 @@ class Reminder extends Model
 
     protected static function booted(): void
     {
-        static::created(function (Student $student) {
+        static::created(function (Reminder $reminder) {
             $admins = \App\Models\Admin::all();
 
             Notification::make()
                 ->title('Pengingat Dikirim!')
-                ->body('Pengingat ' . $student->name . ' telah dikirim.')
+                ->body('Pengingat telah dikirim untuk peminjaman #' . $reminder->borrowing_id)
                 ->sendToDatabase($admins);
         });
     }

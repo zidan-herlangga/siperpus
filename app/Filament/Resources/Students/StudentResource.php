@@ -9,6 +9,7 @@ use App\Filament\Resources\Students\Pages\ViewStudent;
 use App\Filament\Resources\Students\Schemas\StudentForm;
 use App\Filament\Resources\Students\Schemas\StudentInfolist;
 use App\Filament\Resources\Students\Tables\StudentsTable;
+use App\Filament\Resources\Concerns\HasRoleBasedAccess;
 use App\Models\Student;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -19,6 +20,8 @@ use UnitEnum;
 
 class StudentResource extends Resource
 {
+    use HasRoleBasedAccess;
+
     protected static ?string $model = Student::class;
 
 

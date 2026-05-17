@@ -4,7 +4,6 @@
 
 @section('styles')
 <style>
-    /* Animasi masuk untuk kartu */
     .history-card {
         animation: fadeInUp 0.4s ease-out forwards;
         opacity: 0;
@@ -19,7 +18,6 @@
     .history-card:nth-child(4) { animation-delay: 0.2s; }
     .history-card:nth-child(5) { animation-delay: 0.25s; }
 
-    /* Style untuk tab filter */
     .filter-tab {
         transition: all 0.2s ease;
     }
@@ -32,7 +30,6 @@
         background-color: #f3f4f6;
     }
 
-    /* Custom scrollbar */
     .history-container::-webkit-scrollbar { width: 4px; }
     .history-container::-webkit-scrollbar-track { background: transparent; }
     .history-container::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
@@ -56,7 +53,6 @@
                     <p class="text-sm text-gray-500 mt-1 ml-[52px]">Daftar buku yang pernah atau sedang Anda pinjam.</p>
                 </div>
 
-                {{-- Total Statistik --}}
                 <div class="flex items-center gap-3 ml-[52px] md:ml-0">
                     <div class="bg-blue-50 text-blue-700 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm">
                         <i class="fas fa-layer-group"></i>
@@ -69,44 +65,65 @@
 
     <div class="container mx-auto px-4 py-6 pb-28 md:pb-12 history-container">
         
-        {{-- Filter Tabs --}}
-        <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
-            <button onclick="filterHistory('Semua')" class="filter-tab active text-sm font-semibold px-4 py-2 rounded-xl bg-gray-100 text-gray-600 whitespace-nowrap" data-filter="Semua">
-                <i class="fas fa-border-all mr-1.5"></i>Semua
-            </button>
-            <button onclick="filterHistory('Dipinjam')" class="filter-tab text-sm font-semibold px-4 py-2 rounded-xl bg-gray-100 text-gray-600 whitespace-nowrap" data-filter="Dipinjam">
-                <i class="fas fa-book-open mr-1.5 text-amber-500"></i>Sedang Dipinjam
-            </button>
-            <button onclick="filterHistory('Dikembalikan')" class="filter-tab text-sm font-semibold px-4 py-2 rounded-xl bg-gray-100 text-gray-600 whitespace-nowrap" data-filter="Dikembalikan">
-                <i class="fas fa-circle-check mr-1.5 text-emerald-500"></i>Dikembalikan
-            </button>
-            {{-- Tambahkan tab lain jika ada status lain di database, misalnya 'Terlambat' --}}
-            <button onclick="filterHistory('Terlambat')" class="filter-tab text-sm font-semibold px-4 py-2 rounded-xl bg-gray-100 text-gray-600 whitespace-nowrap" data-filter="Terlambat">
-                <i class="fas fa-triangle-exclamation mr-1.5 text-red-500"></i>Terlambat
-            </button>
-        </div>
+        {{-- Search & Filter --}}
+        <form method="GET" action="{{ route('student.history') }}" class="mb-6">
+            <div class="flex flex-col md:flex-row gap-3">
+                <div class="flex-1 relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="text" name="search" placeholder="Cari judul buku..." value="{{ request('search') }}"
+                        class="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400">
+                </div>
+                <div class="flex gap-2">
+                    <select name="status" class="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400">
+                        <option value="">Semua Status</option>
+                        <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="Dipinjam" {{ request('status') == 'Dipinjam' ? 'selected' : '' }}>Dipinjam</option>
+                        <option value="Dikembalikan" {{ request('status') == 'Dikembalikan' ? 'selected' : '' }}>Dikembalikan</option>
+                        <option value="Batal" {{ request('status') == 'Batal' ? 'selected' : '' }}>Batal</option>
+                    </select>
+                    <button type="submit" class="bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-emerald-700 transition-colors">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                    @if(request('search') || request('status'))
+                        <a href="{{ route('student.history') }}" class="bg-gray-100 text-gray-600 px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-200 transition-colors flex items-center">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    @endif
+                </div>
+            </div>
+        </form>
 
         {{-- Daftar Riwayat --}}
         <div id="historyList">
             @forelse($borrowings as $borrowing)
-                <div class="history-card bg-white rounded-2xl shadow-sm border border-gray-100 mb-4 overflow-hidden transition-all hover:shadow-md" data-status="{{ $borrowing->status }}">
+                @php
+                    $isOverdue = $borrowing->status === 'Dipinjam' && $borrowing->due_date < now();
+                    $displayStatus = $isOverdue ? 'Terlambat' : $borrowing->status;
+                    $statusConfig = [
+                        'Pending' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-600', 'icon' => 'fa-clock'],
+                        'Dipinjam' => ['bg' => 'bg-amber-100', 'text' => 'text-amber-700', 'icon' => 'fa-spinner'],
+                        'Terlambat' => ['bg' => 'bg-red-100', 'text' => 'text-red-700', 'icon' => 'fa-triangle-exclamation'],
+                        'Dikembalikan' => ['bg' => 'bg-emerald-100', 'text' => 'text-emerald-700', 'icon' => 'fa-circle-check'],
+                        'Batal' => ['bg' => 'bg-red-50', 'text' => 'text-red-400', 'icon' => 'fa-xmark'],
+                    ];
+                    $currStatus = $statusConfig[$displayStatus] ?? ['bg' => 'bg-gray-100', 'text' => 'text-gray-600', 'icon' => 'fa-circle-question'];
+                @endphp
+                <div class="history-card bg-white rounded-2xl shadow-sm border border-gray-100 mb-4 overflow-hidden transition-all hover:shadow-md" data-status="{{ $displayStatus }}">
                     
                     <div class="p-4 md:p-5 flex items-start gap-4">
                         
-                        {{-- Ikon / Gambar Buku --}}
                         <div class="w-14 h-20 rounded-xl flex-shrink-0 overflow-hidden shadow-sm border border-gray-100 flex items-center justify-center
-                            {{ $borrowing->status === 'Dipinjam' ? 'bg-amber-50' : ($borrowing->status === 'Dikembalikan' ? 'bg-emerald-50' : 'bg-red-50') }}">
+                            {{ $borrowing->status === 'Dipinjam' ? 'bg-amber-50' : ($borrowing->status === 'Dikembalikan' ? 'bg-emerald-50' : 'bg-gray-50') }}">
                             @if (filter_var($borrowing->book->cover_image, FILTER_VALIDATE_URL))
                                     <img src="{{ $borrowing->book->cover_image }}" class="w-full h-full object-cover" alt="{{ $borrowing->book->title }}">
                             @elseif ($borrowing->book->cover_image)
                                     <img src="{{ asset('storage/' . $borrowing->book->cover_image) }}" alt="{{ $borrowing->book->title }}" class="w-full h-full object-cover">
                             @else
                                 <i class="fas fa-book text-2xl 
-                                    {{ $borrowing->status === 'Dipinjam' ? 'text-amber-400' : ($borrowing->status === 'Dikembalikan' ? 'text-emerald-400' : 'text-red-400') }}"></i>
+                                    {{ $borrowing->status === 'Dipinjam' ? 'text-amber-400' : ($borrowing->status === 'Dikembalikan' ? 'text-emerald-400' : 'text-gray-400') }}"></i>
                             @endif
                         </div>
 
-                        {{-- Detail Info --}}
                         <div class="flex-grow min-w-0">
                             <h3 class="font-bold text-gray-800 text-base leading-snug truncate">
                                 {{ $borrowing->book->title }}
@@ -130,34 +147,30 @@
                                         Kembali: {{ \Carbon\Carbon::parse($borrowing->return_date)->format('d M Y') }}
                                     </span>
                                 @endif
+                                @if($borrowing->fine_amount > 0)
+                                    <span class="flex items-center gap-1.5 text-red-500 font-semibold">
+                                        <i class="fas fa-coins"></i>
+                                        Denda: Rp {{ number_format($borrowing->fine_amount, 0, ',', '.') }}
+                                    </span>
+                                @endif
                             </div>
                         </div>
 
-                        {{-- Badge Status --}}
                         <div class="flex-shrink-0 ml-2">
-                            @php
-                                // Sesuaikan ini dengan_exact string status di database kamu
-                                $statusConfig = [
-                                    'Dipinjam' => ['bg' => 'bg-amber-100', 'text' => 'text-amber-700', 'icon' => 'fa-spinner fa-spin-pulse', 'label' => 'Dipinjam'],
-                                    'Dikembalikan' => ['bg' => 'bg-emerald-100', 'text' => 'text-emerald-700', 'icon' => 'fa-circle-check', 'label' => 'Dikembalikan'],
-                                    'Terlambat' => ['bg' => 'bg-red-100', 'text' => 'text-red-700', 'icon' => 'fa-triangle-exclamation', 'label' => 'Terlambat'],
-                                ];
-                                $currStatus = $statusConfig[$borrowing->status] ?? ['bg' => 'bg-gray-100', 'text' => 'text-gray-600', 'icon' => 'fa-circle-question', 'label' => $borrowing->status];
-                            @endphp
                             <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full {{ $currStatus['bg'] }} {{ $currStatus['text'] }}">
                                 <i class="fas {{ $currStatus['icon'] }} text-[10px]"></i>
-                                {{ $currStatus['label'] }}
+                                {{ $displayStatus }}
                             </span>
                         </div>
                     </div>
 
-                    {{-- Warning Bar jika terlambat --}}
-                    @if($borrowing->status === 'Terlambat')
+                    @if($displayStatus === 'Terlambat')
                     <div class="bg-red-50 border-t border-red-100 px-5 py-3 flex items-center justify-between">
                         <p class="text-xs text-red-600 font-medium">
                             <i class="fas fa-info-circle mr-1"></i>
                             Segera kembalikan buku untuk menghindari sanksi.
                         </p>
+                        <span class="text-xs text-red-500 font-bold">{{ abs(floor(now()->diffInDays($borrowing->due_date))) }} hari terlambat</span>
                     </div>
                     @endif
 
@@ -191,9 +204,7 @@
 
 @section('scripts')
 <script>
-    // === LOGIK FILTER CLIENT-SIDE ===
     function filterHistory(status) {
-        // 1. Update style tombol tab
         document.querySelectorAll('.filter-tab').forEach(tab => {
             tab.classList.remove('active');
             if(tab.getAttribute('data-filter') === status) {
@@ -201,17 +212,13 @@
             }
         });
 
-        // 2. Tampilkan/sembunyikan kartu berdasarkan status
         const cards = document.querySelectorAll('.history-card');
-        let visibleCount = 0;
-
         cards.forEach(card => {
             const cardStatus = card.getAttribute('data-status');
             if (status === 'Semua' || cardStatus === status) {
                 card.style.display = 'block';
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0)';
-                visibleCount++;
             } else {
                 card.style.display = 'none';
                 card.style.opacity = '0';

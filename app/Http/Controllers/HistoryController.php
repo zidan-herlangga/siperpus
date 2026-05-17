@@ -8,15 +8,27 @@ use App\Models\Borrowing;
 
 class HistoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil data siswa yang sedang login
         $student = Auth::guard('student')->user();
         
-        // Langsung paginate dari relasi (tanpa .get() sebelum paginate)
-        $borrowings = $student->borrowings()->with('book')->latest()->paginate(10);
+        $query = $student->borrowings()->with('book');
 
-        // Kirim variabel yang BENAR ke view: 'borrowings' (bukan 'borrows')
+        // Search by book title
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->whereHas('book', function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $borrowings = $query->latest()->paginate(10)->withQueryString();
+
         return view('student.history', compact('borrowings'));
     }
 }

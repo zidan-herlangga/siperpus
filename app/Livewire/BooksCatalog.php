@@ -44,7 +44,7 @@ class BooksCatalog extends Component
                           ->orWhere('isbn', 'like', '%' . $this->search . '%');
                 })
                 ->when($this->category, function ($query) {
-                    $query->where('category', $this->category);
+                    $query->where('category_id', $this->category);
                 })
                 ->when($this->sort === 'newest', function ($query) {
                     $query->orderBy('created_at', 'desc');
@@ -60,12 +60,13 @@ class BooksCatalog extends Component
                 })
                 ->paginate(12); // 12 buku per halaman
 
-        // Ambil daftar kategori unik untuk dropdown
-        $categories = Book::select('category')->distinct()->orderBy('category')->pluck('category');
+        $categories = \App\Models\Category::orderBy('name')->pluck('name', 'id');
+        $selectedCategory = $this->category ? \App\Models\Category::find($this->category)?->name : null;
 
         return view('livewire.books-catalog', [
             'books' => $books,
             'categories' => $categories,
+            'selectedCategory' => $selectedCategory,
         ]);
     }
 }

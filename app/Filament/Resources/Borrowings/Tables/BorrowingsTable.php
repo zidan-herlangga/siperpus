@@ -5,69 +5,110 @@ namespace App\Filament\Resources\Borrowings\Tables;
 use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 
 class BorrowingsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => 
+                $query->with(['student', 'book']) // 🔥 cegah N+1
+            )
+
             ->columns([
+                // 🔹 Nama Siswa
                 TextColumn::make('student.name')
                     ->label('Nama Siswa')
                     ->searchable()
                     ->sortable(),
 
+                // 🔹 Judul Buku
                 TextColumn::make('book.title')
                     ->label('Judul Buku')
                     ->searchable()
                     ->sortable(),
 
+                // 🔹 Tanggal Pinjam
                 TextColumn::make('borrow_date')
                     ->label('Tanggal Pinjam')
                     ->date('d M Y')
                     ->sortable(),
 
+                // 🔹 Jatuh Tempo (dengan warning)
                 TextColumn::make('due_date')
                     ->label('Jatuh Tempo')
                     ->date('d M Y')
-                    ->sortable(),
-
-                BadgeColumn::make('status')
-                    ->label('Status')
                     ->sortable()
-                    ->formatStateUsing(function ($state) {
-                        return match($state) {
-                            'Pending' => 'Pending',
-                            'Dipinjam' => 'Dipinjam',
-                            'Dikembalikan' => 'Dikembalikan',
-                            default => $state,
+                    ->color(fn ($record) => 
+                        $record->status === 'Dipinjam' && $record->due_date < now()
+                            ? 'danger'
+                            : null
+                    )
+                    ->tooltip(fn ($record) => 
+                        $record->status === 'Dipinjam' && $record->due_date < now()
+                            ? 'Sudah melewati jatuh tempo'
+                            : null
+                    ),
+
+                // 🔹 Status (SMART)
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->icon(fn ($record) => 
+                        $record->status === 'Dipinjam' && $record->due_date < now()
+                            ? 'heroicon-o-exclamation-circle'
+                            : null
+                    )
+                    ->color(function ($record) {
+                        if ($record->status === 'Dipinjam' && $record->due_date < now()) {
+                            return 'danger'; // TERLAMBAT
+                        }
+
+                        return match ($record->status) {
+                            'Pending' => 'gray',
+                            'Dipinjam' => 'warning',
+                            'Dikembalikan' => 'success',
+                            'Batal' => 'danger',
+                            default => 'gray',
                         };
                     })
+                    ->formatStateUsing(function ($record) {
+                        if ($record->status === 'Dipinjam' && $record->due_date < now()) {
+                            return 'Terlambat';
+                        }
 
-                    ->colors([
-                        'gray' => fn ($state) => $state === 'Pending',
-                        'warning' => fn ($state) => $state === 'Dipinjam',
-                        'success' => fn ($state) => $state === 'Dikembalikan',
-                        'danger' => fn ($state) => $state === 'Batal',
-                    ]),
+                        return $record->status;
+                    })
+                    ->sortable(),
 
+                // 🔹 Denda (DYNAMIC LOGIC)
                 TextColumn::make('fine_amount')
                     ->label('Denda')
                     ->getStateUsing(function ($record) {
-                        if ($record->status === 'Pending') {
-                            return 0; // belum aktif, belum bisa kena denda
+                        if ($record->status !== 'Dipinjam') {
+                            return 0;
                         }
-                        return $record->fine_amount;
+
+                        if ($record->due_date >= now()) {
+                            return 0;
+                        }
+
+                        $daysLate = Carbon::parse($record->due_date)
+                            ->diffInDays(now());
+
+                        return $daysLate * (int) config('library.fine_per_day', 1000);
                     })
-                    ->formatStateUsing(fn ($state) => number_format((int)$state, 0, ',', '.'))
+                    ->formatStateUsing(fn ($state) => number_format((int) $state, 0, ',', '.'))
                     ->prefix('Rp ')
                     ->sortable(),
             ])
+
             ->filters([
-                // contoh filter: hanya overdue / only returned
+                // 🔹 Filter Status
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'Pending' => 'Pending',
@@ -75,13 +116,22 @@ class BorrowingsTable
                         'Dikembalikan' => 'Dikembalikan',
                         'Batal' => 'Batal',
                     ]),
+
+                // 🔹 Filter Overdue
                 Tables\Filters\Filter::make('overdue')
                     ->label('Hanya Terlambat')
-                    ->query(fn ($query) => $query->where('status', 'Dipinjam')->whereDate('due_date', '<', now()->toDateString())),
+                    ->query(fn (Builder $query) => 
+                        $query->where('status', 'Dipinjam')
+                              ->whereDate('due_date', '<', now())
+                    ),
             ])
+
             ->recordActions([
-                // actions handled by resource pages
+                // nanti bisa tambah:
+                // ViewAction::make(),
+                // EditAction::make(),
             ])
+
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
