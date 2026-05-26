@@ -30,6 +30,7 @@ class StudentController extends Controller
             ],
             'contact' => ['nullable', 'string', 'max:20'],
             'avatar'  => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
         $request->request->remove('nis');

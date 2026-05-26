@@ -1,0 +1,132 @@
+// DBML - Database Markup Language
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table categories {
+  id bigint [primary key, increment]
+  name varchar(100) [not null, unique]
+  slug varchar(120) [not null, unique]
+  description text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table books {
+  id bigint [primary key, increment]
+  title varchar(255) [not null]
+  slug varchar(255) [unique]
+  cover_image varchar(255)
+  author varchar(255) [not null]
+  publisher varchar(255) [not null]
+  year year [not null]
+  isbn varchar(255) [unique]
+  synopsis text
+  shelf_code varchar(255) [not null]
+  stock int [not null, default: 0]
+  condition varchar(20) [not null, default: 'Baik']
+  category_id bigint
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table students {
+  id bigint [primary key, increment]
+  name varchar(255) [not null]
+  nis varchar(255) [unique]
+  class varchar(255) [not null]
+  avatar varchar(255) [not null, default: '']
+  contact varchar(255)
+  email varchar(255) [not null, unique]
+  email_verified_at timestamp
+  password varchar(255)
+  is_active varchar(10) [not null, default: 'Aktif']
+  remember_token varchar(100)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table admins {
+  id bigint [primary key, increment]
+  name varchar(255) [not null]
+  email varchar(255) [not null, unique]
+  email_verified_at timestamp
+  password varchar(255) [not null]
+  role varchar(10) [not null, default: 'admin']
+  remember_token varchar(100)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table borrowings {
+  id bigint [primary key, increment]
+  student_id bigint [not null]
+  book_id bigint [not null]
+  borrow_date date [not null]
+  due_date date [not null]
+  due_soon_sent_at timestamp
+  last_reminder_sent_at timestamp
+  return_date date
+  fine decimal(10,2) [default: 0.00]
+  status varchar(15) [not null, default: 'Pending']
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table reminders {
+  id bigint [primary key, increment]
+  borrowing_id bigint [not null]
+  type varchar(10) [not null]
+  sent_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table book_comments {
+  id bigint [primary key, increment]
+  book_id bigint [not null]
+  student_id bigint [not null]
+  content text [not null]
+  is_approved boolean [default: true]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table testimonials {
+  id bigint [primary key, increment]
+  student_id bigint [not null]
+  content text [not null]
+  rating int [not null, default: 5]
+  is_approved boolean [default: false]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table notifications {
+  id char(36) [primary key]
+  type varchar(255) [not null]
+  notifiable_type varchar(255) [not null]
+  notifiable_id bigint [not null]
+  data text [not null]
+  read_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table visitors {
+  id bigint [primary key, increment]
+  ip_address varchar(255)
+  created_at timestamp
+}
+
+// ============ RELATIONS ============
+
+Ref: books.category_id > categories.id // 1 category has many books (SET NULL on delete)
+
+Ref: borrowings.student_id > students.id // 1 student borrows many books (CASCADE on delete)
+Ref: borrowings.book_id > books.id // 1 book borrowed many times (CASCADE on delete)
+
+Ref: reminders.borrowing_id > borrowings.id // 1 borrowing has many reminders (CASCADE on delete)
+
+Ref: book_comments.book_id > books.id // 1 book has many comments (CASCADE on delete)
+Ref: book_comments.student_id > students.id // 1 student writes many comments (CASCADE on delete)
+
+Ref: testimonials.student_id > students.id // 1 student gives many testimonials (CASCADE on delete)

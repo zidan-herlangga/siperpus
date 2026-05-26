@@ -11,11 +11,14 @@ class VisitorMonthlyChart extends ChartWidget
     protected static ?int $sort = 0;
     protected int|string|array $columnSpan = 'full';
     protected ?string $heading = 'Grafik Pengunjung Bulan Ini';
+    protected ?string $maxHeight = '400px';
+    protected ?string $pollingInterval = '10s';
 
     protected function getType(): string
     {
         return 'line';
     }
+
 
     protected function getData(): array
     {
