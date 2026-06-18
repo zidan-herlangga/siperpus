@@ -100,7 +100,7 @@
             <div class="card-glass rounded-2xl overflow-hidden animate-fade-in">
 
                 {{-- Header --}}
-                <div class="bg-gradient-to-br from-emerald-600 to-green-700 text-white p-10 text-center relative">
+                <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-10 text-center relative">
                     <div class="absolute inset-0 bg-black/5"></div>
                     <div class="relative z-10">
                         <div
@@ -108,7 +108,7 @@
                             <i class="fas fa-user-pen text-2xl"></i>
                         </div>
                         <h1 class="text-2xl font-bold tracking-tight mb-1">Edit Profil Siswa</h1>
-                        <p class="text-green-100 text-sm">Perbarui informasi akun Anda di bawah ini.</p>
+                        <p class="text-emerald-100 text-sm">Perbarui informasi akun Anda di bawah ini.</p>
                     </div>
                 </div>
 
@@ -235,7 +235,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <i class="fas fa-lock input-icon text-gray-400 text-sm"></i>
                                 </div>
-                                <input id="password" type="password" name="password" required minlength="8"
+                                <input id="password" type="password" name="password" minlength="8"
                                     autocomplete="new-password"
                                     class="input-modern w-full pl-11 pr-12 py-3 rounded-xl bg-white outline-none text-gray-800 placeholder-gray-400 @error('password') border-red-400 @enderror"
                                     placeholder="Min. 8 karakter">
@@ -269,7 +269,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <i class="fas fa-lock input-icon text-gray-400 text-sm"></i>
                                 </div>
-                                <input id="password_confirmation" type="password" name="password_confirmation" required
+                                <input id="password_confirmation" type="password" name="password_confirmation"
                                     autocomplete="new-password"
                                     class="input-modern w-full pl-11 pr-12 py-3 rounded-xl bg-white outline-none text-gray-800 placeholder-gray-400"
                                     placeholder="Ulangi password baru">
@@ -297,7 +297,7 @@
                                         class="w-28 h-28 rounded-xl bg-gray-100 border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden relative">
                                         @if ($student->avatar)
                                             <img src="{{ asset('storage/' . $student->avatar) }}" alt="Avatar"
-                                                class="w-full h-full object-cover" id="currentAvatar">
+                                                class="w-full h-full object-cover" id="currentAvatar" loading="lazy">
                                         @else
                                             <div class="text-center text-gray-400">
                                                 <i class="fas fa-user text-2xl mb-1"></i>
@@ -353,7 +353,7 @@
             const strengthBar = document.getElementById('strength-bar');
             const strengthText = document.getElementById('strength-text');
             const matchText = document.getElementById('password-match');
-            const form = document.getElementById('resetPasswordForm');
+            const form = document.getElementById('editProfileForm');
             const submitBtn = document.getElementById('submitButton');
             const btnText = document.getElementById('buttonText');
             const btnIcon = document.getElementById('btnIcon');

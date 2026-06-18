@@ -1,5 +1,5 @@
 {
-    "name": "Elibrary SMK Karya Guna 2",
+    "name": "Elib KG2",
     "short_name": "Elib KG2",
     "start_url": "/",
     "background_color": "#065f46",
@@ -8,7 +8,7 @@
     "theme_color": "#065f46",
     "icons": [
         {
-            "src": "logokg2.png",
+            "src": "logo-smk.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"

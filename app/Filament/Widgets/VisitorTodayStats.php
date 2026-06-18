@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class VisitorTodayStats extends BaseWidget
 {
+    protected static bool $lazy = true;
     protected int|string|array $columnSpan = 'full';
     protected static ?int $sort = 1;
 
@@ -67,15 +68,15 @@ class VisitorTodayStats extends BaseWidget
 
             Stat::make('Kemarin', $data['yesterday'])
                 ->icon('heroicon-o-clock')
-                ->color('warning'),
+                ->color('gray'),
 
             Stat::make('Total Pengunjung', $data['total'])
                 ->icon('heroicon-o-users')
-                ->color('primary'),
+                ->color('info'),
 
             Stat::make('Rata-rata (7 Hari)', $data['average'])
                 ->icon('heroicon-o-chart-bar')
-                ->color('info'),
+                ->color('primary'),
         ];
     }
 }

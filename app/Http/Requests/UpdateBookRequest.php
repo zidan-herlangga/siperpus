@@ -11,7 +11,7 @@ class UpdateBookRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,7 +28,7 @@ class UpdateBookRequest extends FormRequest
             'publisher'  => 'sometimes|string|max:255',
             'year'       => 'sometimes|integer|digits:4',
             'isbn'       => 'nullable|string|unique:books,isbn,' . $this->id,
-            'category'   => 'sometimes|string|max:255',
+            'category_id' => 'sometimes|integer|exists:categories,id',
             'synopsis'   => 'nullable|string',
             'shelf_code' => 'sometimes|string|max:50',
             'stock'      => 'sometimes|integer|min:0',

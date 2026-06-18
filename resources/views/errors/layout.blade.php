@@ -89,7 +89,7 @@
 
 <body>
     <div class="error-container">
-        <img src="@yield('image')" alt="" class="error-image">
+        <img src="@yield('image')" alt="" class="error-image" loading="lazy">
         <div class="error-code">@yield('code')</div>
         <h2 class="error-title">@yield('message-title')</h2>
         <p class="error-message">@yield('message-body')</p>

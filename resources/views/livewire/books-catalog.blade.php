@@ -80,20 +80,46 @@
             @foreach ($books as $book)
                 <div class="book-card">
                     {{-- Cover Area --}}
-                    <div class="relative bg-gradient-to-br from-gray-50 to-emerald-50/50 h-48 flex items-center justify-center p-4">
-                        {{-- <i class="fas fa-book-open book-cover-icon text-5xl text-emerald-300"></i> --}}
-                        @if (filter_var($book->cover_image, FILTER_VALIDATE_URL))
-                            <img src="{{ $book->cover_image }}" class="h-48 w-96 object-cover" alt="{{ $book->title }}" loading="lazy">
-                        @elseif ($book->cover_image)
-                            <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }}" class="h-48 w-96 object-cover" loading="lazy">
+                    <div class="relative h-48 flex items-center justify-center p-4 overflow-hidden">
+                        @php
+                            $hasCover = $book->cover_image && (!filter_var($book->cover_image, FILTER_VALIDATE_URL) || filter_var($book->cover_image, FILTER_VALIDATE_URL));
+                            $coverSrc = null;
+                            if (filter_var($book->cover_image, FILTER_VALIDATE_URL)) {
+                                $coverSrc = $book->cover_image;
+                            } elseif ($book->cover_image) {
+                                $coverSrc = asset('storage/' . $book->cover_image);
+                            }
+                            // Generate warna unik berdasarkan judul buku
+                            $hue = crc32($book->title) % 360;
+                            $placeholderGrad = "linear-gradient(135deg, hsl({$hue}, 40%, 85%), hsl({$hue}, 50%, 70%))";
+                        @endphp
+
+                        @if ($coverSrc)
+                            <img src="{{ $coverSrc }}" alt="{{ $book->title }}"
+                                class="absolute inset-0 w-full h-full object-cover transition-all duration-700"
+                                loading="lazy"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="absolute inset-0 flex items-center justify-center" style="display:none;background:{{ $placeholderGrad }};">
+                                <div class="text-center">
+                                    <i class="fas fa-book-open text-4xl text-white/70"></i>
+                                    <p class="text-white/60 text-xs font-semibold mt-2 px-4 truncate max-w-[140px]">{{ $book->title }}</p>
+                                </div>
+                            </div>
+                        @else
+                            <div class="absolute inset-0 flex items-center justify-center" style="background:{{ $placeholderGrad }};">
+                                <div class="text-center">
+                                    <i class="fas fa-book-open text-4xl text-white/70"></i>
+                                    <p class="text-white/60 text-xs font-semibold mt-2 px-4 truncate max-w-[140px]">{{ $book->title }}</p>
+                                </div>
+                            </div>
                         @endif
                         
-                        <div class="absolute top-3 left-3">
+                        <div class="absolute top-3 left-3 z-10">
                             <span class="bg-white/90 backdrop-blur-sm text-gray-600 text-[10px] font-bold px-2 py-1 rounded-md shadow-sm border border-gray-100">
                                 {{ $book->shelf_code }}
                             </span>
                         </div>
-                        <div class="absolute top-3 right-3">
+                        <div class="absolute top-3 right-3 z-10">
                             @if ($book->stock > 0)
                                 <span class="bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-sm">
                                     Stok: {{ $book->stock }}

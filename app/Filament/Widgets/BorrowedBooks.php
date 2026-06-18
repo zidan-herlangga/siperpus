@@ -9,6 +9,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class BorrowedBooks extends BaseWidget
 {
+    protected static bool $lazy = true;
     protected static ?string $heading = 'Daftar Buku yang Sedang Dipinjam';
 
     protected int|string|array $columnSpan = 'full';

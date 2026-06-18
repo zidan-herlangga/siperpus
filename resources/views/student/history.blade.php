@@ -115,9 +115,9 @@
                         <div class="w-14 h-20 rounded-xl flex-shrink-0 overflow-hidden shadow-sm border border-gray-100 flex items-center justify-center
                             {{ $borrowing->status === 'Dipinjam' ? 'bg-amber-50' : ($borrowing->status === 'Dikembalikan' ? 'bg-emerald-50' : 'bg-gray-50') }}">
                             @if (filter_var($borrowing->book->cover_image, FILTER_VALIDATE_URL))
-                                    <img src="{{ $borrowing->book->cover_image }}" class="w-full h-full object-cover" alt="{{ $borrowing->book->title }}">
-                            @elseif ($borrowing->book->cover_image)
-                                    <img src="{{ asset('storage/' . $borrowing->book->cover_image) }}" alt="{{ $borrowing->book->title }}" class="w-full h-full object-cover">
+                                    <img src="{{ $borrowing->book->cover_image }}" class="w-full h-full object-cover" alt="{{ $borrowing->book->title }}" loading="lazy">
+                                    @elseif ($borrowing->book->cover_image)
+                                    <img src="{{ asset('storage/' . $borrowing->book->cover_image) }}" alt="{{ $borrowing->book->title }}" class="w-full h-full object-cover" loading="lazy">
                             @else
                                 <i class="fas fa-book text-2xl 
                                     {{ $borrowing->status === 'Dipinjam' ? 'text-amber-400' : ($borrowing->status === 'Dikembalikan' ? 'text-emerald-400' : 'text-gray-400') }}"></i>

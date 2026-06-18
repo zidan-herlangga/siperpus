@@ -2,11 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Mail\DueDateReminder;
-use App\Mail\OverdueReminder;
+use App\Jobs\SendReminderEmailJob;
 use App\Models\Borrowing;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 
 class SendReminderEmails extends Command
 {
@@ -15,45 +13,20 @@ class SendReminderEmails extends Command
 
     public function handle()
     {
+        $this->info('Memproses pengingat H-1...');
 
-        $this->info('Memulai proses pengiriman email pengingat...');
-
-        // Reminder H-1
-        $dueSoonBorrowings = Borrowing::where('status', 'Dipinjam')
+        Borrowing::where('status', 'Dipinjam')
             ->whereDate('due_date', today()->addDay())
-            ->whereDoesntHave('reminders', function ($q) {
-                $q->where('type', 'pre_due');
-            })
-            ->get();
+            ->whereDoesntHave('reminders', fn($q) => $q->where('type', 'pre_due'))
+            ->each(fn($b) => SendReminderEmailJob::dispatch($b, 'pre_due'));
 
-        foreach ($dueSoonBorrowings as $borrowing) {
-            Mail::to($borrowing->student->email)->send(new DueDateReminder($borrowing));
+        $this->info('Memproses pengingat keterlambatan...');
 
-            $borrowing->reminders()->create([
-                'type' => 'pre_due',
-            ]);
-
-            $this->info('Reminder H-1 dikirim ke: '.$borrowing->student->email);
-        }
-
-        // Reminder Overdue
-        $overdueBorrowings = Borrowing::where('status', 'Dipinjam')
+        Borrowing::where('status', 'Dipinjam')
             ->whereDate('due_date', '<', today())
-            ->whereDoesntHave('reminders', function ($q) {
-                $q->where('type', 'overdue');
-            })
-            ->get();
+            ->whereDoesntHave('reminders', fn($q) => $q->where('type', 'overdue'))
+            ->each(fn($b) => SendReminderEmailJob::dispatch($b, 'overdue'));
 
-        foreach ($overdueBorrowings as $borrowing) {
-            Mail::to($borrowing->student->email)->send(new OverdueReminder($borrowing));
-
-            $borrowing->reminders()->create([
-                'type' => 'overdue',
-            ]);
-
-            $this->warn('Reminder terlambat dikirim ke: '.$borrowing->student->email);
-        }
-
-        $this->info('Selesai ✅');
+        $this->info('Selesai — semua job telah dikirim ke antrian.');
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class VisitorMonthlyChart extends ChartWidget
 {
+    protected static bool $lazy = true;
     protected static ?int $sort = 0;
     protected int|string|array $columnSpan = 'full';
     protected ?string $heading = 'Grafik Pengunjung Bulan Ini';
@@ -50,6 +51,10 @@ class VisitorMonthlyChart extends ChartWidget
                     [
                         'label' => 'Pengunjung',
                         'data' => $data,
+                        'borderColor' => '#10b981',
+                        'backgroundColor' => 'rgba(16, 185, 129, 0.1)',
+                        'fill' => true,
+                        'tension' => 0.3,
                     ],
                 ],
                 'labels' => $labels,

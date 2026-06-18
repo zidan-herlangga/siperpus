@@ -3,7 +3,11 @@
 @section('title', config('app.name'))
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+<style>
+  #features-section, #stats-section, #cta-section, #testimonials-section { content-visibility: auto; contain-intrinsic-size: 450px; }
+</style>
+<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" media="print" onload="this.media='all'" fetchpriority="low">
+    <noscript><link rel="stylesheet" href="{{ asset('assets/css/style.css') }}"></noscript>
 @stop
 
 @section('content')
@@ -48,7 +52,7 @@
         </div>
 
         <div class="relative z-20 container mx-auto px-6 text-center text-white py-20 md:py-28 max-w-4xl">
-            <div class="hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-green-100 mb-6">
+            <div class="hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-emerald-100 mb-6">
                 <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
                 Perpustakaan Digital Aktif
             </div>
@@ -60,7 +64,7 @@
                 </span>
             </h1>
 
-            <p class="hero-sub text-lg md:text-xl text-green-100/90 max-w-2xl mx-auto mb-10 leading-relaxed">
+            <p class="hero-sub text-lg md:text-xl text-emerald-100/90 max-w-2xl mx-auto mb-10 leading-relaxed">
                 Temukan ribuan koleksi buku dan jelajahi dunia literasi secara digital — cepat, mudah, dan menyenangkan.
             </p>
 
@@ -78,7 +82,7 @@
     </section>
 
     {{-- ==================== FEATURES ==================== --}}
-    <section class="py-20 md:py-24 bg-gradient-to-b from-gray-50/80 to-white">
+    <section id="features-section" class="py-20 md:py-24 bg-gradient-to-b from-gray-50/80 to-white">
         <div class="container mx-auto px-6">
             <div class="text-center mb-14 reveal">
                 <span class="section-badge"><i class="fas fa-sparkles text-[.65rem]"></i> Fitur Unggulan</span>
@@ -107,9 +111,9 @@
     </section>
 
     {{-- ==================== STATISTICS ==================== --}}
-    <section class="py-20 md:py-24 relative overflow-hidden">
+    <section id="stats-section" class="py-20 md:py-24 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-emerald-50/60 via-green-50/40 to-teal-50/60"></div>
-        <div class="absolute top-0 left-0 w-72 h-72 bg-green-200/20 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
+        <div class="absolute top-0 left-0 w-72 h-72 bg-emerald-200/20 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
         <div class="absolute bottom-0 right-0 w-96 h-96 bg-teal-200/20 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl"></div>
 
         <div class="relative container mx-auto px-6">
@@ -152,7 +156,7 @@
     </section>
 
     {{-- ==================== CTA ==================== --}}
-    <section class="py-20 md:py-24 bg-white">
+    <section id="cta-section" class="py-20 md:py-24 bg-white">
         <div class="container mx-auto px-6">
             <div class="text-center mb-14 reveal">
                 <span class="section-badge"><i class="fas fa-rocket text-[.65rem]"></i> Mulai Sekarang</span>
@@ -166,7 +170,7 @@
                         <i class="fas fa-magnifying-glass text-2xl text-white"></i>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-2">Lihat Katalog Buku</h3>
-                    <p class="text-green-100/80 text-sm leading-relaxed">Jelajahi dan temukan buku favorit Anda dari ribuan koleksi yang tersedia.</p>
+                    <p class="text-emerald-100/80 text-sm leading-relaxed">Jelajahi dan temukan buku favorit Anda dari ribuan koleksi yang tersedia.</p>
                     <span class="cta-arrow text-white">Jelajahi <i class="fas fa-arrow-right text-xs"></i></span>
                 </a>
 
@@ -186,27 +190,19 @@
     </section>
 
     {{-- ==================== TESTIMONIALS ==================== --}}
-    <section class="py-20 md:py-24 bg-gradient-to-b from-gray-50/80 to-white">
+    <section id="testimonials-section" class="py-20 md:py-24 bg-gradient-to-b from-gray-50/80 to-white">
         <div class="container mx-auto px-6">
             <div class="text-center mb-14 reveal">
                 <span class="section-badge"><i class="fas fa-quote-left text-[.65rem]"></i> Testimoni</span>
                 <h2 class="section-title mt-2">Apa Kata Mereka?</h2>
             </div>
             <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
-                @php
-                    $approvedTestimonials = \App\Models\Testimonial::with('student')
-                        ->approved()
-                        ->latest()
-                        ->take(3)
-                        ->get();
-                @endphp
-
                 @forelse ($approvedTestimonials as $i => $t)
                     <div class="testimonial-card reveal reveal-delay-{{ $i + 1 }}">
                         <div class="flex items-center gap-3 mb-4">
                             @if($t->student->avatar)
-                                <img src="{{ asset('storage/' . $t->student->avatar) }}" alt="{{ $t->student->name }}" 
-                                    class="w-12 h-12 rounded-xl object-cover border-2 border-gray-100">
+<img src="{{ asset('storage/' . $t->student->avatar) }}" alt="{{ $t->student->name }}" 
+    class="w-12 h-12 rounded-xl object-cover border-2 border-gray-100" loading="lazy">
                             @else
                                 <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
                                     <span class="text-emerald-600 font-bold">{{ strtoupper(substr($t->student->name, 0, 1)) }}</span>

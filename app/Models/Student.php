@@ -13,7 +13,7 @@ use App\Enums\StudentStatus;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\NewBorrowingNotification;
 use Filament\Notifications\Notification;
-
+use Laravel\Sanctum\HasApiTokens;
 
 // Reset Password
 use Illuminate\Contracts\Auth\CanResetPassword;
@@ -21,7 +21,7 @@ use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 
 class Student extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens, CanResetPasswordTrait;
 
     /**
      * The attributes that are mass assignable.

@@ -36,6 +36,8 @@ class AdminPerpusPanelProvider extends PanelProvider
             ->sidebarFullyCollapsibleOnDesktop()
             ->id('admin')
             ->path('admin')
+            ->brandLogo(asset('assets/image/SMK Karya Guna 2 Bekasi-White.jpg'))
+            ->brandLogoHeight('3.5rem')
             // ->brandName('')
             // ->registrationRouteSlug('register')
             ->login()

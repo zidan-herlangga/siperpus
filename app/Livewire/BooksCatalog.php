@@ -60,8 +60,10 @@ class BooksCatalog extends Component
                 })
                 ->paginate(12); // 12 buku per halaman
 
-        $categories = \App\Models\Category::orderBy('name')->pluck('name', 'id');
-        $selectedCategory = $this->category ? \App\Models\Category::find($this->category)?->name : null;
+        $categories = \Illuminate\Support\Facades\Cache::remember('catalog.categories', 3600, function () {
+            return \App\Models\Category::orderBy('name')->pluck('name', 'id');
+        });
+        $selectedCategory = $this->category ? ($categories[$this->category] ?? null) : null;
 
         return view('livewire.books-catalog', [
             'books' => $books,

@@ -52,7 +52,7 @@ class AllBorrowingsReport extends BaseWidget
                         'Pending' => 'gray',
                         'Dipinjam' => 'warning',
                         'Dikembalikan' => 'success',
-                        'Batal' => 'danger',
+                        'Batal' => 'gray',
                     }),
 
                 Tables\Columns\TextColumn::make('fine')

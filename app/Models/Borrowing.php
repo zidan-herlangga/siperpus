@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Notifications\NewBorrowingNotification;
 use Filament\Notifications\Notification;
 use Illuminate\Notifications\Notifiable;
 
@@ -37,7 +36,7 @@ class Borrowing extends Model
         'last_reminder_sent_at' => 'datetime',
     ];
 
-    // --- LOGIKA OTOMATIS UNTUK STOK BUKU + FINALISASI DENDA ---
+    // --- NOTIFIKASI PEMINJAMAN BARU ---
     protected static function booted(): void
     {
         static::created(function (Borrowing $borrowing) {
@@ -45,52 +44,11 @@ class Borrowing extends Model
 
             Notification::make()
                 ->title('Peminjaman Buku Baru!')
-                ->body($borrowing->student->name . ' meminjam buku "' . $borrowing->book->title . '"')
+                ->body(($borrowing->student?->name ?? 'Unknown') . ' meminjam buku "' . ($borrowing->book?->title ?? 'Unknown') . '"')
                 ->sendToDatabase($admins);
         });
-        
-        static::updating(function (Borrowing $borrowing) {
-            $originalStatus = $borrowing->getOriginal('status');
-            $newStatus = $borrowing->status;
-
-            // 1. Pending → Dipinjam → Kurangi stok
-            if ($originalStatus === 'Pending' && $newStatus === 'Dipinjam') {
-                $borrowing->book->decrement('stock');
-            }
-
-            // 2. Dipinjam → Dikembalikan → Tambah stok + hitung denda
-            if ($originalStatus === 'Dipinjam' && $newStatus === 'Dikembalikan') {
-                $borrowing->book->increment('stock');
-
-                if (empty($borrowing->return_date)) {
-                    $borrowing->return_date = now();
-                }
-
-                $borrowing->fine = $borrowing->calculateFine();
-            }
-
-            // 2b. Pending → Dikembalikan → Kembalikan stok
-            if ($originalStatus === 'Pending' && $newStatus === 'Dikembalikan') {
-                // Jika langsung dari Pending ke Dikembalikan, kembalikan stok
-                $borrowing->book->increment('stock');
-
-                if (empty($borrowing->return_date)) {
-                    $borrowing->return_date = now();
-                }
-            }
-
-            // 3. Dikembalikan → Dipinjam → Kurangi stok lagi
-            if ($originalStatus === 'Dikembalikan' && $newStatus === 'Dipinjam') {
-                $borrowing->book->decrement('stock');
-            }
-
-            // 4. Pending → Batal → Kembalikan stok
-            if ($originalStatus === 'Pending' && $newStatus === 'Batal') {
-                $borrowing->book->increment('stock');
-            }
-        });
     }
-    // --- AKHIR LOGIKA OTOMATIS ---
+    // --- AKHIR NOTIFIKASI ---
 
     public function scopeNeedReminder(Builder $query): void
     {

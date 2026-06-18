@@ -3,7 +3,8 @@
 @section('title', 'Daftar Siswa - ' . config('app.name'))
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/register-student.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/register-student.css') }}" media="print" onload="this.media='all'" fetchpriority="low">
+    <noscript><link rel="stylesheet" href="{{ asset('assets/css/register-student.css') }}"></noscript>
 <style>
     /* Custom style spesifik halaman ini */
     .bg-mesh {
@@ -60,14 +61,14 @@
             <div class="card-glass rounded-2xl overflow-hidden animate-fade-in">
                 
                 {{-- Header Card --}}
-                <div class="bg-gradient-to-br from-emerald-600 to-green-700 text-white text-center py-10 px-6 relative">
+                <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white text-center py-10 px-6 relative">
                     <div class="absolute inset-0 bg-black/5"></div>
                     <div class="relative z-10">
                         <div class="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
                             <i class="fas fa-user-plus text-2xl"></i>
                         </div>
                         <h1 class="text-2xl font-bold tracking-tight">Pendaftaran Siswa Baru</h1>
-                        <p class="text-green-100 text-sm mt-1">Buat akun untuk mengakses layanan perpustakaan digital</p>
+                        <p class="text-emerald-100 text-sm mt-1">Buat akun untuk mengakses layanan perpustakaan digital</p>
                     </div>
                 </div>
 

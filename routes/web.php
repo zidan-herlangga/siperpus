@@ -20,13 +20,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Halaman Beranda
-Route::get('/', [HomeController::class, 'index'])->name('homepage');
+Route::get('/', [HomeController::class, 'index'])->name('homepage')->middleware('throttle:public');
 Route::get('/api/visitors-today', [VisitorController::class, 'getTodayCount'])->name('visitors.today');
 
 // ==========================
 // RUTE UNTUK TAMU (GUEST)
 // ==========================
-Route::middleware('guest:student')->group(function () {
+Route::middleware(['guest:student', 'throttle:auth'])->group(function () {
     Route::get('/register-student', [StudentRegistrationController::class, 'create'])->name('student.register.form');
     Route::post('/register-student', [StudentRegistrationController::class, 'store'])->name('student.register.store');
     Route::get('/login-student', [StudentLoginController::class, 'showLoginForm'])->name('student.login.form');
@@ -46,9 +46,9 @@ Route::post('/logout', [StudentLoginController::class, 'logout'])
 // ==========================
 // RUTE PUBLIK (DITAMBAHKAN wire:navigate)
 // ==========================
-Route::get('/books', [BookController::class, 'index'])->name('books.index');
-Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
-Route::get('/books/{book:slug}/stock', [BookController::class, 'getStock'])->name('books.stock');
+Route::get('/books', [BookController::class, 'index'])->name('books.index')->middleware('throttle:public');
+Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show')->middleware('throttle:public');
+Route::get('/books/{book:slug}/stock', [BookController::class, 'getStock'])->name('books.stock')->middleware('throttle:public');
 
 Route::post('/submit-testimonial', [TestimonialController::class, 'store'])
     ->middleware('auth:student')
@@ -66,7 +66,7 @@ Route::middleware(['auth:student', 'verified'])->group(function () {
     Route::get('/history', [HistoryController::class, 'index'])->name('student.history');
 
     // PEMINJAMAN BUKU
-    Route::post('/borrow/{book}', [BorrowingController::class, 'store'])->name('books.borrow');
+    Route::post('/borrow/{book}', [BorrowingController::class, 'store'])->name('books.borrow')->middleware('throttle:borrow');
     Route::post('/books/{book:id}/comment', [BookCommentController::class, 'store'])->name('books.comment.store');
 });
 

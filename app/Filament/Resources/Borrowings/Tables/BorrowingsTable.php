@@ -65,14 +65,14 @@ class BorrowingsTable
                     )
                     ->color(function ($record) {
                         if ($record->status === 'Dipinjam' && $record->due_date < now()) {
-                            return 'danger'; // TERLAMBAT
+                            return 'danger';
                         }
 
                         return match ($record->status) {
                             'Pending' => 'gray',
                             'Dipinjam' => 'warning',
                             'Dikembalikan' => 'success',
-                            'Batal' => 'danger',
+                            'Batal' => 'gray',
                             default => 'gray',
                         };
                     })

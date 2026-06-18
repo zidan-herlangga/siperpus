@@ -66,7 +66,7 @@ class BorrowingInfolist
                                     'Pending' => 'gray',
                                     'Dipinjam' => 'warning',
                                     'Dikembalikan' => 'success',
-                                    'Batal' => 'danger',
+                                    'Batal' => 'gray',
                                     default => 'primary',
                                 };
                             }),

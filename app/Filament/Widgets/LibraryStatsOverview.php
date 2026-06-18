@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 
 class LibraryStatsOverview extends BaseWidget
 {
+    protected static bool $lazy = true;
     protected static ?int $sort = 2;
 
     protected function getStats(): array
@@ -38,12 +39,12 @@ class LibraryStatsOverview extends BaseWidget
             Stat::make('Total Judul Buku', $data['books'])
                 ->description('Jumlah semua judul buku')
                 ->icon('heroicon-o-book-open')
-                ->color('success'),
+                ->color('info'),
 
             Stat::make('Total Siswa', $data['students'])
                 ->description('Jumlah siswa terdaftar')
                 ->icon('heroicon-o-users')
-                ->color('info'),
+                ->color('success'),
 
             Stat::make('Pending', $data['pending'])
                 ->icon('heroicon-o-clock')
@@ -55,7 +56,7 @@ class LibraryStatsOverview extends BaseWidget
 
             Stat::make('Batal', $data['canceled'])
                 ->icon('heroicon-o-x-circle')
-                ->color('danger'),
+                ->color('gray'),
 
             Stat::make('Terlambat', $data['overdue'])
                 ->icon('heroicon-o-exclamation-triangle')

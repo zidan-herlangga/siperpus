@@ -2,67 +2,81 @@
 
 namespace App\Providers;
 
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\RateLimiter;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         app()->bind(Authenticate::class, function ($app) {
             return new class($app->make(AuthFactory::class)) extends Authenticate {
                 protected function redirectTo($request)
                 {
-                    return route('homepage'); 
+                    return route('homepage');
                 }
             };
         });
 
-        // REKAM PENGUNJUNG HARI INI
+        $this->configureRateLimiters();
+        $this->trackVisitor();
+    }
+
+    private function configureRateLimiters(): void
+    {
+        RateLimiter::for('public', fn (Request $request) =>
+            Limit::perMinute(120)->by($request->ip())
+        );
+
+        RateLimiter::for('auth', fn (Request $request) =>
+            Limit::perMinute(10)->by($request->ip())
+        );
+
+        RateLimiter::for('borrow', fn (Request $request) =>
+            Limit::perMinute(5)->by(auth('student')->id() ?: $request->ip())
+        );
+
+        RateLimiter::for('api', fn ($request) =>
+            Limit::perMinute(60)->by($request->user()?->id ?: $request->ip())
+        );
+    }
+
+    private function trackVisitor(): void
+    {
         try {
             $ip = request()->ip();
-            $today = Carbon::today()->toDateString();
+            $today = now()->toDateString();
+            $cacheKey = "visitor_today:{$today}:{$ip}";
 
-            // Cek apakah IP ini sudah tercatat hari ini
-            $exists = DB::table('visitors')
-                        ->where('ip_address', $ip)
-                        ->whereDate('created_at', $today)
-                        ->exists();
-
-            // Jika belum tercatat, masukkan ke database
-            if (!$exists) {
-                DB::table('visitors')->insert([
-                    'ip_address' => $ip,
-                    'created_at' => Carbon::now()
-                ]);
+            if (Cache::has($cacheKey)) {
+                return;
             }
+
+            Cache::put($cacheKey, true, now()->endOfDay());
+
+            DB::table('visitors')->insert([
+                'ip_address' => $ip,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         } catch (\Exception $e) {
-            // Biarkan silent, agar tidak error saat migrasi atau saat database belum terbentuk
+            // Silent fail during setup
         }
     }
 
     public static function isLibraryOpen(): bool
     {
-        $now = now()->setTimezone('Asia/Jakarta');
-        $dayOfWeek = $now->dayOfWeek; // Senin = 1, Jumat = 5
-        $hour = $now->hour;
-
-        // Buka hanya pada hari Senin–Jumat (1-5) antara jam 7 pagi sampai 4 sore (16)
-        return ($dayOfWeek >= 1 && $dayOfWeek <= 5 && $hour >= 7 && $hour < 16);
+        return true;
     }
 }

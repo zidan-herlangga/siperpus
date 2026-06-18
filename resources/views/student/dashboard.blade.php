@@ -3,7 +3,8 @@
 @section('title', 'Dashboard Siswa - ' . config('app.name'))
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('assets/css/dashboard-student.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/dashboard-student.css') }}" media="print" onload="this.media='all'" fetchpriority="low">
+    <noscript><link rel="stylesheet" href="{{ asset('assets/css/dashboard-student.css') }}"></noscript>
     <style>
         .bg-mesh {
             background-color: #f9fafb;
@@ -47,7 +48,7 @@
             
             {{-- Header Welcome --}}
             <div class="mb-8">
-                <div class="bg-gradient-to-br from-emerald-600 to-green-700 text-white rounded-2xl p-8 shadow-lg relative overflow-hidden">
+                <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white rounded-2xl p-8 shadow-lg relative overflow-hidden">
                     <div class="absolute inset-0 bg-black/5"></div>
                     <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"></div>
                     <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24"></div>
@@ -74,33 +75,57 @@
             <div class="lg:grid lg:grid-cols-3 lg:gap-6">
                 {{-- Kolom Kiri --}}
                 <div class="lg:col-span-2 space-y-6">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="card-glass stat-card stat-green rounded-xl p-5">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+                        <div class="card-glass stat-card stat-green rounded-xl p-4 md:p-5">
                             <div class="flex items-center justify-between mb-3"><div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center"><i class="fas fa-circle-question text-gray-600"></i></div></div>
                             <p class="text-2xl font-extrabold text-gray-800">{{ $pendingBorrowings->count() }}</p>
                             <p class="text-xs text-gray-500 mt-1">Pending</p>
                         </div>
-                        <div class="card-glass stat-card stat-green rounded-xl p-5">
+                        <div class="card-glass stat-card stat-green rounded-xl p-4 md:p-5">
                             <div class="flex items-center justify-between mb-3"><div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center"><i class="fas fa-book text-emerald-600"></i></div></div>
                             <p class="text-2xl font-extrabold text-gray-800">{{ $currentBorrowings->count() }}</p>
-                            <p class="text-xs text-gray-500 mt-1">Sedang Dipinjam</p>
+                            <p class="text-xs text-gray-500 mt-1">Dipinjam</p>
                         </div>
-                        <div class="card-glass stat-card stat-red rounded-xl p-5">
+                        <div class="card-glass stat-card stat-red rounded-xl p-4 md:p-5">
                             <div class="flex items-center justify-between mb-3"><div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center"><i class="fas fa-triangle-exclamation text-red-600"></i></div></div>
                             <p class="text-2xl font-extrabold text-gray-800">{{ $currentBorrowings->where('due_date', '<', now())->count() }}</p>
                             <p class="text-xs text-gray-500 mt-1">Terlambat</p>
                         </div>
-                        <div class="card-glass stat-card stat-yellow rounded-xl p-5">
+                        <div class="card-glass stat-card stat-yellow rounded-xl p-4 md:p-5">
                             <div class="flex items-center justify-between mb-3"><div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center"><i class="fas fa-coins text-amber-600"></i></div></div>
                             <p class="text-2xl font-extrabold text-gray-800">Rp {{ number_format($currentBorrowings->sum('fine_amount'), 0, ',', '.') }}</p>
                             <p class="text-xs text-gray-500 mt-1">Total Denda</p>
                         </div>
-                        <div class="card-glass stat-card stat-blue rounded-xl p-5">
-                            <div class="flex items-center justify-between mb-3"><div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"><i class="fas fa-clock-rotate-left text-blue-600"></i></div></div>
-                            <p class="text-2xl font-extrabold text-gray-800">{{ $returnedBorrowings->count() }}</p>
-                            <a href="{{ route('student.history') }}" class="text-sm text-blue-500 hover:text-blue-700">Riwayat Peminjaman</a>
+                    </div>
+
+                    @if ($pendingBorrowings->count() > 0)
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-circle-question text-gray-400 text-sm"></i>Menunggu Konfirmasi</h2>
+                            <span class="bg-gray-50 text-gray-600 text-xs font-semibold px-3 py-1 rounded-full border border-gray-100">{{ $pendingBorrowings->count() }}</span>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            @foreach ($pendingBorrowings as $borrowing)
+                                <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                                    <div class="p-5">
+                                        <div class="flex justify-between items-start mb-3">
+                                            <h3 class="font-bold text-gray-800 text-sm leading-snug line-clamp-2 pr-2">{{ $borrowing->book->title }}</h3>
+                                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border whitespace-nowrap flex-shrink-0 bg-gray-50 text-gray-600 border-gray-100">PENDING</span>
+                                        </div>
+                                        <p class="text-xs text-gray-400 mb-4">oleh {{ $borrowing->book->author }}</p>
+                                        <div class="space-y-2 text-xs bg-gray-50 rounded-lg p-3">
+                                            <div class="flex justify-between"><span class="text-gray-500">Diajukan</span><span class="font-medium text-gray-700">{{ $borrowing->created_at->format('d M Y') }}</span></div>
+                                            <div class="flex justify-between pt-1 border-t border-gray-200">
+                                                <span class="text-gray-500">Status</span>
+                                                <span class="text-gray-600 font-semibold">Menunggu persetujuan admin</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
+                    @endif
 
                     <div>
                         <div class="flex items-center justify-between mb-4">
@@ -170,8 +195,8 @@
                 <aside class="lg:col-span-1 space-y-6 mt-6 lg:mt-0">
                     <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
                         <div class="flex items-center gap-4 mb-5">
-                            @if ($student->avatar)<img src="{{ asset('storage/' . $student->avatar) }}" alt="{{ $student->name }}" class="w-16 h-16 rounded-xl object-cover shadow-sm border-2 border-gray-100">
-                            @else<div class="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white text-xl font-bold shadow-sm">{{ strtoupper(substr($student->name, 0, 1)) }}</div>@endif
+                            @if ($student->avatar)<img src="{{ asset('storage/' . $student->avatar) }}" alt="{{ $student->name }}" class="w-16 h-16 rounded-xl object-cover shadow-sm border-2 border-gray-100" loading="lazy">
+                            @else<div class="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white text-xl font-bold shadow-sm">{{ strtoupper(substr($student->name, 0, 1)) }}</div>@endif
                             <div>
                                 @if ($student->is_active_flag)<span class="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-100 whitespace-nowrap">AKTIF</span>
                                 @else<span class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-red-100 whitespace-nowrap">NONAKTIF</span>@endif

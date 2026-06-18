@@ -3,7 +3,8 @@
 @section('title', 'Katalog Buku - ' . config('app.name'))
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/books.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/books.css') }}" media="print" onload="this.media='all'" fetchpriority="low">
+    <noscript><link rel="stylesheet" href="{{ asset('assets/css/books.css') }}"></noscript>
 <style>
     /* Pindahkan semua CSS custom anda (bg-mesh, card-glass, input-modern, dll) KESINI */
     .bg-mesh {

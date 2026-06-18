@@ -11,14 +11,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Ambil data siswa yang sedang login
         $student = Auth::guard('student')->user();
 
-        // Ambil data peminjaman milik siswa tersebut, diurutkan dari yang terbaru
-        // Eager load relasi 'book' untuk menghindari N+1 query
         $borrowings = $student->borrowings()->with('book')->latest()->get();
 
-        // Pisahkan antara buku yang sedang dipinjam dan yang sudah dikembalikan
         $pendingBorrowings = $borrowings->where('status', 'Pending');
         $currentBorrowings = $borrowings->where('status', 'Dipinjam');
         $returnedBorrowings = $borrowings->where('status', 'Dikembalikan');

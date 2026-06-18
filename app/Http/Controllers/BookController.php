@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\BookComment;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -53,8 +54,9 @@ class BookController extends Controller
         // fallback default
         [$column, $direction] = $allowedSorts[$sort] ?? $allowedSorts['newest'];
 
-        // Cegah error jika kolom tidak ada
-        if (in_array($column, \Schema::getColumnListing('books'))) {
+        // Kolom yang diizinkan untuk sorting (whitelist), tanpa Schema introspection
+        $allowedColumns = ['created_at', 'title', 'borrow_count'];
+        if (in_array($column, $allowedColumns)) {
             $query->orderBy($column, $direction);
         } else {
             $query->orderBy('created_at', 'desc');
@@ -77,9 +79,9 @@ class BookController extends Controller
         return view('books.index', compact('books', 'categories'));
     }
 
-    public function show(string $slug)
+    public function show(Request $request, string $slug)
     {
-        $book = Book::where('slug', $slug)->firstOrFail();
+        $book = Book::with(['category', 'comments.student'])->where('slug', $slug)->firstOrFail();
 
         $relatedBooks = Book::query()
             ->where('category_id', $book->category_id)
@@ -88,7 +90,13 @@ class BookController extends Controller
             ->limit(4)
             ->get();
 
-        return view('books.show', compact('book', 'relatedBooks'));
+        $comments = BookComment::with('student')
+            ->where('book_id', $book->id)
+            ->approved()
+            ->latest()
+            ->paginate(10, ['*'], 'commentPage');
+
+        return view('books.show', compact('book', 'relatedBooks', 'comments'));
     }
 
     public function getStock(Book $book)

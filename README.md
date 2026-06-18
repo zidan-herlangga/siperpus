@@ -13,6 +13,7 @@
 ## 🚀 Fitur Utama
 
 ### 🎛️ Multi Panel Berbasis Role (Filament 4)
+
 - 👑 **Panel Admin** (`/admin`): Akses penuh — Books, Borrowings, Students, Categories, Reminders, Testimonials
 - 👔 **Panel Staff** (`/staff`): Operasional — Books, Borrowings, Students, Categories (read/write, no delete)
 - 🏫 **Panel Kepsek** (`/kepsek`): Read-only — Dashboard statistik, Books, Borrowings, Students, Categories
@@ -26,44 +27,47 @@
 - 👁️ **Statistik Pengunjung**: Pantau jumlah pengunjung hari ini, kemarin, total, dan rata-rata 7 hari dengan chart.
 
 ### 👩‍💻 Halaman Siswa (Frontend - Livewire + Tailwind)
+
 - 🏠 **Beranda Dinamis**: Hero section, fitur unggulan, statistik real-time (dengan animasi counter), dan testimonials.
 - 📔 **Katalog Buku**: Livewire-powered reactive search, filter kategori, sort (terbaru/terlama/A-Z/populer), pagination.
 - 🔍 **Detail Buku SEO-Friendly**: URL otomatis `/books/{slug}`, cek stok real-time via API, komentar pembaca, buku terkait, modal download tiket peminjaman.
 - ✉️ **Registrasi & Verifikasi Email**: Wajib verifikasi email sebelum dapat mengakses dashboard.
 - 🔐 **Login Aman**: Login via email atau NIS, dengan "remember me".
 - 📅 **Dashboard Siswa**: Buku sedang dipinjam (dengan warning keterlambatan), pengajuan pending, riwayat, total denda, ringkasan profil.
-- 🪄 **Pinjam Langsung (AJAX)**: Validasi jam operasional (Senin-Jumat 7-16 WIB), cek stok, cek duplikat peminjaman.
+- 🪄 **Pinjam Langsung (AJAX)**: Validasi jam operasional (Senin-Jumat 7-16 WIB), cek stok, cek batas maksimal pinjam, toast notifikasi.
 - 📜 **Riwayat Peminjaman**: Pagination, **search judul buku**, **filter status**, info denda.
 - 🔐 **Lupa Password**: Reset password via email menggunakan broker khusus 'students'.
 - ⭐ **Testimoni & Rating**: Siswa dapat memberikan ulasan dengan rating 1-5, menunggu persetujuan admin.
 
 ### ⚙️ Fitur Otomatis & Latar Belakang
+
 - 📧 **Email Reminder Otomatis** (via cron scheduler setiap pukul 07.00 WIB)
-  - H-1 sebelum jatuh tempo (`pre_due`)
-  - Notifikasi keterlambatan + jumlah denda (`overdue`)
+    - H-1 sebelum jatuh tempo (`pre_due`)
+    - Notifikasi keterlambatan + jumlah denda (`overdue`)
 - 🕒 **Jam Operasional**: Peminjaman hanya diizinkan Senin–Jumat pukul 07.00–16.00 WIB.
-- 👤 **Visitor Tracking Otomatis**: Setiap kunjungan tercatat (1x per IP per hari).
+- 👤 **Visitor Tracking Otomatis**: Setiap kunjungan tercatat (1x per IP per hari, via cache-first).
 - 📱 **PWA Support**: Manifest, service worker, install prompt, offline page.
-- 💬 **Chatbot Pintar**: Integrasi OpenAI/OpenRouter untuk eksplorasi buku.
+- 🗜️ **Response Cache**: Guest GET requests di-cache otomatis (5 menit).
+- 🚦 **Rate Limiting**: Proteksi spam dan high traffic per IP.
+- 📦 **Queue sync**: Development mode langsung eksekusi tanpa worker.
 
 ---
 
 ## 🧰 Teknologi yang Digunakan
 
-| Komponen            | Versi    | Deskripsi                         |
-|---------------------|----------|-----------------------------------|
-| **Laravel**         | 11.x     | Framework utama                   |
-| **Filament**        | 4.x      | Admin panel TALL stack            |
-| **Livewire**        | 3.6.4    | Reactive frontend components      |
-| **PHP**             | 8.2+     | Bahasa backend                    |
-| **MySQL**           | 8.x      | Database utama                    |
-| **Laravel Sanctum** | 4.x      | API token authentication          |
-| **Tailwind CSS**    | 3.4      | Utility CSS framework             |
-| **Vite**            | 6.x      | Asset bundler / build tool        |
-| **Alpine.js**       | via LW   | Frontend interactivity            |
-| **Font Awesome**    | 6.4      | Icons                             |
-| **SMTP Gmail**      | -        | Pengiriman notifikasi email       |
-| **OpenAI API**      | -        | Chatbot khusus buku               |
+| Komponen            | Versi  | Deskripsi                    |
+| ------------------- | ------ | ---------------------------- |
+| **Laravel**         | 11.x   | Framework utama              |
+| **Filament**        | 4.x    | Admin panel TALL stack       |
+| **Livewire**        | 3.6.4  | Reactive frontend components |
+| **PHP**             | 8.2+   | Bahasa backend               |
+| **MySQL**           | 8.x    | Database utama               |
+| **Laravel Sanctum** | 4.x    | API token authentication     |
+| **Tailwind CSS**    | 3.4    | Utility CSS framework        |
+| **Vite**            | 6.x    | Asset bundler / build tool   |
+| **Alpine.js**       | via LW | Frontend interactivity       |
+| **Font Awesome**    | 6.4    | Icons                        |
+| **SMTP Gmail**      | -      | Pengiriman notifikasi email  |
 
 ---
 
@@ -154,10 +158,10 @@ php artisan serve
 
 Setelah `db:seed`, tersedia 3 akun dengan role berbeda:
 
-| Role | Email | Password | Panel URL |
-|------|-------|----------|-----------|
-| **Admin** | `admin@smkkg2.sch.id` | `AdminPerpustakaan` | `/admin` |
-| **Staff** | `staff@smkkg2.sch.id` | `StaffPerpustakaan` | `/staff` |
+| Role       | Email                  | Password             | Panel URL |
+| ---------- | ---------------------- | -------------------- | --------- |
+| **Admin**  | `admin@smkkg2.sch.id`  | `AdminPerpustakaan`  | `/admin`  |
+| **Staff**  | `staff@smkkg2.sch.id`  | `StaffPerpustakaan`  | `/staff`  |
 | **Kepsek** | `kepsek@smkkg2.sch.id` | `KepsekPerpustakaan` | `/kepsek` |
 
 Login siswa dilakukan via halaman `/login-student`.
@@ -198,6 +202,7 @@ php artisan app:send-reminder
 Projek ini telah melalui proses refactoring, multi-panel, dan security hardening:
 
 ### Bug Fixes
+
 - **Reminder model**: Typo type hint `Student $student` → `Reminder $reminder`
 - **BookForm**: Field name `category_id` → `category` (sesuai kolom database)
 - **DashboardController**: Menghapus external HTTP call (`api.ipify.org`) yang tidak stabil
@@ -209,6 +214,7 @@ Projek ini telah melalui proses refactoring, multi-panel, dan security hardening
 - **HomeController 500**: `count('category')` crash karena kolom dihapus — diganti `Category::count()`
 
 ### Security
+
 - **API routes**: Semua write endpoint (POST/PUT/DELETE) dilindungi dengan `auth:sanctum`
 - **SMTP credentials**: Dihapus dari repository, diganti placeholder
 - **APP_DEBUG**: Diubah ke `false`
@@ -217,6 +223,7 @@ Projek ini telah melalui proses refactoring, multi-panel, dan security hardening
 - **Book comment validation**: Validasi keberadaan buku sebelum menambahkan komentar
 
 ### New Features
+
 - **Multi Panel (Admin/Staff/Kepsek)**: Tiga panel Filament terpisah dengan akses sesuai role.
 - **Manajemen Kategori**: CRUD kategori buku dengan Filament resource.
 - **Kondisi Buku**: Tracking kondisi buku (Baik/Rusak Ringan/Rusak Berat/Hilang) via enum.
@@ -227,18 +234,25 @@ Projek ini telah melalui proses refactoring, multi-panel, dan security hardening
 - **Export buku**: Ekspor data buku ke Excel/CSV dari admin panel
 - **ISBN validation**: Validasi format ISBN 10/13 digit
 - **Laravel Sanctum**: Ditambahkan untuk API authentication
+- **Toast notifications**: Error/success toast via shadow DOM (tidak perlu redirect halaman)
+- **Response cache middleware**: Guest GET requests otomatis di-cache (default 300s TTL)
+- **Rate limiting**: Per-IP throttle (120/menit publik, 10/menit auth, 5/menit borrow)
+- **DB indexes**: 10 composite/single indexes untuk query performa
+- **Homepage caching**: Stats & testimonials di-cache 5 menit
+- **Image lazy loading & CSS async loading**: Optimasi waktu render
+- **Ticket modal redesign**: Tampilan tiket peminjaman seperti event ticket dengan perforasi, barcode, dan info lengkap
 
 ---
 
 ## 📸 Screenshot
 
-| Tampilan                                                       | Deskripsi                                                                               |
-| -------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| ![Dashboard Admin](public/screenshots/dashboard-admin.png)     | **Dashboard Admin (Filament):** Statistik total buku, siswa, dan transaksi peminjaman. |
-| ![Daftar Buku](public/screenshots/catalogpage.png)             | **Manajemen Buku:** CRUD data buku dengan filter, pencarian, dan export Excel.         |
-| ![Form Peminjaman](public/screenshots/modal-pinjam-buku.png)   | **Form Peminjaman:** Pilih siswa & buku dengan kalkulasi tanggal kembali otomatis.     |
-| ![Katalog Buku Siswa](public/screenshots/detail-book.png)      | **Detail Buku:** Tampilan publik dengan info lengkap, komentar, dan tombol pinjam.     |
-| ![Dashboard Siswa](public/screenshots/dashboard-student.png)   | **Dashboard Siswa:** Buku dipinjam, riwayat, total denda, dan profil.                  |
+| Tampilan                                                     | Deskripsi                                                                              |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| ![Dashboard Admin](public/screenshots/dashboard-admin.png)   | **Dashboard Admin (Filament):** Statistik total buku, siswa, dan transaksi peminjaman. |
+| ![Daftar Buku](public/screenshots/catalogpage.png)           | **Manajemen Buku:** CRUD data buku dengan filter, pencarian, dan export Excel.         |
+| ![Form Peminjaman](public/screenshots/modal-pinjam-buku.png) | **Form Peminjaman:** Pilih siswa & buku dengan kalkulasi tanggal kembali otomatis.     |
+| ![Katalog Buku Siswa](public/screenshots/detail-book.png)    | **Detail Buku:** Tampilan publik dengan info lengkap, komentar, dan tombol pinjam.     |
+| ![Dashboard Siswa](public/screenshots/dashboard-student.png) | **Dashboard Siswa:** Buku dipinjam, riwayat, total denda, dan profil.                  |
 
 ---
 
