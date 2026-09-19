@@ -52,6 +52,7 @@ class StaffPanelProvider extends PanelProvider
                 BorrowedBooks::class,
             ])
             ->middleware([
+                \App\Http\Middleware\SecurityHeaders::class,
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,

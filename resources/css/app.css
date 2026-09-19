@@ -1,5 +1,29 @@
 /* resources/css/app.css */
 
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/manrope";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        font-family: "Manrope Variable", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    h1,
+    h2,
+    h3,
+    .font-display {
+        font-family: "Space Grotesk Variable", system-ui, sans-serif;
+        font-feature-settings: "ss01" on, "cv05" on;
+    }
+
+    ::selection {
+        background: #0f5a38;
+        color: #f4f6f1;
+    }
+}

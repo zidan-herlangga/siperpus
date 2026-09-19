@@ -1,263 +1,183 @@
-# 📚 Sistem Informasi Perpustakaan Sekolah (SiPerpus)
+# 📚 ELibrary SMK Karya Guna 2
 
-![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel)
-![Filament](https://img.shields.io/badge/Filament-4.x-F59E0B?style=for-the-badge&logo=php)
-![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php)
-![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?style=for-the-badge&logo=mysql)
-![Sanctum](https://img.shields.io/badge/Sanctum-4.x-4A5568?style=for-the-badge&logo=laravel)
-
-> Aplikasi **Sistem Informasi Perpustakaan Sekolah (SiPerpus)** adalah platform berbasis **Laravel 11 + Filament 4** yang dirancang untuk membantu sekolah dalam mengelola koleksi buku, data siswa, serta transaksi peminjaman dan pengembalian secara efisien dan modern.
+Aplikasi **Perpustakaan Digital** untuk SMK Karya Guna 2. Dibangun dengan **Laravel 12**, **Livewire**, dan **Filament 4 Admin Panel**. Menyediakan katalog buku online, peminjaman digital, riwayat peminjaman, testimoni, serta panel manajemen untuk Admin, Staff, dan Kepala Sekolah.
 
 ---
 
-## 🚀 Fitur Utama
+## ✨ Fitur
 
-### 🎛️ Multi Panel Berbasis Role (Filament 4)
+### Sisi Siswa (Frontend)
+- Landing page dengan statistik kunjungan & buku populer.
+- Katalog buku interaktif (pencarian, filter kategori, Livewire, responsive grid 2–4 kolom).
+- Detail buku: sinopsis, stok real-time, daftar komentar.
+- **Peminjaman online** — mengajukan permintaan peminjaman; disetujui admin.
+- **Halaman riwayat** peminjaman dengan filter status (Pending / Dipinjam / Dikembalikan / Batal) dan denda keterlambatan.
+- Registrasi + **verifikasi email**, login via **email atau NIS**.
+- Edit profil (foto, kontak, ganti password) dengan password strength meter.
+- Testimoni siswa.
+- **PWA-ready** (manifest + service worker, cache-first untuk aset build).
 
-- 👑 **Panel Admin** (`/admin`): Akses penuh — Books, Borrowings, Students, Categories, Reminders, Testimonials
-- 👔 **Panel Staff** (`/staff`): Operasional — Books, Borrowings, Students, Categories (read/write, no delete)
-- 🏫 **Panel Kepsek** (`/kepsek`): Read-only — Dashboard statistik, Books, Borrowings, Students, Categories
-- 📊 **Dashboard Interaktif**: Statistik total buku, siswa, peminjaman pending/dipinjam/terlambat, dan pengunjung harian dalam satu tampilan.
-- 📚 **Manajemen Buku**: CRUD data buku (judul, penulis, penerbit, kategori, stok, ISBN, kondisi, dll) dengan upload gambar, RichEditor sinopsis, dan **ekspor ke Excel/CSV**.
-- 🧑‍🎓 **Manajemen Siswa**: CRUD data siswa lengkap dengan NIS, kelas, status aktif/nonaktif, dan badge verifikasi email.
-- 🔁 **Manajemen Peminjaman**: Form dinamis dengan otomatis kalkulasi tanggal kembali (+7 hari), workflow status (Pending → Dipinjam → Dikembalikan/Batal), kalkulasi denda otomatis, deteksi keterlambatan.
-- 💰 **Fine Rate Konfigurable**: Denda per hari dapat diatur via `.env` (`LIBRARY_FINE_PER_DAY`).
-- 🔔 **Notifikasi Database**: Notifikasi real-time saat siswa baru daftar atau peminjaman baru diajukan.
-- 📈 **Laporan & Export**: Laporan semua aktivitas peminjaman dengan export Excel/CSV.
-- 👁️ **Statistik Pengunjung**: Pantau jumlah pengunjung hari ini, kemarin, total, dan rata-rata 7 hari dengan chart.
-
-### 👩‍💻 Halaman Siswa (Frontend - Livewire + Tailwind)
-
-- 🏠 **Beranda Dinamis**: Hero section, fitur unggulan, statistik real-time (dengan animasi counter), dan testimonials.
-- 📔 **Katalog Buku**: Livewire-powered reactive search, filter kategori, sort (terbaru/terlama/A-Z/populer), pagination.
-- 🔍 **Detail Buku SEO-Friendly**: URL otomatis `/books/{slug}`, cek stok real-time via API, komentar pembaca, buku terkait, modal download tiket peminjaman.
-- ✉️ **Registrasi & Verifikasi Email**: Wajib verifikasi email sebelum dapat mengakses dashboard.
-- 🔐 **Login Aman**: Login via email atau NIS, dengan "remember me".
-- 📅 **Dashboard Siswa**: Buku sedang dipinjam (dengan warning keterlambatan), pengajuan pending, riwayat, total denda, ringkasan profil.
-- 🪄 **Pinjam Langsung (AJAX)**: Validasi jam operasional (Senin-Jumat 7-16 WIB), cek stok, cek batas maksimal pinjam, toast notifikasi.
-- 📜 **Riwayat Peminjaman**: Pagination, **search judul buku**, **filter status**, info denda.
-- 🔐 **Lupa Password**: Reset password via email menggunakan broker khusus 'students'.
-- ⭐ **Testimoni & Rating**: Siswa dapat memberikan ulasan dengan rating 1-5, menunggu persetujuan admin.
-
-### ⚙️ Fitur Otomatis & Latar Belakang
-
-- 📧 **Email Reminder Otomatis** (via cron scheduler setiap pukul 07.00 WIB)
-    - H-1 sebelum jatuh tempo (`pre_due`)
-    - Notifikasi keterlambatan + jumlah denda (`overdue`)
-- 🕒 **Jam Operasional**: Peminjaman hanya diizinkan Senin–Jumat pukul 07.00–16.00 WIB.
-- 👤 **Visitor Tracking Otomatis**: Setiap kunjungan tercatat (1x per IP per hari, via cache-first).
-- 📱 **PWA Support**: Manifest, service worker, install prompt, offline page.
-- 🗜️ **Response Cache**: Guest GET requests di-cache otomatis (5 menit).
-- 🚦 **Rate Limiting**: Proteksi spam dan high traffic per IP.
-- 📦 **Queue sync**: Development mode langsung eksekusi tanpa worker.
+### Sisi Admin (Filament Panel)
+- **Tiga panel terpisah** dengan kontrol akses role:
+  - `/admin` — Admin (kelola penuh).
+  - `/staff` — Staff (kelola, tanpa hapus).
+  - `/kepsek` — Kepala Sekolah (hanya lihat / monitoring).
+- Manajemen **Buku, Kategori, Siswa, Peminjaman, Komentar, Testimoni, Admin**.
+- Konfirmasi/penolakan peminjaman, penanda kembalian & denda.
+- Statistik pengunjung harian & bulanan (widget: *Pengunjung Hari Ini*, *Grafik Pengunjung*).
+- Notifikasi in-app dan **email reminder** (pengingat jatuh tempo & keterlambatan).
 
 ---
 
-## 🧰 Teknologi yang Digunakan
+## 🧰 Tech Stack
 
-| Komponen            | Versi  | Deskripsi                    |
-| ------------------- | ------ | ---------------------------- |
-| **Laravel**         | 11.x   | Framework utama              |
-| **Filament**        | 4.x    | Admin panel TALL stack       |
-| **Livewire**        | 3.6.4  | Reactive frontend components |
-| **PHP**             | 8.2+   | Bahasa backend               |
-| **MySQL**           | 8.x    | Database utama               |
-| **Laravel Sanctum** | 4.x    | API token authentication     |
-| **Tailwind CSS**    | 3.4    | Utility CSS framework        |
-| **Vite**            | 6.x    | Asset bundler / build tool   |
-| **Alpine.js**       | via LW | Frontend interactivity       |
-| **Font Awesome**    | 6.4    | Icons                        |
-| **SMTP Gmail**      | -      | Pengiriman notifikasi email  |
+| Layer      | Teknologi                                                        |
+|------------|------------------------------------------------------------------|
+| Backend    | Laravel 12, PHP 8.2+                                             |
+| Frontend   | Blade, Tailwind CSS 3, Vite, Livewire 3                          |
+| Admin Panel| Filament 4 (3 panel role-based)                                  |
+| Database   | MySQL / MariaDB                                                  |
+| Auth       | Session, email verification, reset password, rate limiting       |
+| Export     | Filament Export (Excel / PDF via Dompdf)                         |
+| Lainnya    | PWA (custom service worker), queue (email), Laravel Sanctum (API)|
 
 ---
 
-## ⚙️ Panduan Instalasi
+## ⚙️ Kebutuhan Sistem
 
-> Prasyarat: **PHP 8.2+**, **Composer**, **MySQL 8.x**, dan **Node.js 20+**.
+- PHP **8.2+** (disarankan **8.3**)
+- Composer 2.x
+- Node.js **18+** (disarankan 20 LTS) + npm
+- MySQL 5.7+/MariaDB 10.4+
+- Ekstensi PHP: `pdo_mysql`, `gd`, `fileinfo`, `mbstring`, `openssl`
 
-### 1. Clone Repository
+---
+
+## 🚀 Cara Instalasi
 
 ```bash
-git clone https://github.com/zidan-herlangga/siperpus.git
-cd siperpus
-```
-
-### 2. Install Dependensi
-
-```bash
+# 1. Install dependency PHP
 composer install
-```
 
-### 3. Install NPM
-
-```bash
+# 2. Install dependency frontend
 npm install
-```
 
-### 4. Salin File Environment
-
-```bash
+# 3. Buat file environment
 cp .env.example .env
-```
-
-### 5. Generate Application Key
-
-```bash
 php artisan key:generate
-```
 
-### 6. Konfigurasi .env
+# 4. Atur koneksi database di .env
+#    DB_DATABASE=siperpus
+#    DB_USERNAME=root
+#    DB_PASSWORD=
 
-Sesuaikan konfigurasi database, email, dan lainnya di file **.env**:
+# 5. Buat database & jalankan migrasi + seeder
+php artisan migrate --seed
 
-```bash
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=siperpus
-DB_USERNAME=root
-DB_PASSWORD=
+# 6. Link untuk penyimpanan file foto/cover
+php artisan storage:link
 
-# SMTP Gmail (gunakan App Password)
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=email@anda.com
-MAIL_PASSWORD=your-app-password
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS="email@anda.com"
-MAIL_FROM_NAME="${APP_NAME}"
+# 7. Build asset frontend (production) ATAU mode development
+npm run build        # production: public/build/...
+npm run dev          # development (hot reload)
 
-# Library Configuration
-LIBRARY_FINE_PER_DAY=1000
-LIBRARY_BORROW_DURATION_DAYS=7
-```
-
-💡 **Tips**: Gunakan [App Password Gmail](https://support.google.com/accounts/answer/185833), bukan password akun utama. Pastikan database sudah dibuat sebelum migrasi.
-
-### 7. Migrasi & Seed
-
-```bash
-php artisan migrate
-php artisan db:seed
-```
-
-### 8. Build Assets
-
-```bash
-npm run build
-```
-
-### 9. Jalankan Development Server
-
-```bash
+# 8. Jalankan aplikasi
 php artisan serve
 ```
 
-### 10. Akun Default
+Buka aplikasi di `http://localhost:8000`.
 
-Setelah `db:seed`, tersedia 3 akun dengan role berbeda:
+> **Catatan**: Email verifikasi & reset password memerlukan pengaturan `MAIL_*` di `.env` (SMTP).
 
-| Role       | Email                  | Password             | Panel URL |
-| ---------- | ---------------------- | -------------------- | --------- |
-| **Admin**  | `admin@smkkg2.sch.id`  | `AdminPerpustakaan`  | `/admin`  |
-| **Staff**  | `staff@smkkg2.sch.id`  | `StaffPerpustakaan`  | `/staff`  |
-| **Kepsek** | `kepsek@smkkg2.sch.id` | `KepsekPerpustakaan` | `/kepsek` |
+---
 
-Login siswa dilakukan via halaman `/login-student`.
+## 🔑 Akun Default (hasil `seed`)
 
-### 11. Setup Cron (untuk Email Reminder)
+> ⚠️ **Ganti segera** semua password default sebelum dipakai di lingkungan nyata.
 
-Tambahkan cron job berikut di server:
+### Panel Admin
+| Panel           | URL            | Email                     | Password             |
+|-----------------|----------------|---------------------------|----------------------|
+| Admin           | `/admin`       | `admin@smkkg2.sch.id`     | `AdminPerpustakaan`  |
+| Staff           | `/staff`       | `staff@smkkg2.sch.id`     | `StaffPerpustakaan`  |
+| Kepala Sekolah  | `/kepsek`      | `kepsek@smkkg2.sch.id`    | `KepsekPerpustakaan` |
+
+### Siswa
+| Nama          | NIS   | Email                   | Password  |
+|---------------|-------|-------------------------|-----------|
+| Zidan Herlangga | 1001 | `zidanherlangga24@gmail.com` | `password` |
+| Gustiar Ilham | 1002 | `kachishiro78@gmail.com`| `password` |
+| Rival Rivaldy  | 1003 | `zaky.hart17@gmail.com` | `password` |
+| Naufal Rafly S | 1004 | `naufalraflybaru@gmail.com` | `password` |
+| Andre Budi Setiyawan | 1005 | `alsyacallysta15@gmail.com` | `password` |
+
+Siswa login menggunakan **email atau NIS** + password. Sebagian besar akun seeder sudah ter-verifikasi email; NIS `1003` sengaja dibiarkan belum verifikasi untuk pengujian alur verifikasi.
+
+---
+
+## ⚙️ Konfigurasi Tambahan (.env)
+
+| Variabel | Default | Keterangan |
+|----------|---------|------------|
+| `LIBRARY_FINE_PER_DAY` | `1000` | Denda keterlambatan per hari (Rupiah). |
+| `LIBRARY_BORROW_DURATION_DAYS` | `7` | Lama peminjaman normal (hari). |
+| `LIBRARY_MAX_BORROW_PER_STUDENT` | `3` | Batas maksimal pinjaman aktif per siswa. |
+
+Lainnya: `CACHE_STORE`, `SESSION_DRIVER`, `QUEUE_CONNECTION` (untuk email reminder & notifikasi).
+
+---
+
+## 🧪 Pengujian
 
 ```bash
-* * * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
+php artisan test
 ```
 
-Atau jalankan secara manual:
+Suite mencakup: model attributes (avatar/is_active), halaman frontend (home, katalog, login, panel), serta kontrol akses panel & resource secara role-based (admin/staff/kepsek).
 
-```bash
-php artisan app:send-reminder
+---
+
+## 📁 Struktur Proyek (Ringkas)
+
+```
+app/
+├── Console/Commands/        # Perintah terjadwal (reminder email)
+├── Filament/                # Resources, Widgets, Panel Access (role-based)
+├── Http/
+│   ├── Controllers/         # Auth, Home, Book, Borrowing, History, dll.
+│   ├── Controllers/Api/     # API katalog buku (Sanctum)
+│   └── Middleware/          # SecurityHeaders, CachePublicResponse, CheckAdminRole
+├── Jobs/ & Mail/            # Pekerjaan & email reminder
+├── Livewire/                # Komponen Livewire (katalog buku, dll.)
+├── Models/                  # Student, Book, Borrowing, Testimonial, dll.
+├── Notifications/           # Email verifikasi & notifikasi peminjaman
+└── Providers/
+    ├── AppServiceProvider   # Visitor tracking, rate limiters
+    └── Filament/            # AdminPerpus, Staff, Kepsek panels
 ```
 
 ---
 
-## 🔐 Keamanan
+## 🔒 Aspek Keamanan
 
-- ✅ **API protected**: Endpoint write pada REST API dilindungi dengan Laravel Sanctum.
-- ✅ **CSRF Protection**: Semua form menggunakan CSRF token.
-- ✅ **SQL Injection Prevention**: Query menggunakan Eloquent ORM dengan parameter binding.
-- ✅ **XSS Protection**: Output escaping dengan Blade syntax `{{ }}`. Synopsis menggunakan RichEditor dengan sanitasi.
-- ✅ **File Upload Validation**: Hanya tipe gambar tertentu (jpeg, png, webp, gif) dengan batas ukuran.
-- ✅ **Email Verification**: Wajib verifikasi sebelum akses dashboard.
-- ✅ **Password Hashing**: Otomatis di-hash menggunakan `bcrypt` via cast `hashed`.
-- ✅ **Rate Limiting**: Route verifikasi email dibatasi 6 request per menit.
-- ✅ **Multi Panel Role-Based**: Tiga panel terpisah (Admin, Staff, Kepsek) dengan autentikasi & otorisasi per role.
-- ✅ **Dual Auth Guards**: Pemisahan guard `admin` dan `student`.
+- **CSRF** aktif di semua form; halaman publik di-cache **tanpa token CSRF** (mencegah error 419 lintas sesi).
+- **Rate limiting**: login, katalog publik, peminjaman, verifikasi email.
+- Hash password **bcrypt** (default Laravel 12); validasi email `email:rfc`.
+- Authorisasi **role-based** (admin/staff/kepsek) di tiap resource Filament.
+- **Security headers** di semua respons (web, API, panel): `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, CSP `frame-ancestors`, dan HSTS (production+HTTPS); `X-Powered-By` disembunyikan.
+- Audit dependency: `composer audit` → **0 advisories**.
+- Cache respons publik dibatasi TTL & mengecualikan halaman ber-`_token`.
 
 ---
 
-## 🐛 Perbaikan & Refactoring Terbaru
+## 🛠️ Maintenance
 
-Projek ini telah melalui proses refactoring, multi-panel, dan security hardening:
-
-### Bug Fixes
-
-- **Reminder model**: Typo type hint `Student $student` → `Reminder $reminder`
-- **BookForm**: Field name `category_id` → `category` (sesuai kolom database)
-- **DashboardController**: Menghapus external HTTP call (`api.ipify.org`) yang tidak stabil
-- **Slug buku**: Ditambahkan logika unique agar tidak crash saat judul buku duplikat
-- **PWA button**: HTML broken (style attribute tidak tertutup)
-- **BooksTable filter**: Filter kategori menggunakan relationship yang tidak ada, diperbaiki dengan distinct values
-- **Flysystem error**: Avatar null menyebabkan `Storage::exists(null)` — diperbaiki dengan accessor + default kolom NOT NULL
-- **Missing scopes**: `needReminder()`, `isOverdue()`, `isDueSoon()` ditambahkan ke Borrowing model
-- **HomeController 500**: `count('category')` crash karena kolom dihapus — diganti `Category::count()`
-
-### Security
-
-- **API routes**: Semua write endpoint (POST/PUT/DELETE) dilindungi dengan `auth:sanctum`
-- **SMTP credentials**: Dihapus dari repository, diganti placeholder
-- **APP_DEBUG**: Diubah ke `false`
-- **File upload**: Ditambahkan validasi MIME type pada cover image dan avatar
-- **Explicit auth guard**: Semua `Auth::user()` diganti `Auth::guard('student')->user()`
-- **Book comment validation**: Validasi keberadaan buku sebelum menambahkan komentar
-
-### New Features
-
-- **Multi Panel (Admin/Staff/Kepsek)**: Tiga panel Filament terpisah dengan akses sesuai role.
-- **Manajemen Kategori**: CRUD kategori buku dengan Filament resource.
-- **Kondisi Buku**: Tracking kondisi buku (Baik/Rusak Ringan/Rusak Berat/Hilang) via enum.
-- **Role Management**: Role admin/staff/kepsek dengan `canAccessPanel()` dan trait `HasRoleBasedAccess`.
-- **Fine rate configurable**: Denda per hari dapat diatur via `.env` (tidak hardcoded)
-- **Durasi peminjaman configurable**: Durasi pinjam dapat diatur via `.env`
-- **Search & Filter riwayat**: Pencarian judul buku dan filter status di halaman history
-- **Export buku**: Ekspor data buku ke Excel/CSV dari admin panel
-- **ISBN validation**: Validasi format ISBN 10/13 digit
-- **Laravel Sanctum**: Ditambahkan untuk API authentication
-- **Toast notifications**: Error/success toast via shadow DOM (tidak perlu redirect halaman)
-- **Response cache middleware**: Guest GET requests otomatis di-cache (default 300s TTL)
-- **Rate limiting**: Per-IP throttle (120/menit publik, 10/menit auth, 5/menit borrow)
-- **DB indexes**: 10 composite/single indexes untuk query performa
-- **Homepage caching**: Stats & testimonials di-cache 5 menit
-- **Image lazy loading & CSS async loading**: Optimasi waktu render
-- **Ticket modal redesign**: Tampilan tiket peminjaman seperti event ticket dengan perforasi, barcode, dan info lengkap
-
----
-
-## 📸 Screenshot
-
-| Tampilan                                                     | Deskripsi                                                                              |
-| ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
-| ![Dashboard Admin](public/screenshots/dashboard-admin.png)   | **Dashboard Admin (Filament):** Statistik total buku, siswa, dan transaksi peminjaman. |
-| ![Daftar Buku](public/screenshots/catalogpage.png)           | **Manajemen Buku:** CRUD data buku dengan filter, pencarian, dan export Excel.         |
-| ![Form Peminjaman](public/screenshots/modal-pinjam-buku.png) | **Form Peminjaman:** Pilih siswa & buku dengan kalkulasi tanggal kembali otomatis.     |
-| ![Katalog Buku Siswa](public/screenshots/detail-book.png)    | **Detail Buku:** Tampilan publik dengan info lengkap, komentar, dan tombol pinjam.     |
-| ![Dashboard Siswa](public/screenshots/dashboard-student.png) | **Dashboard Siswa:** Buku dipinjam, riwayat, total denda, dan profil.                  |
+- `npm run build` setiap perubahan Blade/Tailwind baru → jalankan sekali **Ctrl+F5** (service worker menyajikan aset baru).
+- Service worker versi dirilis sebagai `elib-v2`; dokumen di-fetch ke network agar selalu segar.
+- `php artisan optimize:clear` setelah perubahan konfigurasi besar.
 
 ---
 
 ## 📄 Lisensi
 
-Proyek ini dilisensikan di bawah **MIT License** - lihat file [LICENSE](LICENSE) untuk detail lebih lanjut.
-
-Dibuat dengan ❤️ oleh [Zidan Herlangga](https://github.com/zidan-herlangga) dan kontributor.
+Proyek ini dikembangkan untuk kebutuhan internal **SMK Karya Guna 2**. Tidak ada lisensi khusus yang dipublikasikan untuk penggunaan komersial di luar institusi terkait tanpa izin.

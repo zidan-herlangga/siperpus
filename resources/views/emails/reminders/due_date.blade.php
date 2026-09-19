@@ -26,7 +26,7 @@
                             <!-- Header Hijau -->
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
-                                    <td style="background: linear-gradient(135deg, #047857 0%, #065f46 100%); padding: 40px 30px; text-align: center;">
+                                    <td style="background: linear-gradient(135deg, #006739 0%, #004225 100%); padding: 40px 30px; text-align: center;">
                                         <img src="{{ asset('assets/image/logo-light-smkg2.png') }}" alt="Logo SMK Karya Guna 2 Bekasi" width="100" style="display: block; margin: 0 auto 20px auto; filter: brightness(0) invert(1);" />
                                         <h1 style="color: #ffffff; font-size: 22px; margin: 0; font-weight: 700; letter-spacing: -0.5px;">Pengingat Pengembalian</h1>
                                         <p style="color: #a7f3d0; font-size: 13px; margin: 8px 0 0 0;">Perpustakaan Digital SMK Karya Guna 2 Bekasi</p>
@@ -66,7 +66,7 @@
                                                         <tr>
                                                             <td width="50%" style="padding-right: 10px;">
                                                                 <p style="margin: 0 0 4px 0; font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">📅 Tenggat Waktu</p>
-                                                                <p style="margin: 0; color: #047857; font-size: 15px; font-weight: 700;">{{ $borrowing->due_date->format('d F Y') }}</p>
+                                                                <p style="margin: 0; color: #006739; font-size: 15px; font-weight: 700;">{{ $borrowing->due_date->format('d F Y') }}</p>
                                                             </td>
                                                             <td width="50%" style="padding-left: 10px; border-left: 1px solid #e5e7eb;">
                                                                 <p style="margin: 0 0 4px 0; font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">💰 Denda Keterlambatan</p>
@@ -98,7 +98,7 @@
                                 <!-- Tombol CTA -->
                                 <tr>
                                     <td align="center" style="padding: 10px 35px 40px 35px;">
-                                        <a href="{{ route('student.dashboard') }}" style="background-color: #047857; color: #ffffff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block; box-shadow: 0 4px 14px rgba(4, 120, 87, 0.35);">
+                                        <a href="{{ route('student.dashboard') }}" style="background-color: #006739; color: #ffffff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block; box-shadow: 0 4px 14px rgba(0, 103, 57, 0.35);">
                                             Lihat Detail Peminjaman
                                         </a>
                                     </td>

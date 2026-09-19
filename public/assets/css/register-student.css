@@ -73,32 +73,32 @@
 /* State: Active (Sedang diisi) */
 .step-indicator.active .step-number {
     background-color: white;
-    color: #059669;
-    border-color: #059669;
-    box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+    color: #006739;
+    border-color: #006739;
+    box-shadow: 0 0 0 4px rgba(0, 103, 57, 0.1);
 }
 
 .step-indicator.active .step-label {
-    color: #059669;
+    color: #006739;
     font-weight: 600;
 }
 
 /* State: Completed (Sudah terisi semua) */
 .step-indicator.completed .step-number {
-    background-color: #059669;
+    background-color: #006739;
     color: white;
-    border-color: #059669;
+    border-color: #006739;
 }
 
 .step-indicator.completed .step-label {
-    color: #059669;
+    color: #006739;
 }
 
 /* Garis penghubung antar step */
 .step-connector {
     flex: 1;
     height: 2px;
-    background-color: #e5e7eb;
+    background-color: #e2e9e1;
     margin: 0 0.75rem;
     margin-top: 16px; /* Setengah dari tinggi step-number */
     transition: background-color 0.3s ease;

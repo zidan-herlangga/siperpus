@@ -31,8 +31,17 @@ class HomeController extends Controller
                 ->get();
         });
 
+        $featuredBooks = Cache::remember('homepage.featured_books', 300, function () {
+            return Book::whereNotNull('cover_image')
+                ->where('cover_image', '!=', '')
+                ->latest()
+                ->take(5)
+                ->get(['title', 'slug', 'cover_image', 'author']);
+        });
+
         return view('index', array_merge($stats, [
             'approvedTestimonials' => $approvedTestimonials,
+            'featuredBooks' => $featuredBooks,
         ]));
     }
 }

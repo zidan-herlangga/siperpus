@@ -24,7 +24,7 @@ class StudentController extends Controller
             'email'   => [
                 'required', 
                 'string', 
-                'email', 
+                'email:rfc', 
                 'max:255',
                 Rule::unique('students')->ignore($student->id),
             ],

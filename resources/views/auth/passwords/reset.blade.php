@@ -8,28 +8,23 @@
 <style>
     /* Custom style spesifik halaman ini */
     .bg-mesh {
-        background-color: #f0fdf4;
-        background-image: 
-            radial-gradient(at 40% 20%, rgba(52, 211, 153, 0.15) 0px, transparent 50%),
-            radial-gradient(at 80% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
-            radial-gradient(at 0% 80%, rgba(167, 243, 208, 0.15) 0px, transparent 50%),
-            radial-gradient(at 80% 80%, rgba(52, 211, 153, 0.1) 0px, transparent 50%);
+        background-color: #f4f6f1;
+        background-image: radial-gradient(#e2e9e1 1px, transparent 1px);
+        background-size: 24px 24px;
     }
     .card-glass {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), 0 4px 20px -5px rgba(0, 0, 0, 0.03);
+        background: #ffffff;
+        border: 1px solid #e2e9e1;
+        box-shadow: 0 20px 50px -30px rgba(0, 66, 37, 0.25);
     }
     .input-modern {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1.5px solid #e5e7eb;
+        border: 1.5px solid #e2e9e1;
     }
-    .input-modern:hover:not(:disabled):not([readonly]) { border-color: #d1d5db; }
+    .input-modern:hover:not(:disabled):not([readonly]) { border-color: #c6d4c8; }
     .input-modern:focus {
-        border-color: #10b981;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        border-color: #006739;
+        box-shadow: 0 0 0 3px rgba(0, 103, 57, 0.1);
     }
     .input-modern.border-red-400 {
         border-color: #f87171;
@@ -39,16 +34,15 @@
         border-color: #f87171;
     }
     .input-icon { transition: color 0.3s ease; }
-    .input-group:focus-within .input-icon { color: #059669; }
+    .input-group:focus-within .input-icon { color: #006739; }
     
     .btn-submit {
-        background: linear-gradient(135deg, #059669, #047857);
+        background: #ffc600;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .btn-submit:hover:not(:disabled) {
-        background: linear-gradient(135deg, #047857, #065f46);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.4);
+        background: #e0b400;
+        box-shadow: 0 10px 25px -10px rgba(22, 39, 29, 0.25);
     }
     .btn-submit:active:not(:disabled) { transform: translateY(0); }
     .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
@@ -61,8 +55,8 @@
         <div class="card-glass rounded-2xl overflow-hidden animate-fade-in">
             
             {{-- Header Card --}}
-            <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-10 text-center relative">
-                <div class="absolute inset-0 bg-black/5"></div>
+            <div class="bg-[#006739] text-white p-10 text-center relative">
+                <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 18px 18px;"></div>
                 <div class="relative z-10">
                     <div class="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
                         <i class="fas fa-shield-halved text-2xl"></i>
@@ -170,11 +164,11 @@
 
                     <div class="mt-8">
                         <button type="submit" id="submitButton" 
-                                class="btn-submit w-full text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm">
+                                class="btn-submit w-full text-[#16271d] py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm">
                             <i class="fas fa-shield-halved text-xs" id="btnIcon"></i>
                             <span id="buttonText">Simpan Password Baru</span>
                             <div id="buttonLoader" class="hidden">
-                                <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                <div class="w-5 h-5 border-2 border-[#16271d]/20 border-t-[#16271d] rounded-full animate-spin"></div>
                             </div>
                         </button>
                     </div>
@@ -258,8 +252,8 @@ document.addEventListener('DOMContentLoaded', function() {
             { width: '0%', color: '#e5e7eb', text: '', textClass: 'text-gray-400' },
             { width: '25%', color: '#ef4444', text: 'Lemah', textClass: 'text-red-500' },
             { width: '50%', color: '#f59e0b', text: 'Cukup', textClass: 'text-amber-500' },
-            { width: '75%', color: '#3b82f6', text: 'Kuat', textClass: 'text-blue-500' },
-            { width: '100%', color: '#10b981', text: 'Sangat Kuat', textClass: 'text-emerald-500' }
+            { width: '75%', color: '#1d7a52', text: 'Kuat', textClass: 'text-emerald-500' },
+            { width: '100%', color: '#006739', text: 'Sangat Kuat', textClass: 'text-emerald-500' }
         ];
 
         const level = val.length === 0 ? levels[0] : levels[score];

@@ -5,39 +5,34 @@
 @section('styles')
     <style>
         .bg-mesh {
-            background-color: #f0fdf4;
-            background-image:
-                radial-gradient(at 20% 20%, rgba(52, 211, 153, 0.15) 0px, transparent 50%),
-                radial-gradient(at 80% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
-                radial-gradient(at 0% 80%, rgba(167, 243, 208, 0.15) 0px, transparent 50%),
-                radial-gradient(at 80% 80%, rgba(52, 211, 153, 0.1) 0px, transparent 50%);
+            background-color: #f4f6f1;
+            background-image: radial-gradient(#e2e9e1 1px, transparent 1px);
+            background-size: 24px 24px;
         }
 
         .card-glass {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), 0 4px 20px -5px rgba(0, 0, 0, 0.03);
+            background: #ffffff;
+            border: 1px solid #e2e9e1;
+            box-shadow: 0 20px 50px -30px rgba(0, 66, 37, 0.25);
         }
 
         .input-modern {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1.5px solid #e5e7eb;
+            border: 1.5px solid #e2e9e1;
         }
 
         .input-modern:hover:not(:disabled):not([readonly]) {
-            border-color: #d1d5db;
+            border-color: #c6d4c8;
         }
 
         .input-modern:focus {
-            border-color: #10b981;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            border-color: #006739;
+            box-shadow: 0 0 0 3px rgba(0, 103, 57, 0.1);
         }
 
         .input-modern:disabled,
         .input-modern[readonly] {
-            background-color: #f3f4f6;
+            background-color: #eaf3ed;
             color: #6b7280;
             cursor: not-allowed;
         }
@@ -56,17 +51,17 @@
         }
 
         .input-group:focus-within .input-icon {
-            color: #059669;
+            color: #006739;
         }
 
         .upload-area {
-            border: 2px dashed #e5e7eb;
+            border: 2px dashed #d3ddd3;
             transition: all 0.3s ease;
         }
 
         .upload-area:hover {
-            border-color: #10b981;
-            background-color: #f0fdf4;
+            border-color: #006739;
+            background-color: #eaf3ed;
         }
 
         .btn-cancel {
@@ -74,17 +69,17 @@
         }
 
         .btn-cancel:hover {
-            background-color: #e5e7eb;
+            background-color: #e2e9e1;
         }
 
         .btn-save {
-            background: linear-gradient(135deg, #059669, #047857);
+            background: #006739;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn-save:hover:not(:disabled) {
-            background: linear-gradient(135deg, #047857, #065f46);
-            box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.4);
+            background: #004225;
+            box-shadow: 0 10px 25px -10px rgba(0, 66, 37, 0.5);
         }
 
         .btn-save:disabled {
@@ -100,8 +95,8 @@
             <div class="card-glass rounded-2xl overflow-hidden animate-fade-in">
 
                 {{-- Header --}}
-                <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-10 text-center relative">
-                    <div class="absolute inset-0 bg-black/5"></div>
+                <div class="bg-[#006739] text-white p-10 text-center relative">
+                    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 18px 18px;"></div>
                     <div class="relative z-10">
                         <div
                             class="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
@@ -167,7 +162,7 @@
                         <div>
                             <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
                                 <div
-                                    class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs">
+                                    class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">
                                     <i class="fas fa-school"></i>
                                 </div>
                                 Sekolah & Kontak
@@ -208,7 +203,7 @@
                         <div>
                             <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
                                 <div
-                                    class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xs">
+                                    class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">
                                     <i class="fas fa-shield-halved"></i>
                                 </div>
                                 Informasi Akun
@@ -259,6 +254,22 @@
                                         style="width: 0%"></div>
                                 </div>
                             </div>
+
+                            {{-- Checklist Persyaratan Password --}}
+                            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
+                                <span id="req-length" class="req-item text-xs text-gray-500 flex items-center gap-1.5">
+                                    <i class="fas fa-circle req-icon text-[8px] text-gray-300"></i> Minimal 8 karakter
+                                </span>
+                                <span id="req-uppercase" class="req-item text-xs text-gray-500 flex items-center gap-1.5">
+                                    <i class="fas fa-circle req-icon text-[8px] text-gray-300"></i> Huruf besar (A-Z)
+                                </span>
+                                <span id="req-lowercase" class="req-item text-xs text-gray-500 flex items-center gap-1.5">
+                                    <i class="fas fa-circle req-icon text-[8px] text-gray-300"></i> Huruf kecil (a-z)
+                                </span>
+                                <span id="req-number" class="req-item text-xs text-gray-500 flex items-center gap-1.5">
+                                    <i class="fas fa-circle req-icon text-[8px] text-gray-300"></i> Angka (0-9)
+                                </span>
+                            </div>
                         </div>
 
                         {{-- Konfirmasi Password --}}
@@ -285,7 +296,7 @@
                         <div>
                             <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
                                 <div
-                                    class="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-xs">
+                                    class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">
                                     <i class="fas fa-camera"></i>
                                 </div>
                                 Foto Profil
@@ -293,16 +304,15 @@
                             <div class="flex flex-col sm:flex-row gap-5 items-start">
                                 <div class="flex-shrink-0">
                                     <div id="avatarPreviewContainer"
-                                        data-old-avatar="{{ $student->avatar ? asset('storage/' . $student->avatar) : 'null' }}"
+                                        data-old-avatar="{{ $student->getRawOriginal('avatar') ? asset('storage/' . $student->avatar) : asset('images/default-avatar.png') }}"
                                         class="w-28 h-28 rounded-xl bg-gray-100 border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden relative">
-                                        @if ($student->avatar)
+                                        @if ($student->getRawOriginal('avatar'))
                                             <img src="{{ asset('storage/' . $student->avatar) }}" alt="Avatar"
-                                                class="w-full h-full object-cover" id="currentAvatar" loading="lazy">
+                                                class="w-full h-full object-cover" id="currentAvatar" loading="lazy"
+                                                onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">
                                         @else
-                                            <div class="text-center text-gray-400">
-                                                <i class="fas fa-user text-2xl mb-1"></i>
-                                                <p class="text-[10px]">Belum ada foto</p>
-                                            </div>
+                                            <img src="{{ asset('images/default-avatar.png') }}" alt="Avatar"
+                                                class="w-full h-full object-cover" id="currentAvatar" loading="lazy">
                                         @endif
                                     </div>
                                 </div>
@@ -355,7 +365,7 @@
             const matchText = document.getElementById('password-match');
             const form = document.getElementById('editProfileForm');
             const submitBtn = document.getElementById('submitButton');
-            const btnText = document.getElementById('buttonText');
+            const btnText = document.getElementById('btnText');
             const btnIcon = document.getElementById('btnIcon');
             const btnLoader = document.getElementById('buttonLoader');
 
@@ -393,6 +403,7 @@
                 // Update UI Checklist
                 Object.entries(checks).forEach(([id, isValid]) => {
                     const el = document.getElementById(id);
+                    if (!el) return;
                     const icon = el.querySelector('.req-icon');
                     if (isValid) {
                         icon.classList.remove('fa-circle', 'text-gray-300');
@@ -430,13 +441,13 @@
                     },
                     {
                         width: '75%',
-                        color: '#3b82f6',
+                        color: '#1d7a52',
                         text: 'Kuat',
-                        textClass: 'text-blue-500'
+                        textClass: 'text-emerald-500'
                     },
                     {
                         width: '100%',
-                        color: '#10b981',
+                        color: '#006739',
                         text: 'Sangat Kuat',
                         textClass: 'text-emerald-500'
                     }
@@ -578,6 +589,9 @@
                         }
                     })
                     .then(response => {
+                        if (response.status === 419) {
+                            throw { status: 419 };
+                        }
                         return response.text().then(text => {
                             try {
                                 let data = JSON.parse(text);
@@ -608,6 +622,11 @@
                         }
                     })
                     .catch(error => {
+                        if (error.status === 419) {
+                            alert('Sesi berakhir atau halaman kedaluwarsa. Halaman akan dimuat ulang...');
+                            location.reload();
+                            return;
+                        }
                         if (error.errors) {
                             let errorMessages = Object.values(error.errors).map(err => `<li>${err[0]}</li>`)
                                 .join('');

@@ -26,7 +26,7 @@
                             <!-- Header Hijau -->
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
-                                    <td style="background: linear-gradient(135deg, #047857 0%, #065f46 100%); padding: 40px 30px; text-align: center;">
+                                    <td style="background: linear-gradient(135deg, #006739 0%, #004225 100%); padding: 40px 30px; text-align: center;">
                                         <img src="{{ asset('assets/image/logo-light-smkg2.png') }}" alt="Logo SMK Karya Guna 2 Bekasi" width="100" style="display: block; margin: 0 auto 20px auto; filter: brightness(0) invert(1);" />
                                         <h1 style="color: #ffffff; font-size: 22px; margin: 0; font-weight: 700; letter-spacing: -0.5px;">Verifikasi Email Anda</h1>
                                         <p style="color: #a7f3d0; font-size: 13px; margin: 8px 0 0 0;">Satu langkah lagi untuk mengaktifkan akun Anda</p>
@@ -51,7 +51,7 @@
                                 <!-- Tombol CTA -->
                                 <tr>
                                     <td align="center" style="padding: 0 35px 30px 35px;">
-                                        <a href="{{ $url }}" style="background-color: #047857; color: #ffffff; padding: 14px 40px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block; box-shadow: 0 4px 14px rgba(4, 120, 87, 0.35);">
+                                        <a href="{{ $url }}" style="background-color: #006739; color: #ffffff; padding: 14px 40px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block; box-shadow: 0 4px 14px rgba(0, 103, 57, 0.35);">
                                             Verifikasi Sekarang
                                         </a>
                                     </td>
@@ -66,7 +66,7 @@
                                                     <p style="margin: 0 0 10px 0; font-size: 12px; color: #6b7280; text-align: center;">
                                                         Jika tombol di atas tidak berfungsi, salin dan tempel tautan berikut ke browser Anda:
                                                     </p>
-                                                    <p style="margin: 0; font-size: 12px; color: #047857; text-align: center; word-break: break-all; font-weight: 600;">
+                                                    <p style="margin: 0; font-size: 12px; color: #006739; text-align: center; word-break: break-all; font-weight: 600;">
                                                         {{ $url }}
                                                     </p>
                                                 </td>

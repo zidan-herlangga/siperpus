@@ -28,7 +28,7 @@ class StudentRegistrationController extends Controller
             'nis' => ['nullable', 'string', 'max:255', 'unique:students'],
             'class' => ['required', 'string', 'max:255'],
             'contact' => ['required', 'string', 'max:20'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:students'],
+            'email' => ['required', 'string', 'email:rfc', 'max:255', 'unique:students'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 

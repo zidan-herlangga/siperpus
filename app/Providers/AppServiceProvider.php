@@ -63,13 +63,15 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
-            Cache::put($cacheKey, true, now()->endOfDay());
-
             DB::table('visitors')->insert([
                 'ip_address' => $ip,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
+            // Cache key baru diatur SETELAH insert sukses, supaya insert yang
+            // gagal tidak "menghabiskan" kuota kunjungan untuk IP tersebut.
+            Cache::put($cacheKey, true, now()->endOfDay());
         } catch (\Exception $e) {
             // Silent fail during setup
         }

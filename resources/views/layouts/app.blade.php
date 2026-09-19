@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#065f46">
+    <meta name="theme-color" content="#006739">
     <meta name="description" content="Aplikasi Peminjaman Buku Online Perpustakaan SMK Karya Guna 2 Bekasi">
 
     <!-- Facebook Meta Tags -->
@@ -32,7 +32,7 @@
     {{-- ENV --}}
     <title>@yield('title', config('app.name'))</title>
 
-    <link rel="icon" href="{{ asset('assets/image/favicon.png') }}" type="image/png">
+    <link rel="icon" href="https://smkkg2.sch.id/wp-content/uploads/2026/02/logo-kg-transparan-2-150x150.png" type="image/png">
     <link rel="stylesheet" href="{{ asset('assets/css/layout.css') }}">
     @yield('styles')
 
@@ -49,42 +49,49 @@
     <livewire:styles />
 </head>
 
-<body class="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
+<body class="bg-[#f4f6f1] min-h-screen flex flex-col overflow-x-hidden">
     {{-- HEADER --}}
     <header id="mainHeader"
-        class="hidden lg:flex md:flex gradient-bg text-white shadow-lg sticky top-0 z-50 transition-all duration-300">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        class="gradient-bg text-white shadow-sm sticky top-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-2.5 md:py-3 flex justify-between items-center gap-3">
 
             {{-- LOGO --}}
             <a href="{{ route('homepage') }}" wire:navigate.prefetch="false"
-                class="flex items-center space-x-2 smooth-transition hover:scale-105">
-                <img src="{{ asset('assets/image/SMK-Karya-Guna-2-Bekasi.svg') }}" alt="Logo SMK Karya Guna 2 Bekasi"
-                    class="w-auto h-10 md:h-12" fetchpriority="high">
+                class="flex items-center gap-3 min-w-0 smooth-transition hover:opacity-90">
+                <span
+                    class="bg-white rounded-xl p-1 shrink-0 inline-flex items-center justify-center shadow-sm">
+                    <img src="{{ asset('assets/image/SMK-Karya-Guna-2-Bekasi.svg') }}" alt="Logo SMK Karya Guna 2 Bekasi"
+                        class="h-8 w-auto md:h-10 object-contain">
+                </span>
+                <span class="flex flex-col leading-tight min-w-0">
+                    <span class="font-bold text-base md:text-lg tracking-tight whitespace-nowrap">ELibrary</span>
+                    <span class="text-white/70 text-[10px] md:text-xs font-medium -mt-0.5 whitespace-nowrap">Perpustakaan Digital</span>
+                </span>
             </a>
 
-            {{-- NAVIGASI DESKTOP --}}
-            <nav class="hidden md:flex items-center gap-2 font-medium">
+            {{-- NAVIGASI DESKTOP (lg ke atas) --}}
+            <nav class="hidden lg:flex items-center gap-1.5 font-medium">
                 @auth('student')
                     <a href="{{ route('student.dashboard') }}" wire:navigate.prefetch="false"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition {{ request()->routeIs('student.dashboard') ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'text-emerald-800 hover:bg-emerald-50' }}">
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition {{ request()->routeIs('student.dashboard') ? 'bg-white/10 text-white font-semibold' : 'text-white/75 hover:text-white hover:bg-white/5' }}">
                         <i class="fas fa-tachometer-alt text-sm"></i>
                         Dashboard
                     </a>
 
                     <a href="{{ route('books.index') }}" wire:navigate.prefetch="false"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition {{ request()->routeIs('books.*') ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'text-emerald-800 hover:bg-emerald-50' }}">
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition {{ request()->routeIs('books.*') ? 'bg-white/10 text-white font-semibold' : 'text-white/75 hover:text-white hover:bg-white/5' }}">
                         <i class="fas fa-book text-sm"></i>
                         Katalog
                     </a>
 
                     <a href="{{ route('student.history') }}" wire:navigate.prefetch="false"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition {{ request()->routeIs('student.history') ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'text-emerald-800 hover:bg-emerald-50' }}">
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition {{ request()->routeIs('student.history') ? 'bg-white/10 text-white font-semibold' : 'text-white/75 hover:text-white hover:bg-white/5' }}">
                         <i class="fas fa-history text-sm"></i>
                         Riwayat
                     </a>
 
                     <button onclick="openBorrowGuideModal()"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition text-emerald-800 hover:text-emerald-600 hover:bg-emerald-50">
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition text-white/75 hover:text-white hover:bg-white/5">
                         <i class="fas fa-circle-info text-sm"></i>
                         Petunjuk
                     </button>
@@ -92,27 +99,27 @@
                     <form action="{{ route('student.logout') }}" method="POST" class="inline ml-2">
                         @csrf
                         <button type="submit"
-                            class="flex items-center gap-2 bg-red-500/80 backdrop-blur-sm text-white px-4 py-2 rounded-lg shadow smooth-transition hover:bg-red-600 btn-hover-effect">
+                            class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg shadow-sm smooth-transition hover:bg-red-500">
                             <i class="fas fa-right-from-bracket text-sm"></i>
                             Keluar
                         </button>
                     </form>
                 @else
                     <a href="{{ route('books.index') }}" wire:navigate.prefetch="false"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition {{ request()->routeIs('books.*') ? 'bg-emerald-100 text-emerald-700 font-semibold' : 'text-emerald-800 hover:bg-emerald-50' }}">
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition {{ request()->routeIs('books.*') ? 'bg-white/10 text-white font-semibold' : 'text-white/75 hover:text-white hover:bg-white/5' }}">
                         <i class="fas fa-book text-sm"></i>
                         Katalog
                     </a>
 
                     <button onclick="openBorrowGuideModal()"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition text-emerald-800 hover:text-emerald-600 hover:bg-emerald-50">
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg smooth-transition text-white/75 hover:text-white hover:bg-white/5">
                         <i class="fas fa-circle-info text-sm"></i>
                         Petunjuk
                     </button>
 
                     <!-- PWA Install Button -->
                     <button id="pwa-install-btn"
-                        class="flex items-center gap-2 bg-emerald-600 border border-emerald-500 text-white px-4 py-2 rounded-lg shadow smooth-transition btn-hover-effect"
+                        class="flex items-center gap-2 border border-white/30 text-white px-4 py-2 rounded-lg smooth-transition hover:bg-white/10"
                         style="display: none;">
                         <i class="fas fa-download text-sm"></i>
                         Install App
@@ -121,7 +128,7 @@
                     {{-- Dropdown Akun --}}
                     <div class="relative ml-2">
                         <button id="dropdownToggle"
-                            class="flex items-center gap-2 bg-emerald-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md smooth-transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-300 btn-hover-effect">
+                            class="flex items-center gap-2 bg-cta text-[#16271d] font-semibold px-4 py-2 rounded-lg shadow-sm smooth-transition hover:bg-cta-dark focus:outline-none focus:ring-2 focus:ring-white/40">
                             <i class="fas fa-user text-sm"></i>
                             <span>Akun</span>
                             <i id="dropdownArrow" class="fas fa-chevron-down ml-1 text-xs smooth-transition"></i>
@@ -132,7 +139,7 @@
                             <a href="{{ route('student.login.form') }}" wire:navigate.prefetch="false"
                                 class="flex items-center gap-3 px-4 py-3 text-gray-700 smooth-transition hover:bg-gray-50 rounded-t-xl">
                                 <i class="fas fa-right-to-bracket text-emerald-600"></i>
-                                <span class="text-sm font-medium">Login</span>
+                                <span class="text-sm font-medium">Masuk</span>
                             </a>
                             <div class="border-t border-gray-100"></div>
                             <a href="{{ route('student.register.form') }}" wire:navigate.prefetch="false"
@@ -145,13 +152,100 @@
                 @endauth
             </nav>
 
-            {{-- TOMBOL MENU MOBILE --}}
-            <button id="menuToggle"
-                class="md:hidden text-white text-xl focus:outline-none smooth-transition hover:scale-110 w-10 h-10 flex items-center justify-center rounded-lg bg-white/10">
-                <i class="fas fa-bars"></i>
-            </button>
+            {{-- AKSI MOBILE & TABLET (< lg) --}}
+            <div class="flex items-center gap-2 lg:hidden">
+                @auth('student')
+                    <a href="{{ route('student.dashboard') }}" wire:navigate.prefetch="false"
+                        class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 text-white smooth-transition hover:bg-white/20">
+                        <i class="fas fa-user text-sm"></i>
+                    </a>
+                @else
+                    <a href="{{ route('student.login.form') }}" wire:navigate.prefetch="false"
+                        class="flex items-center gap-2 bg-cta text-[#16271d] font-semibold px-4 py-2 rounded-xl shadow-sm smooth-transition hover:bg-cta-dark text-sm">
+                        <i class="fas fa-right-to-bracket text-sm"></i>
+                        
+                    </a>
+                @endauth
+                <button id="menuToggle"
+                    class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 text-white hover:bg-white/20 smooth-transition text-lg"
+                    aria-label="Buka menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
         </div>
     </header>
+
+    {{-- OFFCANVAS MENU (mobile & tablet) --}}
+    <div id="offcanvasOverlay" aria-hidden="true"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] opacity-0 invisible smooth-transition"></div>
+    <aside id="offcanvas" aria-label="Menu navigasi"
+        class="fixed top-0 right-0 h-full w-[84vw] max-w-sm bg-white shadow-2xl z-[70] transform translate-x-full smooth-transition flex flex-col">
+        <div class="flex items-center justify-between gap-3 p-4 border-b border-gray-100">
+            <span class="flex items-center gap-2.5 min-w-0">
+                <span class="w-9 h-9 rounded-lg overflow-hidden bg-white border border-gray-100 flex items-center justify-center shrink-0">
+                    <img src="{{ asset('assets/image/SMK-Karya-Guna-2-Bekasi.svg') }}" alt="Logo SMK Karya Guna 2 Bekasi"
+                        class="h-7 w-auto object-contain">
+                </span>
+                <span class="flex flex-col leading-tight min-w-0">
+                    <span class="font-bold text-sm tracking-tight truncate">ELibrary</span>
+                    <span class="text-[10px] text-gray-500 font-medium truncate">SMK Karya Guna 2 Bekasi</span>
+                </span>
+            </span>
+            <button id="closeOffcanvas"
+                class="w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 smooth-transition shrink-0"
+                aria-label="Tutup menu">
+                <i class="fas fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto p-3 space-y-1">
+            <a href="{{ route('homepage') }}" wire:navigate.prefetch="false" onclick="closeMenu()"
+                class="offcanvas-link {{ request()->routeIs('homepage') ? 'bg-[#eaf3ed] text-[#006739] font-semibold' : '' }}">
+                <i class="fas fa-house w-5 text-center"></i> Beranda
+            </a>
+            <a href="{{ route('books.index') }}" wire:navigate.prefetch="false" onclick="closeMenu()"
+                class="offcanvas-link {{ request()->routeIs('books.*') ? 'bg-[#eaf3ed] text-[#006739] font-semibold' : '' }}">
+                <i class="fas fa-book-open w-5 text-center"></i> Katalog Buku
+            </a>
+            <button onclick="openBorrowGuideModal()"
+                class="offcanvas-link w-full text-left">
+                <i class="fas fa-circle-info w-5 text-center"></i> Petunjuk Peminjaman
+            </button>
+
+            <div class="my-2 border-t border-gray-100"></div>
+
+            @auth('student')
+                <a href="{{ route('student.dashboard') }}" wire:navigate.prefetch="false" onclick="closeMenu()"
+                    class="offcanvas-link {{ request()->routeIs('student.dashboard') ? 'bg-[#eaf3ed] text-[#006739] font-semibold' : '' }}">
+                    <i class="fas fa-tachometer-alt w-5 text-center"></i> Dashboard
+                </a>
+                <a href="{{ route('student.history') }}" wire:navigate.prefetch="false" onclick="closeMenu()"
+                    class="offcanvas-link {{ request()->routeIs('student.history') ? 'bg-[#eaf3ed] text-[#006739] font-semibold' : '' }}">
+                    <i class="fas fa-history w-5 text-center"></i> Riwayat Peminjaman
+                </a>
+                <form action="{{ route('student.logout') }}" method="POST" class="mt-1">
+                    @csrf
+                    <button type="submit"
+                        class="flex items-center gap-2 w-full bg-red-600 hover:bg-red-500 text-white px-4 py-2.5 rounded-xl font-semibold text-sm smooth-transition">
+                        <i class="fas fa-right-from-bracket w-5 text-center"></i> Keluar
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('student.login.form') }}" wire:navigate.prefetch="false" onclick="closeMenu()"
+                    class="flex items-center justify-center gap-2 bg-cta hover:bg-cta-dark text-[#16271d] font-semibold px-4 py-2.5 rounded-xl text-sm smooth-transition">
+                    <i class="fas fa-right-to-bracket w-5 text-center"></i> Masuk
+                </a>
+                <a href="{{ route('student.register.form') }}" wire:navigate.prefetch="false" onclick="closeMenu()"
+                    class="flex items-center justify-center gap-2 mt-2 border border-gray-200 hover:border-[#006739] hover:text-[#006739] text-gray-700 font-semibold px-4 py-2.5 rounded-xl text-sm smooth-transition">
+                    <i class="fas fa-user-plus w-5 text-center"></i> Daftar Akun
+                </a>
+            @endauth
+        </nav>
+
+        <div class="p-4 pt-3 border-t border-gray-100">
+            <p class="text-center text-[11px] text-gray-400">&copy; {{ date('Y') }} SMK Karya Guna 2 Bekasi</p>
+        </div>
+    </aside>
 
     {{-- MAIN CONTENT --}}
     <main class="flex-grow">
@@ -245,13 +339,89 @@
     </nav>
 
     {{-- FOOTER --}}
-    <footer class="hidden lg:flex md:flex footer text-white py-8 mt-12 md:mt-12 mb-20 md:mb-0">
-        <div class="container mx-auto px-4 text-center">
-            <div class="flex items-center justify-center gap-2 mb-3 opacity-70">
-                <i class="fas fa-book-open text-sm"></i>
-                <span class="text-sm font-medium">Perpustakaan Digital</span>
+    <footer class="footer text-white mt-14 md:mt-16 mb-20 md:mb-0">
+        <div class="container mx-auto px-4 pt-12 pb-8 md:pb-10 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12">
+
+            {{-- Brand --}}
+            <div>
+                <a href="{{ route('homepage') }}" wire:navigate.prefetch="false"
+                    class="flex items-center gap-3 mb-5 smooth-transition hover:opacity-90">
+                    <span class="bg-white rounded-xl p-1.5 inline-flex items-center justify-center shadow-sm">
+                        <img src="{{ asset('assets/image/SMK-Karya-Guna-2-Bekasi.svg') }}" alt="Logo SMK Karya Guna 2 Bekasi"
+                            class="h-8 w-auto md:h-10 object-contain">
+                    </span>
+                    <span class="flex flex-col leading-tight">
+                        <span class="font-bold text-base md:text-lg tracking-tight">ELibrary</span>
+                        <span class="text-white/60 text-[10px] md:text-xs font-medium -mt-0.5">Perpustakaan Digital</span>
+                    </span>
+                </a>
+                <p class="text-sm text-white/70 leading-relaxed">Katalog digital SMK Karya Guna 2 Bekasi. Temukan, pinjam, dan baca – semua dalam satu alur yang jujur.</p>
+
+                <div class="flex items-center gap-2.5 mt-6">
+                    <a href="https://www.facebook.com/smkkaryaguna2bekasi/" target="_blank" rel="noopener"
+                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/20 hover:text-white smooth-transition"
+                        aria-label="Facebook SMK Karya Guna 2 Bekasi">
+                        <i class="fa-brands fa-facebook-f text-sm"></i>
+                    </a>
+                    <a href="https://www.instagram.com/smkkaryaguna2bekasi/" target="_blank" rel="noopener"
+                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/20 hover:text-white smooth-transition"
+                        aria-label="Instagram SMK Karya Guna 2 Bekasi">
+                        <i class="fa-brands fa-instagram text-sm"></i>
+                    </a>
+                    <a href="https://wa.me/+6285772224344" target="_blank" rel="noopener"
+                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/20 hover:text-white smooth-transition"
+                        aria-label="WhatsApp SMK Karya Guna 2 Bekasi">
+                        <i class="fa-brands fa-whatsapp text-sm"></i>
+                    </a>
+                </div>
             </div>
-            <p class="text-sm text-white/60">© {{ date('Y') }} SMK Karya Guna 2 Bekasi. Hak Cipta Dilindungi.</p>
+
+            {{-- Navigasi --}}
+            <div>
+                <h4 class="text-white font-semibold text-sm tracking-wide mb-4">Navigasi</h4>
+                <ul class="space-y-2.5 text-sm text-white/70">
+                    <li><a href="{{ route('homepage') }}" wire:navigate.prefetch="false" class="smooth-transition hover:text-white">Beranda</a></li>
+                    <li><a href="{{ route('books.index') }}" wire:navigate.prefetch="false" class="smooth-transition hover:text-white">Katalog Buku</a></li>
+                    <li><button onclick="openBorrowGuideModal()" class="smooth-transition hover:text-white text-left">Petunjuk Peminjaman</button></li>
+                    @auth('student')
+                        <li><a href="{{ route('student.dashboard') }}" wire:navigate.prefetch="false" class="smooth-transition hover:text-white">Dashboard</a></li>
+                        <li><a href="{{ route('student.history') }}" wire:navigate.prefetch="false" class="smooth-transition hover:text-white">Riwayat Peminjaman</a></li>
+                    @else
+                        <li><a href="{{ route('student.login.form') }}" wire:navigate.prefetch="false" class="smooth-transition hover:text-white">Masuk</a></li>
+                        <li><a href="{{ route('student.register.form') }}" wire:navigate.prefetch="false" class="smooth-transition hover:text-white">Daftar Akun</a></li>
+                    @endauth
+                </ul>
+            </div>
+
+            {{-- Kontak --}}
+            <div>
+                <h4 class="text-white font-semibold text-sm tracking-wide mb-4">Kontak</h4>
+                <ul class="space-y-3.5 text-sm text-white/70">
+                    <li class="flex gap-3">
+                        <i class="fas fa-location-dot text-white/40 mt-0.5"></i>
+                        <span>Jl. Karang Satria No.503, RT.010/RW.016, Duren Jaya, Kec. Bekasi Timur, Kota Bekasi, Jawa Barat 17111</span>
+                    </li>
+                    <li class="flex gap-3 items-start">
+                        <i class="fas fa-phone text-white/40 mt-0.5"></i>
+                        <a href="tel:+6285772224344" class="smooth-transition hover:text-white">+62 8577 2224 344</a>
+                    </li>
+                    <li class="flex gap-3 items-start">
+                        <i class="fas fa-envelope text-white/40 mt-0.5"></i>
+                        <a href="mailto:info@smkkg2.sch.id" class="smooth-transition hover:text-white">info@smkkg2.sch.id</a>
+                    </li>
+                    <li class="flex gap-3 items-start">
+                        <i class="fas fa-globe text-white/40 mt-0.5"></i>
+                        <a href="https://smkkg2.sch.id" target="_blank" rel="noopener" class="smooth-transition hover:text-white">smkkg2.sch.id</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-white/10">
+            <div class="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-white/60">
+                <p>&copy; {{ date('Y') }} SMK Karya Guna 2 Bekasi. Hak Cipta Dilindungi.</p>
+                <span class="flex items-center gap-2"><i class="fas fa-book-open text-xs"></i> Perpustakaan Digital ELibrary</span>
+            </div>
         </div>
     </footer>
 
@@ -271,7 +441,7 @@
                 </button>
             </div>
             <ol class="list-decimal list-inside space-y-3 text-gray-600 text-sm leading-relaxed">
-                <li><strong class="text-gray-800">Daftar/Login:</strong> Pastikan Anda sudah memiliki akun dan dalam
+                <li><strong class="text-gray-800">Daftar/Masuk:</strong> Pastikan Anda sudah memiliki akun dan dalam
                     keadaan login.</li>
                 <li><strong class="text-gray-800">Cari Buku:</strong> Jelajahi katalog untuk menemukan buku yang ingin
                     Anda pinjam.</li>
@@ -370,7 +540,7 @@
 
             function openMenu() {
                 if (!offcanvas) return;
-                offcanvas.classList.remove('-translate-x-full');
+                offcanvas.classList.remove('translate-x-full');
                 offcanvasOverlay.classList.remove('opacity-0', 'invisible');
                 offcanvasOverlay.classList.add('opacity-100', 'visible');
                 document.body.style.overflow = 'hidden';
@@ -378,11 +548,17 @@
 
             function closeMenu() {
                 if (!offcanvas) return;
-                offcanvas.classList.add('-translate-x-full');
+                offcanvas.classList.add('translate-x-full');
                 offcanvasOverlay.classList.add('opacity-0', 'invisible');
                 offcanvasOverlay.classList.remove('opacity-100', 'visible');
                 document.body.style.overflow = '';
             }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && offcanvas && !offcanvas.classList.contains('translate-x-full')) {
+                    closeMenu();
+                }
+            });
 
             // Expose ke global agar bisa dipanggil dari tombol di file Blade manapun
             window.closeMenu = closeMenu;
@@ -440,6 +616,12 @@
 
         // === SERVICE WORKER ===
         if ("serviceWorker" in navigator) {
+            // Saat service worker baru mengambil alih (versi cache berubah),
+            // muat ulang sekali agar halaman langsung bebas dari cache lama.
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                window.location.reload();
+            });
+
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register("/sw.js")
                     .then(reg => console.log("SW registered:", reg.scope))

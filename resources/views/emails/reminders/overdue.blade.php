@@ -105,7 +105,7 @@
                                 <!-- Tombol CTA -->
                                 <tr>
                                     <td align="center" style="padding: 10px 35px 40px 35px;">
-                                        <a href="{{ route('student.dashboard') }}" style="background-color: #047857; color: #ffffff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block; box-shadow: 0 4px 14px rgba(4, 120, 87, 0.35);">
+                                        <a href="{{ route('student.dashboard') }}" style="background-color: #006739; color: #ffffff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block; box-shadow: 0 4px 14px rgba(0, 103, 57, 0.35);">
                                             Selesaikan Sekarang
                                         </a>
                                     </td>

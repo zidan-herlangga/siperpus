@@ -8,28 +8,23 @@
 <style>
     /* Custom style spesifik halaman ini */
     .bg-mesh {
-        background-color: #f0fdf4;
-        background-image: 
-            radial-gradient(at 40% 20%, rgba(52, 211, 153, 0.15) 0px, transparent 50%),
-            radial-gradient(at 80% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
-            radial-gradient(at 0% 80%, rgba(167, 243, 208, 0.15) 0px, transparent 50%),
-            radial-gradient(at 80% 80%, rgba(52, 211, 153, 0.1) 0px, transparent 50%);
+        background-color: #f4f6f1;
+        background-image: radial-gradient(#e2e9e1 1px, transparent 1px);
+        background-size: 24px 24px;
     }
     .card-glass {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), 0 4px 20px -5px rgba(0, 0, 0, 0.03);
+        background: #ffffff;
+        border: 1px solid #e2e9e1;
+        box-shadow: 0 20px 50px -30px rgba(0, 66, 37, 0.25);
     }
     .input-modern {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1.5px solid #e5e7eb;
+        border: 1.5px solid #e2e9e1;
     }
-    .input-modern:hover { border-color: #d1d5db; }
+    .input-modern:hover { border-color: #c6d4c8; }
     .input-modern:focus {
-        border-color: #10b981;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        border-color: #006739;
+        box-shadow: 0 0 0 3px rgba(0, 103, 57, 0.1);
     }
     .input-modern.border-red-400 {
         border-color: #f87171;
@@ -38,16 +33,15 @@
         box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.1);
     }
     .input-icon { transition: color 0.3s ease; }
-    .input-group:focus-within .input-icon { color: #059669; }
+    .input-group:focus-within .input-icon { color: #006739; }
 
     .btn-submit {
-        background: linear-gradient(135deg, #059669, #047857);
+        background: #006739;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .btn-submit:hover:not(:disabled) {
-        background: linear-gradient(135deg, #047857, #065f46);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.4);
+        background: #004225;
+        box-shadow: 0 10px 25px -10px rgba(0, 66, 37, 0.5);
     }
     .btn-submit:active:not(:disabled) { transform: translateY(0); }
     .btn-submit:disabled { 
@@ -65,8 +59,8 @@
         <div class="card-glass rounded-2xl overflow-hidden animate-fade-in">
             
             {{-- Header Card --}}
-            <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-10 text-center relative">
-                <div class="absolute inset-0 bg-black/5"></div>
+            <div class="bg-[#006739] text-white p-10 text-center relative">
+                <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 18px 18px;"></div>
                 <div class="relative z-10">
                     <div class="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
                         <i class="fas fa-key text-2xl"></i>
@@ -121,22 +115,22 @@
                 </form>
 
                 {{-- Tips Bantuan --}}
-                <div class="mt-8 bg-blue-50/50 border border-blue-100 rounded-xl p-5">
-                    <h3 class="font-semibold text-blue-800 text-sm mb-3 flex items-center gap-2">
-                        <i class="fas fa-lightbulb text-blue-500"></i>
+                <div class="mt-8 bg-emerald-50 border border-emerald-100 rounded-xl p-5">
+                    <h3 class="font-semibold text-emerald-800 text-sm mb-3 flex items-center gap-2">
+                        <i class="fas fa-lightbulb text-emerald-500"></i>
                         Butuh bantuan?
                     </h3>
-                    <ul class="text-xs text-blue-600 space-y-2 leading-relaxed">
+                    <ul class="text-xs text-emerald-700 space-y-2 leading-relaxed">
                         <li class="flex items-start gap-2">
-                            <i class="fas fa-check text-blue-400 mt-0.5"></i>
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
                             <span>Pastikan email yang Anda masukkan terdaftar di sistem.</span>
                         </li>
                         <li class="flex items-start gap-2">
-                            <i class="fas fa-check text-blue-400 mt-0.5"></i>
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
                             <span>Periksa folder <strong>Spam</strong> atau <strong>Junk</strong> jika tidak menerima email.</span>
                         </li>
                         <li class="flex items-start gap-2">
-                            <i class="fas fa-check text-blue-400 mt-0.5"></i>
+                            <i class="fas fa-check text-emerald-400 mt-0.5"></i>
                             <span>Link reset password hanya berlaku selama <strong>60 menit</strong>.</span>
                         </li>
                     </ul>

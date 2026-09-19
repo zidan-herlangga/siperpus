@@ -1,17 +1,29 @@
 {
-    "name": "Elib KG2",
-    "short_name": "Elib KG2",
+    "name": "ELibrary SMK Karya Guna 2",
+    "short_name": "ELibrary",
     "start_url": "/",
-    "background_color": "#065f46",
-    "description": "Temukan ribuan koleksi buku dan jelajahi dunia literasi secara digital — cepat, mudah, dan menyenangkan.",
+    "background_color": "#f4f6f1",
+    "description": "Temukan ribuan koleksi buku dan jelajahi dunia literasi secara digital - cepat, mudah, dan menyenangkan.",
     "display": "fullscreen",
-    "theme_color": "#065f46",
+    "theme_color": "#006739",
     "icons": [
         {
-            "src": "logo-smk.png",
+            "src": "/assets/image/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/assets/image/icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
+        },
+        {
+            "src": "/assets/image/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
         }
     ]
 }

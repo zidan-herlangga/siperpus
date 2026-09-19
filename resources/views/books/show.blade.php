@@ -11,19 +11,15 @@
     <style>
         /* CSS UTAMA (LUAR SHADOW DOM) */
         .bg-mesh {
-            background-color: #f9fafb;
-            background-image:
-                radial-gradient(at 20% 20%, rgba(52, 211, 153, 0.08) 0px, transparent 50%),
-                radial-gradient(at 80% 0%, rgba(16, 185, 129, 0.06) 0px, transparent 50%),
-                radial-gradient(at 0% 100%, rgba(167, 243, 208, 0.08) 0px, transparent 50%);
+            background-color: #f4f6f1;
+            background-image: radial-gradient(#e2e9e1 1px, transparent 1px);
+            background-size: 24px 24px;
         }
 
         .card-glass {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.05);
+            background: #ffffff;
+            border: 1px solid #e2e9e1;
+            box-shadow: 0 20px 50px -30px rgba(0, 66, 37, 0.25);
         }
 
         .book-cover-wrapper {
@@ -31,7 +27,7 @@
         }
 
         .book-cover {
-            box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+            box-shadow: -8px 8px 20px rgba(0, 66, 37, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
             transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
@@ -54,7 +50,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background-color: #059669;
+            background-color: #006739;
             transition: width 0.3s ease;
             border-radius: 2px;
         }
@@ -64,7 +60,7 @@
         }
 
         .tab-btn.active {
-            color: #059669;
+            color: #006739;
             font-weight: 600;
         }
 
@@ -74,24 +70,23 @@
 
         .meta-card {
             background: white;
-            border: 1px solid #f3f4f6;
+            border: 1px solid #e2e9e1;
             transition: all 0.3s ease;
         }
 
         .meta-card:hover {
-            border-color: #e5e7eb;
-            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+            border-color: #c6d4c8;
+            box-shadow: 0 4px 12px -2px rgba(0, 66, 37, 0.08);
         }
 
         .btn-borrow {
-            background: linear-gradient(135deg, #059669, #047857);
+            background: #ffc600;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn-borrow:hover:not(:disabled) {
-            background: linear-gradient(135deg, #047857, #065f46);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.4);
+            background: #e0b400;
+            box-shadow: 0 10px 25px -10px rgba(22, 39, 29, 0.25);
         }
 
         .btn-borrow:disabled {
@@ -113,8 +108,8 @@
         }
 
         input[type="checkbox"]:checked {
-            background-color: #059669;
-            border-color: #059669;
+            background-color: #006739;
+            border-color: #006739;
         }
 
         input[type="checkbox"]:checked::after {
@@ -148,9 +143,8 @@
             <div class="card-glass rounded-2xl overflow-hidden shadow-sm reveal">
                 {{-- Header Buku --}}
                 <div
-                    class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-8 md:p-10 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-black/5"></div>
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"></div>
+                    class="bg-[#006739] text-white p-8 md:p-10 relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 18px 18px;"></div>
                     <div class="relative z-10 flex flex-col md:flex-row md:items-start gap-8">
                         <div class="book-cover-wrapper flex-shrink-0 mx-auto md:mx-0">
                             <div class="book-cover w-36 h-52 md:w-44 md:h-64 bg-white rounded-xl overflow-hidden">
@@ -210,14 +204,14 @@
                                     <div class="meta-card p-4 rounded-xl">
                                         <p
                                             class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                                            <i class="fas fa-building text-purple-400"></i> Penerbit
+                                            <i class="fas fa-building text-[#1d7a52]"></i> Penerbit
                                         </p>
                                         <p class="text-sm font-bold text-gray-800">{{ $book->publisher }}</p>
                                     </div>
                                     <div class="meta-card p-4 rounded-xl">
                                         <p
                                             class="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                                            <i class="fas fa-calendar text-blue-400"></i> Tahun
+                                            <i class="fas fa-calendar text-[#418f69]"></i> Tahun
                                         </p>
                                         <p class="text-sm font-bold text-gray-800">{{ $book->year }}</p>
                                     </div>
@@ -279,9 +273,10 @@
                                                 <div class="flex gap-3">
                                                     <div
                                                         class="flex-shrink-0 w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center bg-emerald-50 border border-emerald-100">
-                                                        @if ($comment->student->avatar)
+                                                        @if ($comment->student->getRawOriginal('avatar'))
                                                             <img src="{{ asset('storage/' . $comment->student->avatar) }}"
-                                                            class="w-full h-full object-cover" loading="lazy">@else<span
+                                                            class="w-full h-full object-cover" loading="lazy"
+                                                            onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">@else<span
                                                                 class="text-emerald-600 font-bold text-sm">{{ strtoupper(substr($comment->student->name, 0, 1)) }}</span>
                                                         @endif
                                                     </div>
@@ -393,7 +388,7 @@
                                                         class="fas fa-circle-exclamation text-xs mr-1"></i>Stok Habis</button>
                                             @else
                                                 <button onclick="showBorrowModal()"
-                                                    class="btn-borrow w-full text-white py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-md"><i
+                                                    class="btn-borrow w-full text-[#16271d] py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-md"><i
                                                         class="fas fa-hand-holding-heart text-xs"></i>Pinjam Buku</button>
                                             @endif
                                         @else
@@ -403,7 +398,7 @@
                                         @endif
                                     @else
                                         <a href="{{ route('student.login.form') }}" wire:navigate.prefetch="false"
-                                            class="btn-borrow block w-full text-white py-3 rounded-xl font-semibold text-sm text-center shadow-md"><i
+                                            class="btn-borrow block w-full text-[#16271d] py-3 rounded-xl font-semibold text-sm text-center shadow-md"><i
                                                 class="fas fa-right-to-bracket mr-2 text-xs"></i>Login untuk Meminjam</a>
                                     @endauth
                                 </div>
@@ -423,7 +418,7 @@
                                                     {{ number_format(config('library.fine_per_day', 1000), 0, ',', '.') }}/hari</strong></span>
                                         </li>
                                         <li class="flex gap-2.5 bg-gray-50 p-2.5 rounded-lg"><i
-                                                class="fas fa-user-check text-blue-400 mt-0.5 w-3 text-center"></i><span>Khusus
+                                                class="fas fa-user-check text-[#418f69] mt-0.5 w-3 text-center"></i><span>Khusus
                                                 siswa <strong class="text-gray-700">terverifikasi</strong></span></li>
                                     </ul>
                                 </div>
@@ -524,7 +519,7 @@
             .ticket-card::after { bottom: -14px; }
             .ticket-backdrop.show .ticket-card { transform: scale(1) translateY(0); }
             .ticket-header {
-                background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);
+                background: #006739;
                 padding: 1.75rem 1.5rem 1.25rem; text-align: center; color: white;
                 position: relative; border-radius: 16px 16px 0 0;
             }
@@ -570,8 +565,8 @@
             .toast-close:hover { color: #6b7280; }
 
             .ticket-actions { padding: 1rem 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 0.625rem; }
-            .btn-save { background: #059669; color: white; padding: 0.875rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.875rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s; box-shadow: 0 4px 12px rgba(5,150,105,0.3); }
-            .btn-save:hover { background: #047857; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(5,150,105,0.4); }
+            .btn-save { background: #ffc600; color: #16271d; padding: 0.875rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.875rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s; box-shadow: 0 4px 12px rgba(22,39,29,0.18); }
+            .btn-save:hover { background: #e0b400; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(22,39,29,0.22); }
             .btn-close-ticket { background: transparent; color: #6b7280; padding: 0.75rem; border-radius: 0.75rem; font-weight: 600; font-size: 0.875rem; border: 1px solid #e5e7eb; cursor: pointer; transition: all 0.2s; }
             .btn-close-ticket:hover { background: #f9fafb; color: #374151; border-color: #d1d5db; }
         </style>
@@ -582,9 +577,9 @@
         <!-- MODAL KONFIRMASI -->
         <div id="borrowModalShadow" class="modal-backdrop">
             <div class="modal-box">
-                <div style="background:linear-gradient(135deg,#059669,#047857);padding:1rem;color:white;">
+                <div style="background:#006739;padding:1rem;color:white;">
                     <div style="display:flex;align-items:center;gap:0.75rem;">
-                        <div><h3 style="font-weight:700;font-size:1.125rem;">Pinjam Buku</h3><p style="font-size:0.75rem;color:#a7f3d0;">Konfirmasi peminjaman Anda</p></div>
+                        <div><h3 style="font-weight:700;font-size:1.125rem;">Pinjam Buku</h3><p style="font-size:0.75rem;color:#a6cdb7;">Konfirmasi peminjaman Anda</p></div>
                     </div>
                 </div>
                 <div style="padding:1.5rem;">
@@ -607,22 +602,22 @@
                         @if (Auth::guard('student')->user()->is_active_flag)
                             <form id="borrowFormShadow" action="{{ route('books.borrow', $book) }}" method="POST">
                                 @csrf
-                                <div style="margin-bottom:1rem;background:#ecfdf5;border:1px solid #d1fae5;border-radius:0.75rem;padding:1rem;font-size:0.875rem;">
+                                <div style="margin-bottom:1rem;background:#eaf3ed;border:1px solid #d2e6da;border-radius:0.75rem;padding:1rem;font-size:0.875rem;">
                                     <div style="display:flex;justify-content:space-between;margin-bottom:0.625rem;"><span style="color:#6b7280;">Peminjam</span><span style="font-weight:600;color:#1f2937;">{{ auth('student')->user()->name }}</span></div>
                                     <div style="display:flex;justify-content:space-between;margin-bottom:0.625rem;"><span style="color:#6b7280;">Tgl Pinjam</span><span style="font-weight:600;color:#1f2937;">{{ now()->format('d M Y') }}</span></div>
-                                    <div style="display:flex;justify-content:space-between;padding-top:0.625rem;border-top:1px solid #a7f3d0;"><span style="color:#6b7280;">Jatuh Tempo</span><span style="font-weight:700;color:#059669;">{{ now()->addDays((int) config('library.borrow_duration_days', 7))->format('d M Y') }}</span></div>
+                                    <div style="display:flex;justify-content:space-between;padding-top:0.625rem;border-top:1px solid #d2e6da;"><span style="color:#6b7280;">Jatuh Tempo</span><span style="font-weight:700;color:#006739;">{{ now()->addDays((int) config('library.borrow_duration_days', 7))->format('d M Y') }}</span></div>
                                 </div>
-                                <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;padding:0.75rem;background:#ecfdf5;border-radius:0.75rem;border:1px solid #d1fae5;margin-bottom:1rem;">
-                                    <input type="checkbox" name="terms" required style="margin-top:2px; width:18px; height:18px; accent-color:#059669;">
-                                    <span style="font-size:0.75rem;color:#047857;line-height:1.5;">Saya setuju mengembalikan buku tepat waktu dan menjaga kondisinya dengan baik.</span>
+                                <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;padding:0.75rem;background:#eaf3ed;border-radius:0.75rem;border:1px solid #d2e6da;margin-bottom:1rem;">
+                                    <input type="checkbox" name="terms" required style="margin-top:2px; width:18px; height:18px; accent-color:#006739;">
+                                    <span style="font-size:0.75rem;color:#004225;line-height:1.5;">Saya setuju mengembalikan buku tepat waktu dan menjaga kondisinya dengan baik.</span>
                                 </label>
-                                <button type="submit" style="background:linear-gradient(135deg,#059669,#047857);width:100%;color:white;padding:0.75rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);"> <i class="fas fa-check-circle" style="font-size:0.75rem;"></i> Konfirmasi Peminjaman </button>
+                                <button type="submit" style="background:#ffc600;width:100%;color:#16271d;padding:0.75rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 6px -1px rgba(22,39,29,0.15);"> <i class="fas fa-check-circle" style="font-size:0.75rem;"></i> Konfirmasi Peminjaman </button>
                             </form>
                         @else
                             <div style="text-align:center;padding:1rem;"><div style="width:4rem;height:4rem;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;"><i class="fas fa-user-slash" style="color:#ef4444;font-size:1.25rem;"></i></div><p style="color:#374151;font-size:0.875rem;font-weight:700;margin-bottom:0.25rem;">Akun Nonaktif</p><p style="color:#9ca3af;font-size:0.75rem;">Hubungi administrator.</p></div>
                         @endif
                     @else
-                        <div style="text-align:center;padding:0.5rem;"><p style="color:#6b7280;font-size:0.875rem;margin-bottom:1rem;">Silakan login atau daftar untuk meminjam buku ini.</p><div style="display:flex;gap:0.5rem;"><a href="{{ route('student.login.form') }}" style="flex:1;background:#059669;color:white;padding:0.625rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;text-align:center;text-decoration:none;">Login</a><a href="{{ route('student.register.form') }}" style="flex:1;background:white;border:1px solid #e5e7eb;color:#374151;padding:0.625rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;text-align:center;text-decoration:none;">Daftar</a></div></div>
+                        <div style="text-align:center;padding:0.5rem;"><p style="color:#6b7280;font-size:0.875rem;margin-bottom:1rem;">Silakan login atau daftar untuk meminjam buku ini.</p><div style="display:flex;gap:0.5rem;"><a href="{{ route('student.login.form') }}" style="flex:1;background:#006739;color:white;padding:0.625rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;text-align:center;text-decoration:none;">Login</a><a href="{{ route('student.register.form') }}" style="flex:1;background:white;border:1px solid #e5e7eb;color:#374151;padding:0.625rem;border-radius:0.75rem;font-weight:600;font-size:0.875rem;text-align:center;text-decoration:none;">Daftar</a></div></div>
                     @endauth
                 </div>
             </div>
@@ -644,18 +639,18 @@
                     </div>
                 </div>
                 <div class="ticket-body">
-                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;background:#f0fdf4;border:1px solid #d1fae5;border-radius:12px;padding:0.875rem;">
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;background:#eaf3ed;border:1px solid #d2e6da;border-radius:12px;padding:0.875rem;">
                         <div style="width:56px;height:80px;background:#f3f4f6;border-radius:6px;overflow:hidden;flex-shrink:0;border:1px solid #e5e7eb;box-shadow:0 2px 6px rgba(0,0,0,0.06);">
                             @if (filter_var($book->cover_image, FILTER_VALIDATE_URL))
                                 <img src="{{ $book->cover_image }}" style="width:100%;height:100%;object-fit:cover;" crossorigin="anonymous" loading="lazy">
                             @elseif ($book->cover_image)
                                 <img src="{{ asset('storage/' . $book->cover_image) }}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
                             @else
-                                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f0fdf4;"><i class="fas fa-book" style="color:#6ee7b7;font-size:20px;"></i></div>
+                                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#eaf3ed;"><i class="fas fa-book" style="color:#418f69;font-size:20px;"></i></div>
                             @endif
                         </div>
                         <div style="flex:1;min-width:0;">
-                            <div style="font-size:0.65rem;color:#059669;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.125rem;">Judul Buku</div>
+                            <div style="font-size:0.65rem;color:#006739;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.125rem;">Judul Buku</div>
                             <h3 style="font-weight:800;color:#111827;font-size:0.95rem;margin:0 0 0.125rem 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ $book->title }}</h3>
                             <p style="color:#6b7280;font-size:0.75rem;margin:0;">{{ $book->author }}</p>
                         </div>
@@ -667,7 +662,7 @@
                         <div style="display:flex;align-items:center;gap:0.625rem;">
                             <div style="flex:1;display:flex;justify-content:space-between;align-items:center;">
                                 <span style="font-size:0.75rem;color:#6b7280;">ID Peminjaman</span>
-                                <span class="info-value" id="ticketBorrowId" style="font-size:0.8125rem;color:#059669;font-weight:800;">Menunggu...</span>
+                                <span class="info-value" id="ticketBorrowId" style="font-size:0.8125rem;color:#006739;font-weight:800;">Menunggu...</span>
                             </div>
                         </div>
                         <div style="display:flex;align-items:center;gap:0.625rem;">

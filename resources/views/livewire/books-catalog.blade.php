@@ -76,7 +76,7 @@
 
     {{-- Book Grid --}}
     @if ($books->count() > 0)
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
             @foreach ($books as $book)
                 <div class="book-card">
                     {{-- Cover Area --}}
@@ -91,7 +91,7 @@
                             }
                             // Generate warna unik berdasarkan judul buku
                             $hue = crc32($book->title) % 360;
-                            $placeholderGrad = "linear-gradient(135deg, hsl({$hue}, 40%, 85%), hsl({$hue}, 50%, 70%))";
+                            $placeholderGrad = "linear-gradient(150deg, hsl({$hue}, 32%, 30%), hsl({$hue}, 46%, 19%))";
                         @endphp
 
                         @if ($coverSrc)
@@ -101,15 +101,19 @@
                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                             <div class="absolute inset-0 flex items-center justify-center" style="display:none;background:{{ $placeholderGrad }};">
                                 <div class="text-center">
-                                    <i class="fas fa-book-open text-4xl text-white/70"></i>
-                                    <p class="text-white/60 text-xs font-semibold mt-2 px-4 truncate max-w-[140px]">{{ $book->title }}</p>
+                                    <div class="w-10 h-10 mx-auto rounded-lg bg-white/10 flex items-center justify-center">
+                                        <i class="fas fa-book-open text-lg text-white/80"></i>
+                                    </div>
+                                    <p class="text-white/90 text-xs font-semibold mt-3 px-4 truncate max-w-[140px]">{{ $book->title }}</p>
                                 </div>
                             </div>
                         @else
                             <div class="absolute inset-0 flex items-center justify-center" style="background:{{ $placeholderGrad }};">
                                 <div class="text-center">
-                                    <i class="fas fa-book-open text-4xl text-white/70"></i>
-                                    <p class="text-white/60 text-xs font-semibold mt-2 px-4 truncate max-w-[140px]">{{ $book->title }}</p>
+                                    <div class="w-10 h-10 mx-auto rounded-lg bg-white/10 flex items-center justify-center">
+                                        <i class="fas fa-book-open text-lg text-white/80"></i>
+                                    </div>
+                                    <p class="text-white/90 text-xs font-semibold mt-3 px-4 truncate max-w-[140px]">{{ $book->title }}</p>
                                 </div>
                             </div>
                         @endif
@@ -140,15 +144,15 @@
                         
                         <div class="space-y-1.5 mb-4 text-xs text-gray-500">
                             <div class="flex items-center gap-2">
-                                <i class="fas fa-pen-fancy w-3 text-center text-purple-400"></i>
+                                <i class="fas fa-pen-fancy w-3 text-center text-[#1d7a52]"></i>
                                 <span class="truncate">{{ $book->author }}</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <i class="fas fa-layer-group w-3 text-center text-blue-400"></i>
+                                <i class="fas fa-layer-group w-3 text-center text-[#418f69]"></i>
                                 <span class="truncate">{{ $book->category->name ?? '-' }}</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <i class="fas fa-calendar w-3 text-center text-orange-400"></i>
+                                <i class="fas fa-calendar w-3 text-center text-[#74ae91]"></i>
                                 <span>{{ $book->year }}</span>
                             </div>
                         </div>

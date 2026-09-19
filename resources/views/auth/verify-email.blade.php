@@ -7,28 +7,22 @@
     <noscript><link rel="stylesheet" href="{{ asset('assets/css/email.css') }}"></noscript>
 <style>
     .bg-mesh {
-        background-color: #f0fdf4;
-        background-image: 
-            radial-gradient(at 40% 20%, rgba(52, 211, 153, 0.15) 0px, transparent 50%),
-            radial-gradient(at 80% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
-            radial-gradient(at 0% 80%, rgba(167, 243, 208, 0.15) 0px, transparent 50%),
-            radial-gradient(at 80% 80%, rgba(52, 211, 153, 0.1) 0px, transparent 50%);
+        background-color: #f4f6f1;
+        background-image: radial-gradient(#e2e9e1 1px, transparent 1px);
+        background-size: 24px 24px;
     }
     .card-glass {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), 0 4px 20px -5px rgba(0, 0, 0, 0.03);
+        background: #ffffff;
+        border: 1px solid #e2e9e1;
+        box-shadow: 0 20px 50px -30px rgba(0, 66, 37, 0.25);
     }
     .btn-submit {
-        background: linear-gradient(135deg, #059669, #047857);
+        background: #ffc600;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .btn-submit:hover:not(:disabled) {
-        background: linear-gradient(135deg, #047857, #065f46);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.4);
+        background: #e0b400;
+        box-shadow: 0 10px 25px -10px rgba(22, 39, 29, 0.25);
     }
     .btn-submit:disabled { 
         opacity: 0.7; 
@@ -45,8 +39,8 @@
         <div class="card-glass rounded-2xl overflow-hidden animate-fade-in">
             
             {{-- Header Card --}}
-            <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-10 text-center relative">
-                <div class="absolute inset-0 bg-black/5"></div>
+            <div class="bg-[#006739] text-white p-10 text-center relative">
+                <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 18px 18px;"></div>
                 <div class="relative z-10">
                     <div class="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
                         <i class="fas fa-envelope text-2xl"></i>
@@ -82,11 +76,11 @@
                 <form method="POST" action="{{ route('verification.send') }}" id="verifyForm">
                     @csrf
                     <button type="submit" id="submitButton" 
-                            class="btn-submit w-full text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm">
+                            class="btn-submit w-full text-[#16271d] py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm">
                         <i class="fas fa-paper-plane text-xs" id="btnIcon"></i>
                         <span id="buttonText">Kirim Ulang Email Verifikasi</span>
                         <div id="buttonLoader" class="hidden">
-                            <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            <div class="w-5 h-5 border-2 border-[#16271d]/20 border-t-[#16271d] rounded-full animate-spin"></div>
                         </div>
                     </button>
                 </form>

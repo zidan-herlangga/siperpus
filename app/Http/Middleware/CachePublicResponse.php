@@ -27,15 +27,22 @@ class CachePublicResponse
         $cacheKey = 'response:' . sha1($request->fullUrl());
 
         $cached = Cache::get($cacheKey);
-        if ($cached !== null) {
+        if ($cached !== null && !str_contains($cached, 'name="_token"')) {
             return response($cached)->header('X-Cache', 'HIT');
         }
 
         $response = $next($request);
 
         if ($response->isSuccessful() && $response instanceof \Illuminate\Http\Response) {
-            Cache::put($cacheKey, $response->getContent(), $ttl);
-            $response->header('X-Cache', 'MISS');
+            $content = $response->getContent();
+
+            // JANGAN cache halaman yang mengandung field _token / form CSRF.
+            // Token CSRF terikat pada sesi pengunjung pertama, sehingga versi
+            // cache-nya akan membuat sesi lain gagal dengan error 419.
+            if (!str_contains($content, 'name="_token"')) {
+                Cache::put($cacheKey, $content, $ttl);
+                $response->header('X-Cache', 'MISS');
+            }
         }
 
         return $response;

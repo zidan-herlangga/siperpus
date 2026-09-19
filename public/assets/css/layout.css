@@ -2,17 +2,24 @@
 /* ===== Layout CSS ===== */
 /* ====================== */
 :root {
-    --primary-green: #065f46;
-    --secondary-green: #10b981;
-    --light-green: #d1fae5;
-    --accent-green: #34d399;
-    --dark-green: #047857;
+    --primary-green: #006739;
+    --secondary-green: #1d7a52;
+    --light-green: #d2e6da;
+    --accent-green: #418f69;
+    --dark-green: #004225;
+    --forest-soft: #eaf3ed;
+    --cta: #ffc600;
+    --cta-dark: #e0b400;
+    --bone: #f4f6f1;
+    --ink: #16271d;
+    --muted: #5e6e63;
+    --hairline: #e2e9e1;
 }
 
 body {
     overscroll-behavior: contain;
     font-family:
-        "Inter",
+        "Manrope Variable",
         system-ui,
         -apple-system,
         sans-serif;
@@ -20,20 +27,22 @@ body {
 
 /* Gradient */
 .gradient-bg {
-    background: #ffffff;
+    background: var(--primary-green);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .footer {
-    background: var(--primary-green);
+    background: var(--dark-green);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Header Blur Effect on Scroll */
 .header-scrolled {
-    background: #ffffff;
+    background: var(--dark-green);
 
     backdrop-filter: blur(12px) saturate(180%);
     -webkit-backdrop-filter: blur(12px) saturate(180%);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 24px rgba(0, 66, 37, 0.35);
 }
 
 /* Colors Utility */
@@ -103,7 +112,7 @@ body {
 
 /* Offcanvas Styling */
 .offcanvas {
-    background: linear-gradient(to bottom, #ffffff, #f0fdf4);
+    background: linear-gradient(to bottom, #ffffff, var(--forest-soft));
 }
 
 .offcanvas-link {
@@ -117,7 +126,7 @@ body {
     font-size: 0.9375rem;
 }
 .offcanvas-link:hover {
-    background-color: #ecfdf5;
+    background-color: var(--forest-soft);
     color: var(--primary-green);
     transform: translateX(4px);
 }
@@ -172,7 +181,7 @@ body {
     transform: translateX(-50%) scaleX(0);
     width: 20px;
     height: 3px;
-    background-color: #059669;
+    background-color: var(--primary-green);
     border-radius: 10px;
     transition: transform 0.3s ease;
 }
@@ -183,10 +192,10 @@ body {
 
 /* Smooth transition untuk teks dan ikon saat aktif */
 .active-nav-item.text-emerald-600 {
-    color: #006638;
+    color: var(--primary-green);
 }
 .active-nav-item.text-emerald-600 div {
-    background-color: #d1fae5;
+    background-color: var(--light-green);
 }
 
 /* Media Query: Sembunyikan di Desktop, Tampilkan di Mobile */

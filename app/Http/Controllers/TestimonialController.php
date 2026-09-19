@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class TestimonialController extends Controller
 {
@@ -37,6 +38,8 @@ class TestimonialController extends Controller
             'content'   => $request->content,
             'rating'    => $request->rating,
         ]);
+
+        Cache::forget('homepage.testimonials');
 
         // 3. Kembali ke dashboard dengan pesan sukses
         return back()->with('success_testi', 'Terima kasih! Ulasan Anda berhasil dikirim dan menunggu persetujuan admin.');

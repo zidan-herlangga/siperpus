@@ -22,7 +22,7 @@ class ForgotPasswordController extends Controller
     public function sendResetLinkEmail(Request $request)
     {
         // Validasi email
-        $request->validate(['email' => 'required|email']);
+        $request->validate(['email' => 'required|email:rfc']);
 
         // Kirim link reset via broker 'students'
         $status = Password::broker('students')->sendResetLink(

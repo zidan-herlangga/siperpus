@@ -39,7 +39,7 @@ class ResetPasswordController extends Controller
     {
         $request->validate([
             'token' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email:rfc',
             'password' => 'required|min:8|confirmed',
         ]);
 

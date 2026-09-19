@@ -8,40 +8,34 @@
 <style>
     /* Custom style spesifik halaman ini */
     .bg-mesh {
-        background-color: #f0fdf4;
-        background-image: 
-            radial-gradient(at 20% 20%, rgba(52, 211, 153, 0.15) 0px, transparent 50%),
-            radial-gradient(at 80% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
-            radial-gradient(at 0% 80%, rgba(167, 243, 208, 0.15) 0px, transparent 50%),
-            radial-gradient(at 80% 80%, rgba(52, 211, 153, 0.1) 0px, transparent 50%);
+        background-color: #f4f6f1;
+        background-image: radial-gradient(#e2e9e1 1px, transparent 1px);
+        background-size: 24px 24px;
     }
     .card-glass {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), 0 4px 20px -5px rgba(0, 0, 0, 0.03);
+        background: #ffffff;
+        border: 1px solid #e2e9e1;
+        box-shadow: 0 20px 50px -30px rgba(0, 66, 37, 0.25);
     }
     .input-modern {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1.5px solid #e5e7eb;
+        border: 1.5px solid #e2e9e1;
     }
-    .input-modern:hover { border-color: #d1d5db; }
+    .input-modern:hover { border-color: #c6d4c8; }
     .input-modern:focus {
-        border-color: #10b981;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        border-color: #006739;
+        box-shadow: 0 0 0 3px rgba(0, 103, 57, 0.1);
     }
     .input-icon { transition: color 0.3s ease; }
-    .input-group:focus-within .input-icon { color: #059669; }
+    .input-group:focus-within .input-icon { color: #006739; }
     
     .btn-register {
-        background: linear-gradient(135deg, #059669, #047857);
+        background: #ffc600;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .btn-register:hover:not(:disabled) {
-        background: linear-gradient(135deg, #047857, #065f46);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.4);
+        background: #e0b400;
+        box-shadow: 0 10px 25px -10px rgba(22, 39, 29, 0.25);
     }
     .btn-register:disabled { opacity: 0.8; cursor: not-allowed; }
 
@@ -61,8 +55,8 @@
             <div class="card-glass rounded-2xl overflow-hidden animate-fade-in">
                 
                 {{-- Header Card --}}
-                <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white text-center py-10 px-6 relative">
-                    <div class="absolute inset-0 bg-black/5"></div>
+                <div class="bg-[#006739] text-white text-center py-10 px-6 relative">
+                    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 18px 18px;"></div>
                     <div class="relative z-10">
                         <div class="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
                             <i class="fas fa-user-plus text-2xl"></i>
@@ -160,7 +154,7 @@
                         {{-- === STEP 2: Informasi Sekolah === --}}
                         <div class="form-section" data-section="2">
                             <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs">
+                                <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">
                                     <i class="fas fa-school"></i>
                                 </div>
                                 Informasi Sekolah
@@ -213,7 +207,7 @@
                         {{-- === STEP 3: Informasi Akun === --}}
                         <div class="form-section" data-section="3">
                             <h3 class="text-base font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xs">
+                                <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">
                                     <i class="fas fa-shield-halved"></i>
                                 </div>
                                 Keamanan Akun
@@ -282,11 +276,11 @@
                         {{-- Tombol Submit --}}
                         <div class="pt-2">
                             <button type="submit" id="submitButton"
-                                class="btn-register w-full text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm">
+                                class="btn-register w-full text-[#16271d] py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-sm">
                                 <span id="buttonText">Buat Akun Saya</span>
                                 <i class="fas fa-arrow-right text-xs" id="buttonArrow"></i>
                                 <div id="buttonLoader" class="hidden">
-                                    <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                    <div class="w-5 h-5 border-2 border-[#16271d]/20 border-t-[#16271d] rounded-full animate-spin"></div>
                                 </div>
                             </button>
                         </div>
@@ -377,8 +371,8 @@
                         { width: '0%', color: '#e5e7eb', text: '', textClass: 'text-gray-400' },
                         { width: '25%', color: '#ef4444', text: 'Lemah', textClass: 'text-red-500' },
                         { width: '50%', color: '#f59e0b', text: 'Cukup', textClass: 'text-amber-500' },
-                        { width: '75%', color: '#3b82f6', text: 'Kuat', textClass: 'text-blue-500' },
-                        { width: '100%', color: '#10b981', text: 'Sangat Kuat', textClass: 'text-emerald-500' }
+                        { width: '75%', color: '#1d7a52', text: 'Kuat', textClass: 'text-emerald-500' },
+                        { width: '100%', color: '#006739', text: 'Sangat Kuat', textClass: 'text-emerald-500' }
                     ];
 
                     const level = val.length === 0 ? levels[0] : levels[score];
